@@ -2,3 +2,7 @@
 	path = account_budget_extra_mblz
 	url = git@github.com:MobilizeDevTeam/account_budget_extra_mblz.git
 	branch = 14.0
+[submodule "mblz_transvial"]
+	path = mblz_transvial
+	url = git@github.com:MobilizeDevTeam/mblz_transvial.git
+	branch = main
