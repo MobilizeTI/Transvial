@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="report_buses_stopped_search" model="ir.ui.view">
+        <field name="name">Buses Detenidos</field>
+        <field name="model">report.buses.stopped</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name_seq"/>
+                <field name="request_id"/>
+                <separator/>
+                <filter name="filter_corrective" string="Tipo de MTTO: Correctivo"
+                        domain="[('maintenance_type', '=', 'corrective')]"/>
+                <filter name="filter_preventive" string="Tipo de MTTO: Preventivo"
+                        domain="[('maintenance_type', '=', 'preventive')]"/>
+                <separator/>
+                <filter name="filter_date" date="request_date" default_period="this_year"/>
+                <filter string="Mantenimientos del día" name="dia"
+                        domain="[('request_date','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))), ('request_date','&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]"
+                        help="Mantenimientos del día"/>
+                <group expand="1" string="Group By">
+                    <filter string="OT" name="groupby_request"
+                            context="{'group_by':'request_id'}"/>
+                    <filter string="Tipo de MTTO" name="groupby_type_mmto"
+                            context="{'group_by':'maintenance_type'}"/>
+                    <filter string="Equipos" name="equipment_id" context="{'group_by':'equipment_id'}"/>
+                    <filter string="Estados" name="stage_id" context="{'group_by':'stage_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id='report_buses_stopped_action' model='ir.actions.act_window'>
+        <field name="name">Buses Detenidos</field>
+        <field name="res_model">report.buses.stopped</field>
+        <field name="view_mode">tree,dashboard</field>
+        <field name="domain">[('flag_with_motive', '=', True)]</field>
+        <field name="context">{
+            "search_default_groupby_request": True,
+            "search_default_filter_corrective": "corrective",
+        }</field>
+    </record>
+
+    <!--    <menuitem name="Buses Detenidos"-->
+    <!--              id="report_buses_stopped_menu"-->
+    <!--              parent="maintenance.maintenance_reporting"-->
+    <!--              action="report_buses_stopped_action"-->
+    <!--              sequence="151"-->
+    <!--    />-->
+
+    <record id="report_buses_stopped_tree" model="ir.ui.view">
+        <field name="name">Buses Detenidos</field>
+        <field name="model">report.buses.stopped</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" default_order="name_seq desc">
+                <!--                                <field name="request_id" groups="base.group_no_one"/>-->
+                <field name="name_seq" optional="show"/>
+                <field name="name" optional="show"/>
+                <field name="type_ot_name" optional="show"/>
+                <field name="last_motive_name" optional="show"/>
+                <field name="equipment_id" optional="show"/>
+                <!--                <field name="vehicle_id" optional="show"/>-->
+                <!--                <field name="model_id" optional="show"/>-->
+                <field name="category_id" optional="show"/>
+                <field name="stage_id" optional="show"/>
+                <field name="datetime_detention" optional="show"/>
+                <field name="confirm_datetime" optional="show"/>
+                <field name="detail_stop" optional="show"/>
+
+                <!--                <field name="sm_product_id" optional="show"/>-->
+                <field name="sm_product_code" optional="show"/>
+                <field name="sm_product_name" optional="show"/>
+                <field name="picking_id" optional="show" string="Solicitud de material"/>
+                <field name="user_mtto_supervisor_id" widget="many2one_avatar_user" optional="show"
+                       string="Supervisor"/>
+                <field name="employee_id" optional="show"/>
+                <field name="pk_state" optional="hide" widget="badge" decoration-success="pk_state == 'done'"
+                       decoration-info="pk_state not in ('done', 'cancel')"/>
+                <!--                <field name="date_planned" widget="datetime"/>-->
+                <field name="approval_id" optional="hide"/>
+                <field name="user_approver_ids" optional="show" widget="many2many_tags_avatar"/>
+                <field name="company_name" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="report_buses_stopped_dashboard" model="ir.ui.view">
+        <field name="name">maintenance.request.view.dashboard</field>
+        <field name="model">report.buses.stopped</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <dashboard>
+                <group>
+                    <group col="2">
+                        <widget name="pie_chart" title="Estatus de Mantenimientos" attrs="{'groupby': 'stage_id'}"/>
+                    </group>
+                    <group col="10">
+                        <aggregate name="total" string="# Total de Buses Detenidos" group_operator="count"
+                                   field="request_id"
+                                   measure="__count__"/>
+                        <aggregate name="en_espera" string="# En espera" domain="[('request_id.stage_id.id', '=',7)]"
+                                   group_operator="count" field="request_id" measure="__count__"/>
+                        <aggregate name="pendiente" string="# Pendiente" domain="[('request_id.stage_id.id', '=',8)]"
+                                   group_operator="count" field="request_id" measure="__count__"/>
+                        <aggregate name="cerrada" string="# Cerrada" domain="[('request_id.stage_id.id', '=',9)]"
+                                   group_operator="count" field="request_id" measure="__count__"/>
+                    </group>
+                </group>
+            </dashboard>
+        </field>
+    </record>
+</odoo>

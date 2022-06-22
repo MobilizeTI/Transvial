@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--reportes 43-->
+    <record id="inhabilitacion_tecnica_search" model="ir.ui.view">
+        <field name="name">Búsqueda Mtto por inhabilitación técnica y operacional</field>
+        <field name="model">inhabilitacion.tecnica</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name_seq"/>
+                <field name="maintenance_id"/>
+                <field name="task_id"/>
+                <separator/>
+                <filter name="filter_date" date="request_date" default_period="this_month"/>
+                <filter string="Transacciones del día" name="dia"
+                        domain="[('request_date','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))), ('request_date','&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]"
+                        help="Transacciones del día"/>
+                <group expand="1" string="Group By">
+                    <filter string="Etapa" name="stage_id" context="{'group_by':'stage_id'}"/>
+                    <filter string="Equipos" name="equipment_id" context="{'group_by':'equipment_id'}"/>
+                    <filter string="Tipo de OT" name="type_ot_id" context="{'group_by':'type_ot_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id='inhabilitacion_tecnica_action' model='ir.actions.act_window'>
+        <field name="name">Inhabilitación técnica y operacional</field>
+        <field name="res_model">inhabilitacion.tecnica</field>
+        <field name="view_mode">tree,graph,pivot,dashboard</field>
+        <!-- <field name="context">{"search_default_preventivos":"preventive"}</field> -->
+    </record>
+
+<!--    <menuitem name="Inhabilitación técnica y operacional" id="inhabilitacion_tecnica_menu"-->
+<!--              parent="maintenance.maintenance_reporting" action="inhabilitacion_tecnica_action"/>-->
+
+    <record id="inhabilitacion_tecnica_tree" model="ir.ui.view">
+        <field name="name">Inhabilitación técnica y operacional</field>
+        <field name="model">inhabilitacion.tecnica</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0">
+                <!-- <field name="nbr"/> -->
+                <field name="maintenance_id" optional="show" options="{'no_open': True, 'no_create_edit': True}"/>
+                <field name="name_seq" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="type_ot_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="description" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="equipment_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="model_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="category_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="stage_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="request_date" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="task_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="activity_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="component_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="company_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="inhabilitacion_tecnica_graph" model="ir.ui.view">
+        <field name="model">inhabilitacion.tecnica</field>
+        <field name="arch" type="xml">
+            <graph type="bar">
+                <field name="stage_id"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="inhabilitacion_tecnica_pivot" model="ir.ui.view">
+        <field name="model">inhabilitacion.tecnica</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="stage_id" type="row"/>
+                <field name="equipment_id" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="inhabilitacion_tecnica_dashboard" model="ir.ui.view">
+        <field name="name">inhabilitacion.tecnica.dashboard</field>
+        <field name="model">inhabilitacion.tecnica</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <dashboard>
+                <view type="graph" ref="report_maintenance_mblz2.inhabilitacion_tecnica_graph"/>
+                <group>
+                    <group col="2">
+                        <widget name="pie_chart" title="Estatus de Mantenimientos" attrs="{'groupby': 'stage_id'}"/>
+                    </group>
+                    <group col="10">
+                        <aggregate name="total_buses_inhabilitados" string="# Total de Buses inhabilitados"
+                                   group_operator="count" field="equipment_id" measure="__count__"/>
+                    </group>
+                </group>
+                <view type="pivot" ref="report_maintenance_mblz2.inhabilitacion_tecnica_pivot"/>
+            </dashboard>
+        </field>
+    </record>
+</odoo>

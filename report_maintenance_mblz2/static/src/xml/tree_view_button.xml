@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template id="template" xml:space="preserve">
+          <t t-extend="ListView.buttons">
+            <t t-jquery="button.o_list_button_save" t-operation="before">
+                <t t-if="widget.modelName == 'report.fleet.technical.unreliability'">
+                  <button id="custom_print_btn" class="btn btn-primary o_list_button_custom_print"
+                          icon="fa-hand-o-right"
+                          type="button">Ver KPI</button>
+                </t>
+            </t>
+          </t>
+
+    <t t-extend="ListView.buttons">
+            <t t-jquery="button.o_list_button_save" t-operation="before">
+                <t t-if="widget.modelName == 'report.equipment.its.failures'">
+                  <button id="custom_print_btn2" class="btn btn-primary o_list_button_custom_print2"
+                          icon="fa fa-hand-o-right"
+                          type="button">Ver KPI</button>
+                </t>
+            </t>
+    </t>
+</template>
+

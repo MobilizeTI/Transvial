@@ -1,0 +1,18 @@
+<odoo>
+    <data>
+        <record id="show_message_mtto_wizard" model="ir.ui.view">
+            <field name="name">show.message.mtto.wizard</field>
+            <field name="model">show.message.mtto</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="message" widget="html" readonly="1"/>
+                    </group>
+                    <footer>
+                        <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

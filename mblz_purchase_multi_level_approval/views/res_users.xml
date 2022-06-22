@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Inherit Form View to Modify it -->
+        <record id="mblz2_view_users_form" model="ir.ui.view">
+            <field name="name">mblz2_res.users.form</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='tz']" position="after">
+                    <field name="flag_approve_po"/>
+                </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>

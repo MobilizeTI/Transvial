@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--reportes 12-->
+    
+    <record id="fechas_de_vencimiento_de_mtto_search" model="ir.ui.view">
+        <field name="name">Búsqueda Fechas de vencimiento de Mtto preventivo y programado</field>
+        <field name="model">fechas.de.vencimiento.de.mtto</field>
+        <field name="arch" type="xml"> 
+            <search>
+                <field name="name_seq"/>
+                <field name="maintenance_id"/>
+                <field name="model_id"/>
+                <filter name="preventivos" string="Tipo de mantenimiento: Preventivo" domain="[('preventivos', '!=', False)]"/>
+                <filter name="correctivos" string="Tipo de mantenimiento: Correctivo" domain="[('correctivos', '!=', False)]"/>
+                <separator/>
+                <filter string="Mtto Sin Ejecutar" name="por_vencer" domain="[('stage_id', 'in',(2,1))]" help="Por Ejecutar"/>
+                <separator/>
+                <filter name="filter_date" date="schedule_date" default_period="this_month"/>
+                <filter string="Transacciones del día" name="dia" domain="[('schedule_date','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))), ('schedule_date','&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]" help="Transacciones del día"/>
+                <group expand="1" string="Group By">
+                    <filter string="Tipos de mantenimiento" name="maintenance_type" context="{'group_by':'maintenance_type'}"/>
+                    <filter string="Equipos" name="stage_id" context="{'group_by':'stage_id'}"/>
+                    <filter string="Tipología" name="category_id" context="{'group_by':'category_id'}"/>
+                    <filter string="Modelo" name="model_id" context="{'group_by':'model_id'}"/>
+                </group>
+            </search> 
+        </field>
+    </record>    
+
+    <record id='fechas_de_vencimiento_de_mtto_action' model='ir.actions.act_window'>
+        <field name="name">Fechas de vencimiento de Mtto preventivo y programado</field>
+        <field name="res_model">fechas.de.vencimiento.de.mtto</field>
+        <field name="view_mode">tree,graph,pivot,dashboard</field>
+        <field name="context">{"search_default_preventivos":"preventive"}</field>
+    </record>
+
+<!--    <menuitem name="Fechas de vencimiento de Mtto preventivo y programado" id="fechas_de_vencimiento_de_mtto_menu" parent="maintenance.maintenance_reporting" action="fechas_de_vencimiento_de_mtto_action"/>-->
+
+    <record id="fechas_de_vencimiento_de_mtto_tree" model="ir.ui.view" >
+        <field name="name">Fechas de vencimiento de Mtto preventivo y programado</field>
+        <field name="model">fechas.de.vencimiento.de.mtto</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0">
+                <!-- <field name="nbr"/> -->
+                <field name="maintenance_id" optional="show" options="{'no_open': True, 'no_create_edit': True}"/>
+                <field name="name_seq" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="model_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="maintenance_type_view" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="category_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="odometer_actual" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="stage_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="schedule_date" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="next_odometer" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="estado" optional="show" options="{'no_open': True, 'no_create': True}"/>
+            </tree>
+        </field>
+    </record>
+    <record id="fechas_de_vencimiento_de_mtto_graph" model="ir.ui.view">
+        <field name="model">fechas.de.vencimiento.de.mtto</field>
+        <field name="arch" type="xml">
+            <graph type="bar">
+                <field name="maintenance_type_view"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="fechas_de_vencimiento_de_mtto_pivot" model="ir.ui.view">
+        <field name="model">fechas.de.vencimiento.de.mtto</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="maintenance_type_view" type="row"/>
+                <field name="model_id" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="fechas_de_vencimiento_de_mtto_dashboard" model="ir.ui.view">
+        <field name="name">maintenance.request.view.dashboard</field>
+        <field name="model">fechas.de.vencimiento.de.mtto</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <dashboard>
+                <view type="graph" ref="fechas_de_vencimiento_de_mtto_graph"/>
+                <group>
+                    <group col="2">
+                        <widget name="pie_chart" title="Tipos de Mantenimientos" attrs="{'groupby': 'maintenance_type_view'}"/>
+                        <widget name="pie_chart" title="Estatus de Mantenimientos" attrs="{'groupby': 'estado'}"/>
+                    </group>
+                    <group col="10">
+                        <aggregate name="ven" string="# Total Vencidas" domain="[('estado', 'ilike','Vencida')]" group_operator="count" field="maintenance_id" measure="__count__"/>
+                        
+                        <aggregate name="no_ven" string="# Total Pendientes" domain="[('estado', 'ilike','Pendiente')]" group_operator="count" field="maintenance_id" measure="__count__"/>
+                    </group>
+                </group>
+                <view type="pivot" ref="fechas_de_vencimiento_de_mtto_pivot"/>
+            </dashboard>
+        </field>
+    </record>
+</odoo>

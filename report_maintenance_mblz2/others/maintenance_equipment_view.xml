@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 1-3 -->
+    <record id="maintenance_equipment_details_search" model="ir.ui.view">
+        <field name="name">Búsqueda de mantenimiento de equipos</field>
+        <field name="model">maintenance.equipment.details</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="license_plate"/>
+                <separator/>
+                <filter name="filter_date" date="date" default_period="this_month"/>
+                <filter string="Transacciones del día" name="dia"
+                        domain="[('date','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))), ('date','&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]"
+                        help="Transacciones del día"/>
+                <group expand="1" string="Group By">
+                    <filter string="Tipología" name="category_id" context="{'group_by':'category_id'}"/>
+                    <filter string="Compañia" name="company_id" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id='maintenance_equipment_details_action' model='ir.actions.act_window'>
+        <field name="name">Kilometraje acumulado por Equipos</field>
+        <field name="res_model">maintenance.equipment.details</field>
+        <field name="view_mode">tree,graph,pivot,dashboard</field>
+        <field name="context">{"search_default_category_id": "category_id"}</field>
+    </record>
+
+    <menuitem name="Kilometraje acumulado por Equipos" id="maintenance_equipment_details_menu"
+              parent="maintenance.maintenance_reporting" action="maintenance_equipment_details_action"/>
+
+    <record id="maintenance_equipment_details_tree" model="ir.ui.view">
+        <field name="name">Kilometraje acumulado por Equipos</field>
+        <field name="model">maintenance.equipment.details</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0">
+                <field name="name" optional="show" options="{'no_open': True, 'no_create_edit': True}"/>
+                <field name="license_plate" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="category_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="value" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="unit" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="date" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="company_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="maintenance_equipment_details_graph" model="ir.ui.view">
+        <field name="model">maintenance.equipment.details</field>
+        <field name="arch" type="xml">
+            <graph type="bar">
+                <field name="category_id"/>
+                <field name="value" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="maintenance_equipment_details_pivot" model="ir.ui.view">
+        <field name="model">maintenance.equipment.details</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="category_id" type="row"/>
+                <field name="name" type="row"/>
+                <field name="value" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="maintenance_equipment_details_dashboard" model="ir.ui.view">
+        <field name="name">maintenance.request.view.dashboard</field>
+        <field name="model">maintenance.equipment.details</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <dashboard>
+                <view type="graph" ref="report_maintenance_mblz2.maintenance_equipment_details_graph"/>
+                <group>
+                    <group col="9">
+                        <!-- <widget name="pie_chart" title="Tipología de equipos" attrs="{'groupby': 'category_id'}"/> -->
+                        <widget name="pie_chart" title="Total de KM por tipología de equipos"
+                                attrs="{'groupby': 'category_id', 'measure': 'value'}"/>
+                    </group>
+                    <group>
+                        <aggregate name="total_pad" string="TOTAL KM RECORRIDOS POR BUSETONES" group_operator="sum"
+                                   domain="[('category_id.name', 'ilike','BUSETÓN')]" field="value"/>
+
+                        <aggregate name="total_bus" string="TOTAL KM RECORRIDOS POR PADRONES" group_operator="sum"
+                                   domain="[('category_id.name', 'ilike','PADRÓN')]" field="value"/>
+
+                        <aggregate name="total_comp" string="TOTAL KM RECORRIDOS POR COMPAÑIA" group_operator="sum"
+                                   field="value"/>
+                    </group>
+                </group>
+                <view type="pivot" ref="report_maintenance_mblz2.maintenance_equipment_details_pivot"/>
+            </dashboard>
+        </field>
+    </record>
+</odoo>

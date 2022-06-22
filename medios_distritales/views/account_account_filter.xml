@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="search_template_accounts">
+            <button t-if="options.get('contable_id')" type="button" class="o_dropdown_toggler_btn btn btn-secondary dropdown-toggle account_contable_filter" data-toggle="dropdown">
+                <span class="fa fa-address-book"/> Cuentas Contables
+            </button>
+            <ul class="dropdown-menu o_filter_menu" role="menu">
+                <li class="o_account_report_search js_account_contable_m2m"/>
+            </ul>
+        </template>
+
+        <template id="search_template_zue" inherit_id="account_reports.search_template">
+            <xpath expr="//div[hasclass('o_account_reports_filter_bool')]" position="after">
+                <div class="btn-group o_dropdown o_account_reports_filter_contable" t-if="options.get('contable_id') != None">
+                    <t t-call="medios_distritales.search_template_accounts"/>
+                </div>
+            </xpath>
+        </template>
+
+
+    </data>
+</odoo>

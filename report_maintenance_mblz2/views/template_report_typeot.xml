@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="template_report_typeot_form_view" model="ir.ui.view">
+            <field name="name">template_report_typeot.form</field>
+            <field name="model">template.report.typeot</field>
+            <field name="arch" type="xml">
+                <form string="Temp">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name" placeholder="Nombre de la plantilla"/>
+                            </h1>
+                            <h6><field name="rpt_type_id" widget="rpt_type_hierarchy_selection"/></h6>
+                        </div>
+                        <group>
+                            <group>
+                                <field
+                                        name="all_stages" widget="boolean_toggle"/>
+                                <field name="mt_stage_ids" widget="many2many_tags"
+                                       limit="15"
+                                       attrs="{'invisible': [('all_stages', '=', True)],
+                                       'required': [('all_stages', '=', False)]}"
+                                       options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"
+                                />
+
+
+                            </group>
+                            <group>
+                                <field name="all_types" widget="boolean_toggle"/>
+                                <field name="user_id"
+                                       options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"
+                                />
+                            </group>
+                        </group>
+                        <notebook attrs="{'invisible': [('all_types', '=', True)]}">
+                            <page name="page_lines" string="Tipos de OT's">
+                                <field
+                                        name="type_ot_ids"
+                                        attrs="{'invisible': [('all_types', '=', True)],
+                                       'required': [('all_types', '=', False)]}"
+                                        widget="section_and_note_one2many"
+                                        context="{'default_report_temp_id' : id}"
+                                        mode="tree">
+
+                                    <tree string="Type ot Lines"
+                                          editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="type_ot" string="Tipo"
+                                               options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"
+                                        />
+                                        <field name="type_of_fault"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="template_report_typeot_tree_view" model="ir.ui.view">
+            <field name="name">template_report_typeot.tree</field>
+            <field name="model">template.report.typeot</field>
+            <field name="arch" type="xml">
+                <tree string="Temp">
+                    <field name="name"/>
+                    <field name="user_id"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="template_report_typeot_act_window" model="ir.actions.act_window">
+            <field name="name">Parámetros para reportes MTTO</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">template.report.typeot</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Cree su primera plantilla de tipos de OT para reportes MTTO
+                </p>
+            </field>
+        </record>
+
+        <menuitem
+                id="menu_mblz_maintenance_reporting_root"
+                name="Reportes MTTO"
+                parent="maintenance.menu_maintenance_configuration"
+                sequence="-100"/>
+
+        <menuitem name="Parámetros para reportes MTTO"
+                  id="template_report_typeot_menu"
+                  parent="menu_mblz_maintenance_reporting_root"
+                  action="template_report_typeot_act_window"
+                  sequence="1"
+        />
+
+    </data>
+</odoo>

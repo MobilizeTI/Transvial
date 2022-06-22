@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--reportes 21-->
+    <record id="costo_por_kilometraje_search" model="ir.ui.view">
+        <field name="name">Búsqueda costo por kilometraje</field>
+        <field name="model">costo.por.kilometraje</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="equipment_id"/>
+                <field name="license_plate"/>
+                <separator/>
+                <filter name="filter_date" date="fecha_registro" default_period="this_month"/>
+                <filter string="Transacciones del día" name="dia"
+                        domain="[('fecha_registro','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))), ('fecha_registro','&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]"
+                        help="Transacciones del día"/>
+                <group expand="1" string="Group By">
+                    <filter string="Tipología" name="category_id" context="{'group_by':'category_id'}"/>
+                    <filter string="Equipos" name="equipment_id" context="{'group_by':'equipment_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id='costo_por_kilometraje_action' model='ir.actions.act_window'>
+        <field name="name">Costo por Kilometraje</field>
+        <field name="res_model">costo.por.kilometraje</field>
+        <field name="view_mode">tree,graph,pivot,dashboard</field>
+        <!-- <field name="context">{"search_default_preventivos":"preventive"}</field> -->
+    </record>
+
+    <!--    <menuitem name="Costo por Kilometraje" id="costo_por_kilometraje_menu" parent="maintenance.maintenance_reporting" action="costo_por_kilometraje_action"/>-->
+
+    <record id="costo_por_kilometraje_tree" model="ir.ui.view">
+        <field name="name">Costo por Kilometraje</field>
+        <field name="model">costo.por.kilometraje</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0">
+                <field name="equipment_id" optional="show" options="{'no_open': True, 'no_create_edit': True}"/>
+                <field name="license_plate" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="category_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="odometer_actual" optional="show" options="{'no_open': True, 'no_create': True}"
+                       sum="Total Odometro"/>
+                <field name="unit" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="costo_total" optional="show" options="{'no_open': True, 'no_create': True}"
+                       sum="Total Costo"/>
+                <field name="costo_km" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="fecha_registro" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="company_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="costo_por_kilometraje_graph" model="ir.ui.view">
+        <field name="model">costo.por.kilometraje</field>
+        <field name="arch" type="xml">
+            <graph type="bar">
+                <field name="category_id"/>
+                <field name="costo_total" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="costo_por_kilometraje_pivot" model="ir.ui.view">
+        <field name="model">costo.por.kilometraje</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="category_id" type="row"/>
+                <field name="equipment_id" type="row"/>
+                <field name="odometer_actual" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="costo_por_kilometraje_dashboard" model="ir.ui.view">
+        <field name="name">costo.por.kilometraje.dashboard</field>
+        <field name="model">costo.por.kilometraje</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <dashboard>
+                <view type="graph" ref="report_maintenance_mblz2.costo_por_kilometraje_graph"/>
+                <group>
+                    <group col="2">
+                        <widget name="pie_chart" title="Costos por Tipología"
+                                attrs="{'groupby': 'category_id', 'measure': 'costo_total'}"/>
+                    </group>
+                    <group col="10">
+                        <aggregate name="odometro" invisible="0" string="# Odometro Total" group_operator="sum"
+                                   field="odometer_actual"/>
+                        <aggregate name="costo" invisible="0" string="# Costo Total" group_operator="sum"
+                                   field="costo_total" widget="monetary"/>
+                        <formula name="costo_total" string="# Costo Promedio por Kilometraje"
+                                 value="record.costo / record.odometro" widget="monetary"/>
+                    </group>
+                </group>
+                <view type="pivot" ref="report_maintenance_mblz2.costo_por_kilometraje_pivot"/>
+            </dashboard>
+        </field>
+    </record>
+</odoo>

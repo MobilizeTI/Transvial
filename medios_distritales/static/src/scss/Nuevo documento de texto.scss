@@ -1,0 +1,20 @@
+// Filters lines
+// -----------------------------------------
+.o_reports_filter_input_wrapper {
+    position: relative;
+    float: right;
+    width: 150px;
+    margin-bottom: 20px;
+    float: right;
+        .searchIcon {
+        position: absolute;
+        right: 10px;
+    }
+}
+    .o_account_reports_filter_input {
+    border: none;
+    border-bottom: 1px black solid;
+}
+    .o_account_reports_filtered_lines {
+    display: none;
+}

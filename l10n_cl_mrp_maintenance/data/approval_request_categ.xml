@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="approval_request_task" model="approval.category">
+            <field name="name">MA ($1-$150.000)</field>
+            <field name="image" type="base64" file="l10n_cl_mrp_maintenance/static/src/img/approve_materials.png"/>
+            <field name="description">Materiales adicionales con valor mayor o igual a $1 y menor a $150.000</field>
+            <field name="sequence">100</field>
+            <field name="requirer_document">optional</field>
+            <field name="has_partner">required</field>
+            <field name="has_date">required</field>
+            <field name="has_period">no</field>
+            <field name="has_quantity">no</field>
+            <field name="has_amount">required</field>
+            <field name="has_reference">no</field>
+            <field name="has_payment_method">no</field>
+            <field name="has_location">no</field>
+            <field name="approval_minimum">1</field>
+            <field name="automated_sequence">True</field>
+            <field name="sequence_code">RMA1</field>
+            <field name="is_manager_approver">True</field>
+<!--            <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>-->
+        </record>
+
+        <record id="approval_request_task2" model="approval.category">
+            <field name="name">MA ($150.000-$400.000)</field>
+            <field name="image" type="base64" file="l10n_cl_mrp_maintenance/static/src/img/approve_materials.png"/>
+            <field name="description">Materiales adicionales con valor mayor o igual a $150.000 y menor a $400.000
+            </field>
+            <field name="sequence">100</field>
+            <field name="requirer_document">optional</field>
+            <field name="has_partner">required</field>
+            <field name="has_date">required</field>
+            <field name="has_period">no</field>
+            <field name="has_quantity">no</field>
+            <field name="has_amount">required</field>
+            <field name="has_reference">no</field>
+            <field name="has_payment_method">no</field>
+            <field name="has_location">no</field>
+            <field name="approval_minimum">1</field>
+            <field name="automated_sequence">True</field>
+            <field name="sequence_code">RMA2</field>
+            <field name="is_manager_approver">True</field>
+<!--            <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>-->
+        </record>
+
+        <record id="approval_request_task3" model="approval.category">
+            <field name="name">MA ($400.000-$1'000.000)</field>
+            <field name="image" type="base64" file="l10n_cl_mrp_maintenance/static/src/img/approve_materials.png"/>
+            <field name="description">Materiales adicionales con valor mayor o igual a $400.000 y menor a $1'000.000
+            </field>
+            <field name="sequence">100</field>
+            <field name="requirer_document">optional</field>
+            <field name="has_partner">required</field>
+            <field name="has_date">required</field>
+            <field name="has_period">no</field>
+            <field name="has_quantity">no</field>
+            <field name="has_amount">required</field>
+            <field name="has_reference">no</field>
+            <field name="has_payment_method">no</field>
+            <field name="has_location">no</field>
+            <field name="approval_minimum">1</field>
+            <field name="automated_sequence">True</field>
+            <field name="sequence_code">RMA3</field>
+            <field name="is_manager_approver">True</field>
+<!--            <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>-->
+        </record>
+
+        <record id="approval_request_task4" model="approval.category">
+            <field name="name">MA ($1'000.000-$10'000.000)</field>
+            <field name="image" type="base64" file="l10n_cl_mrp_maintenance/static/src/img/approve_materials.png"/>
+            <field name="description">Materiales adicionales con valor mayor o igual a $1'000.000 y menor a $10'000.000
+            </field>
+            <field name="sequence">100</field>
+            <field name="requirer_document">optional</field>
+            <field name="has_partner">required</field>
+            <field name="has_date">required</field>
+            <field name="has_period">no</field>
+            <field name="has_quantity">no</field>
+            <field name="has_amount">required</field>
+            <field name="has_reference">no</field>
+            <field name="has_payment_method">no</field>
+            <field name="has_location">no</field>
+            <field name="approval_minimum">1</field>
+            <field name="automated_sequence">True</field>
+            <field name="sequence_code">RMA4</field>
+            <field name="is_manager_approver">True</field>
+<!--            <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>-->
+        </record>
+
+        <record id="approval_request_task5" model="approval.category">
+            <field name="name">MA (MAYOR A $10'000.000)</field>
+            <field name="image" type="base64" file="l10n_cl_mrp_maintenance/static/src/img/approve_materials.png"/>
+            <field name="description">Materiales adicionales con valor mayor o igual $10'000.000</field>
+            <field name="sequence">100</field>
+            <field name="requirer_document">optional</field>
+            <field name="has_partner">required</field>
+            <field name="has_date">required</field>
+            <field name="has_period">no</field>
+            <field name="has_quantity">no</field>
+            <field name="has_amount">required</field>
+            <field name="has_reference">no</field>
+            <field name="has_payment_method">no</field>
+            <field name="has_location">no</field>
+            <field name="approval_minimum">1</field>
+            <field name="automated_sequence">True</field>
+            <field name="sequence_code">RMA5</field>
+            <field name="is_manager_approver">True</field>
+<!--            <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>-->
+        </record>
+    </data>
+</odoo>

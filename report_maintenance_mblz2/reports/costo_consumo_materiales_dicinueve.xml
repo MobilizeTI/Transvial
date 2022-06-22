@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="report_material_consumption_cost_search" model="ir.ui.view">
+        <field name="name">Costo consumo Materiales</field>
+        <field name="model">report.material.consumption.cost</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter name="filter_date" date="request_date" default_period="this_year"/>
+                <filter string="Mantenimientos del día" name="dia"
+                        domain="[('request_date','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))), ('request_date','&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]"
+                        help="Mantenimientos del día"/>
+                <group expand="1" string="Group By">
+                    <filter string="OT" name="groupby_request" context="{'group_by':'request_id'}"/>
+                    <filter string="Picking" name="groupby_picking" context="{'group_by':'picking_id'}"/>
+                    <filter string="Equipos" name="equipment_id" context="{'group_by':'equipment_id'}"/>
+
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id='report_material_consumption_cost_action' model='ir.actions.act_window'>
+        <field name="name">Costo consumo Materiales</field>
+        <field name="res_model">report.material.consumption.cost</field>
+        <field name="view_mode">tree,dashboard</field>
+        <field name="context">{
+            # "search_default_groupby_request": True,
+        }</field>
+    </record>
+
+    <record id="report_material_consumption_cost_tree" model="ir.ui.view">
+        <field name="name">Costo consumo Materiales</field>
+        <field name="model">report.material.consumption.cost</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" default_order="request_id desc">
+                <field name="request_id" optional="hide"/>
+                <field name="equipment_id" optional="show"/>
+                <field name="vehicle_id" optional="hide"/>
+                <!--                <field name="license_plate" optional="show"/>-->
+                <field name="category_id" optional="show"/>
+                <field name="sm_product_default_code" optional="show"/>
+                <field name="sm_product_name" optional="show"/>
+                <field name="sm_uom_id" optional="show"/>
+                <field name="sm_product_uom_qty" optional="show"/>
+                <field name="sm_product_account" optional="show"/>
+                <field name="amount" optional="show" sum="amount"/>
+                <field name="picking_id" optional="hide"/>
+                <field name="pk_state" optional="hide" widget="badge" decoration-success="pk_state == 'done'"
+                       decoration-info="pk_state not in ('done', 'cancel')"/>
+                <field name="company_name" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="report_material_consumption_cost_pivot" model="ir.ui.view">
+        <field name="name">maintenance.request.view.pivot</field>
+        <field name="model">report.sirci.system.failures</field>
+        <field name="arch" type="xml">
+            <pivot string="Sirci" sample="1">
+                <field name="equipment_id" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+
+    <record id="report_material_consumption_cost_dashboard" model="ir.ui.view">
+        <field name="name">maintenance.request.view.dashboard</field>
+        <field name="model">report.material.consumption.cost</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <dashboard>
+                <group>
+                    <group col="2">
+                        <aggregate name="total" string="# Total" group_operator="count"
+                                   field="request_id"
+                                   measure="__count__"/>
+                    </group>
+                    <widget name="pie_chart" title="Costo de consumo por bus" attrs="{'groupby': 'equipment_id'}"/>
+
+                </group>
+                <view type="pivot" ref="report_maintenance_mblz2.report_material_consumption_cost_pivot"/>
+            </dashboard>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="report_equipment_its_failures_search" model="ir.ui.view">
+        <field name="name">Fallas ITS por equipos</field>
+        <field name="model">report.equipment.its.failures</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name_seq"/>
+                <field name="request_id"/>
+                <separator/>
+                <filter name="filter_corrective" string="Tipo de MTTO: Correctivo"
+                        domain="[('maintenance_type', '=', 'corrective')]"/>
+                <filter name="filter_preventive" string="Tipo de MTTO: Preventivo"
+                        domain="[('maintenance_type', '=', 'preventive')]"/>
+                <separator/>
+                <filter name="filter_date" date="request_date" default_period="this_year"/>
+                <filter string="Mantenimientos del día" name="dia"
+                        domain="[('request_date','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))), ('request_date','&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]"
+                        help="Mantenimientos del día"/>
+                <group expand="1" string="Group By">
+                    <filter string="OT" name="groupby_request"
+                            context="{'group_by':'request_id'}"/>
+                    <filter string="Tipo de MTTO" name="groupby_type_mmto"
+                            context="{'group_by':'maintenance_type'}"/>
+                    <filter string="Equipos" name="equipment_id" context="{'group_by':'equipment_id'}"/>
+                    <filter string="Estados" name="stage_id" context="{'group_by':'stage_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="report_equipment_its_failures_tree" model="ir.ui.view">
+        <field name="name">Fallas ITS por equipos</field>
+        <field name="model">report.equipment.its.failures</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" default_order="name_seq desc">
+                <field name="name_seq" optional="show"/>
+                <field name="name" optional="show"/>
+                <field name="name_type_ot" optional="show"/>
+                <field name="equipment_id" optional="show"/>
+                <field name="model_id" optional="show"/>
+                <field name="odometer_actual" optional="show" sum="odometer_actual"/>
+                <field name="category_id" optional="show"/>
+                <field name="description" optional="show"/>
+                <field name="stage_id" optional="show"/>
+                <field name="request_date" optional="show"/>
+                <field name="company_name" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="report_equipment_its_failures_pivot" model="ir.ui.view">
+        <field name="name">report.equipment.its.failures.view.pivot</field>
+        <field name="model">report.equipment.its.failures</field>
+        <field name="arch" type="xml">
+            <pivot sample="1">
+                <field name="equipment_id" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+
+    <record id="report_equipment_its_failures_dashboard" model="ir.ui.view">
+        <field name="name">maintenance.request.view.dashboard</field>
+        <field name="model">report.equipment.its.failures</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <dashboard>
+                <group>
+
+                    <group>
+                        <group col="4">
+                            <aggregate name="total" string="# Total"
+                                       group_operator="count"
+                                       field="equipment_id"
+                                       measure="__count__"/>
+                            <aggregate name="km_value_sum" string="Total KM"
+                                       field="km_value" invisible="1"/>
+
+                            <aggregate name="odometer_actual_sum" string="Total Odometro"
+                                       field="odometer_actual" invisible="1"/>
+
+                            <!-- #fixme no se puede publicar este KPI porque los odoometros se repiten dependiendo de las OT'S-->
+
+<!--                            <formula name="odometer_actual_total"-->
+<!--                                     string="Fallas ITS"-->
+<!--                                     value="(record.total/record.odometer_actual_sum)*(record.km_value_sum/record.total)"/>-->
+                            <!--value_label="%"-->
+
+<!--                            <group col="1">-->
+<!--                                <widget name="pie_chart" title="Estatus de MTTO" attrs="{'groupby': 'stage_id'}"/>-->
+<!--                            </group>-->
+
+                        </group>
+                    </group>
+                </group>
+                <view type="pivot" ref="report_maintenance_mblz2.report_material_consumption_cost_pivot"/>
+            </dashboard>
+        </field>
+    </record>
+</odoo>

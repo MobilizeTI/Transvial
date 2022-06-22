@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="report_buses_overhaul_search" model="ir.ui.view">
+        <field name="name">Buses Overhaul</field>
+        <field name="model">report.buses.overhaul</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name_seq"/>
+                <field name="request_id"/>
+                <field name="license_plate"/>
+                <separator/>
+                <filter name="filter_corrective" string="Tipo de MTTO: Correctivo"
+                        domain="[('maintenance_type', '=', 'corrective')]"/>
+                <filter name="filter_preventive" string="Tipo de MTTO: Preventivo"
+                        domain="[('maintenance_type', '=', 'preventive')]"/>
+                <separator/>
+                <filter name="filter_is_critical" string="Componente: Critico"
+                        domain="[('is_critical', '=', True)]"/>
+                <separator/>
+                <filter name="filter_date" date="request_date" default_period="this_year"/>
+                <filter string="Mantenimientos del día" name="dia"
+                        domain="[('request_date','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))), ('request_date','&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]"
+                        help="Mantenimientos del día"/>
+                <group expand="1" string="Group By">
+                    <filter string="OT" name="groupby_request"
+                            context="{'group_by':'request_id'}"/>
+                    <filter string="Tipo de MTTO" name="groupby_type_mmto"
+                            context="{'group_by':'maintenance_type'}"/>
+                    <filter string="Equipos" name="equipment_id" context="{'group_by':'equipment_id'}"/>
+                    <filter string="Estados" name="stage_id" context="{'group_by':'stage_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id='report_buses_overhaul_action' model='ir.actions.act_window'>
+        <field name="name">Buses Overhaul</field>
+        <field name="res_model">report.buses.overhaul</field>
+        <field name="view_mode">tree,dashboard</field>
+        <field name="context">{
+            "search_default_groupby_request": True,
+            "search_default_filter_corrective": "corrective",
+            "search_default_filter_is_critical": True
+        }</field>
+    </record>
+
+<!--    <menuitem name="Buses Overhaul"-->
+<!--              id="report_buses_overhaul_menu"-->
+<!--              parent="maintenance.maintenance_reporting"-->
+<!--              action="report_buses_overhaul_action"-->
+<!--              sequence="150"-->
+<!--    />-->
+
+    <record id="report_buses_overhaul_tree" model="ir.ui.view">
+        <field name="name">Buses Overhaul</field>
+        <field name="model">report.buses.overhaul</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" default_order="name_seq desc">
+                <field name="name_seq" optional="show"/>
+                <field name="name" optional="show"/>
+                <field name="maintenance_type" optional="hide"/>
+                <field name="stage_id" optional="show"/>
+                <field name="equipment_id" optional="show"/>
+                <field name="license_plate" optional="show"/>
+                <field name="category_id" optional="show"/>
+                <field name="system_parent_ids" widget="many2many_tags" optional="show"/>
+                <field name="system_name" optional="show"/>
+                <field name="is_critical" optional="hide" nolabel="1"/>
+                <field name="odometer_actual" optional="show"/>
+                <field name="request_date" optional="show"/>
+                <field name="schedule_date" optional="show"/>
+                <field name="company_name" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="report_buses_overhaul_dashboard" model="ir.ui.view">
+        <field name="name">maintenance.request.view.dashboard</field>
+        <field name="model">report.buses.overhaul</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <dashboard>
+                <group>
+                    <group col="2">
+                        <widget name="pie_chart" title="Estatus de MTTO" attrs="{'groupby': 'stage_id'}"/>
+                    </group>
+                    <group col="10">
+                        <aggregate name="total" string="# Total de Buses Overhaul" group_operator="count"
+                                   field="request_id"
+                                   measure="__count__"/>
+                        <aggregate name="new_request" string="# Nueva solicitud"
+                                   domain="[('request_id.stage_id.id', '=',1)]" group_operator="count"
+                                   field="request_id" measure="__count__"/>
+                        <aggregate name="in_progress" string="# En progreso"
+                                   domain="[('request_id.stage_id.id', '=',2)]" group_operator="count"
+                                   field="request_id" measure="__count__"/>
+                        <aggregate name="repaired" string="# Reparado" domain="[('request_id.stage_id.id', '=',3)]"
+                                   group_operator="count" field="request_id" measure="__count__"/>
+                        <aggregate name="scrap" string="# No reparado" domain="[('request_id.stage_id.id', '=',4)]"
+                                   group_operator="count" field="request_id" measure="__count__"/>
+                        <aggregate name="to_repair" string="# Confirmada" domain="[('request_id.stage_id.id', '=',5)]"
+                                   group_operator="count" field="request_id" measure="__count__"/>
+                        <aggregate name="diferido" string="# Diferido" domain="[('request_id.stage_id.id', '=',6)]"
+                                   group_operator="count" field="request_id" measure="__count__"/>
+                        <aggregate name="en_espera" string="# En espera" domain="[('request_id.stage_id.id', '=',7)]"
+                                   group_operator="count" field="request_id" measure="__count__"/>
+                        <aggregate name="pendiente" string="# Pendiente" domain="[('request_id.stage_id.id', '=',8)]"
+                                   group_operator="count" field="request_id" measure="__count__"/>
+                        <aggregate name="cerrada" string="# Cerrada" domain="[('request_id.stage_id.id', '=',9)]"
+                                   group_operator="count" field="request_id" measure="__count__"/>
+                    </group>
+                </group>
+            </dashboard>
+        </field>
+    </record>
+</odoo>

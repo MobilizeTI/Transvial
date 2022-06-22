@@ -1,0 +1,52 @@
+<odoo>
+    <record id="account_payment_tree_view_inherit" model="ir.ui.view">
+        <field name="name">account.payment.tree.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="attributes"><attribute name="optional">show</attribute></field>
+            <field name="date" position="attributes"><attribute name="optional">hide</attribute></field>
+            <field name="journal_id" position="attributes"><attribute name="optional">hide</attribute></field>
+            <field name="payment_method_id" position="attributes"><attribute name="optional">hide</attribute></field>
+            <field name="state" position="attributes"><attribute name="optional">hide</attribute></field>
+            <field name="currency_id" position="attributes"><attribute name="optional">hide</attribute></field>
+            <field name="amount" position="attributes"><attribute name="string">Valor Neto a Girar</attribute></field>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="invoice_ids" widget="many2many_tags" optional="show"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="before">
+                <field name="partner_nit" optional="show"/>
+            </xpath>
+            <xpath expr="//field[@name='amount']" position="before">
+                <field name="monto_factura_sin_impuestos" optional="show" sum="Total Exento"/>
+                <field name="monto_valor_iva" optional="show" sum="Total IVA"/>
+                <field name="monto_retefte" optional="show" sum="Total Retefte"/>
+                <field name="monto_iva" optional="show" sum="Total ReteIVA"/>
+                <field name="monto_reteica" optional="show" sum="Total ReteICA"/>
+            </xpath>
+            <xpath expr="//field[@name='amount']" position="after">
+                <field name="banco" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="tipo_cuenta" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="nro_cuenta" optional="show" options="{'no_open': True, 'no_create': True}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account_payment_search_view_inherit" model="ir.ui.view">
+        <field name="name">account.payment.search.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search/field[@name='partner_id']" position="after">
+                <!-- <field name="invoice_ids" filter_domain="[('invoice_ids.name', 'ilike', self)]"/> -->
+                <field name="partner_id" string="NIT" filter_domain="[('partner_id.vat', 'ilike', self)]"/>
+                <field name="journal_id" filter_domain="[('journal_id.name', 'ilike', self)]"/>
+                <field name="partner_bank_id" string="Banco" filter_domain="[('partner_bank_id.bank_id.name', 'ilike', self)]"/>
+                <field name="partner_bank_id" string="Nro Cuenta" filter_domain="[('partner_bank_id.acc_number', 'ilike', self)]"/>
+                <separator/>
+                <filter string="Tipo de Cuenta" name="tipo_cuenta" domain="[]" context="{'group_by': 'tipo_cuenta'}" />
+                <filter string="Banco" name="banco" domain="[]" context="{'group_by': 'banco'}" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

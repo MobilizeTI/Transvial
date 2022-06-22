@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="mblz_purchase_order_line_search" model="ir.ui.view">
+            <field name="name">mblz_purchase.order.line.search - purchase_open_qty</field>
+            <field name="model">purchase.order.line</field>
+            <field name="inherit_id" ref="purchase.purchase_order_line_search"/>
+            <field name="arch" type="xml">
+                <filter name="hide_cancelled" position="before">
+                    <filter name="in_late"
+                            string="En la última etapa"
+                            domain="[('date_planned', '&lt;=', datetime.date.today().strftime('%Y-%m-%d')), ('delivery_state', '=', 'not delivered')]"/>
+                </filter>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="purchase_order__line_calendar">
+            <field name="name">purchase.order.line.calendar</field>
+            <field name="model">purchase.order.line</field>
+            <field name="priority" eval="2"/>
+            <field name="arch" type="xml">
+                <calendar string="Calendar View" date_start="date_planned" color="partner_id">
+                    <field name="product_id"/>
+                    <field name="account_analytic_id"/>
+                    <field name="partner_id"/>
+                    <field name="order_id"/>
+                </calendar>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="purchase_order_line_pivot">
+            <field name="name">purchase.order.pivot</field>
+            <field name="model">purchase.order.line</field>
+            <field name="arch" type="xml">
+                <pivot string="Purchase Order Line" display_quantity="True">
+                    <field name="order_id" type="row"/>
+                    <field name="date_planned"/>
+                    <field name="account_analytic_id"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="purchase_order_line_tree">
+            <field name="name">purchase.order.tree</field>
+            <field name="model">purchase.order.line</field>
+            <field name="arch" type="xml">
+                <tree string="Purchase Order Line" create="0" edit="0" delete="0"
+                      decoration-success="qty_received == product_qty"
+                      decoration-danger="delivery_state=='not delivered'"
+                      decoration-warning="delivery_state=='over delivered'"
+                >
+                    <field name="state" optional="show"/>
+                    <field name="order_id" optional="show"/>
+                    <field name="pro_partner_id" optional="show"/>
+                    <field name="date_planned" optional="show"/>
+                    <field name="product_code" optional="show"/>
+                    <field name="product_name" optional="show"/>
+                    <field name="name" optional="hide"/>
+                    <field name="account_analytic_id" optional="show" context="{'default_partner_id':parent.partner_id}"
+                           groups="analytic.group_analytic_accounting"/>
+                    <field name="product_qty" optional="show"/>
+                    <field name="qty_received" optional="show"/>
+                    <field name="qty_invoiced" optional="show"/>
+                    <field name="product_uom" optional="show" groups="uom.group_uom"/>
+                    <field name="price_unit" optional="show"/>
+                    <field name="delivery_state"
+                           decoration-primary="delivery_state == 'not delivered'"
+                           decoration-success="delivery_state == 'delivered'"
+                           decoration-danger="delivery_state == 'over delivered'" widget="badge"
+                           optional="show"/>
+                    <field name="qty_to_receive" optional="show"/>
+                    <field name="qty_to_invoice" optional="show"/>
+                    <field name="price_subtotal" widget="monetary" optional="show"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="purchase_line_form_action" model="ir.actions.act_window">
+            <field name="name">Informe detalle de compra</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order.line</field>
+            <field name="view_mode">tree,pivot,calendar</field>
+            <field name="context">{'search_default_todo': 1, 'show_purchase': True}</field>
+            <field name="domain">[('state', '=', 'purchase'), ('display_type', '=', False)]</field>
+            <field name="view_ids"
+                   eval="[(5, 0, 0),
+                                  (0, 0, {'view_mode': 'tree', 'view_id': ref('report_maintenance_mblz2.purchase_order_line_tree')}),
+                                  (0, 0, {'view_mode': 'calendar', 'view_id': ref('report_maintenance_mblz2.purchase_order__line_calendar')}),
+                                  (0, 0, {'view_mode': 'pivot', 'view_id': ref('report_maintenance_mblz2.purchase_order_line_pivot')})
+                                  ]"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Haga clic para comprobar la línea de pedido
+                </p>
+                <p>
+                    Utilice esta vista para ver las Líneas de pedido de compra
+                </p>
+            </field>
+        </record>
+        <menuitem action="purchase_line_form_action"
+                  name="Informe detalle de compra"
+                  id="menu_purchase_line_form_action"
+                  parent="purchase.menu_procurement_management"
+                  sequence="100"/>
+    </data>
+</odoo>

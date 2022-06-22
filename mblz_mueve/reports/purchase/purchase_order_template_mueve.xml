@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <template id="layout_purchase_order_mueve">
+
+
+            <t t-if="not o" t-set="o" t-value="doc"/>
+
+            <t t-if="not company">
+                <!-- Multicompany -->
+                <t t-if="company_id">
+                    <t t-set="company" t-value="company_id"/>
+                </t>
+                <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                    <t t-set="company" t-value="o.company_id.sudo()"/>
+                </t>
+                <t t-else="else">
+                    <t t-set="company" t-value="res_company"/>
+                </t>
+            </t>
+
+            <div t-attf-class="o_company_#{company.id}_layout header" style="font-size: 12px;">
+                <div class="float-right">
+                    <h3 class="mt0 text-right" t-field="company.report_header"/>
+                </div>
+                <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" class="float-left" alt="Logo"/>
+                <div class="float-left company_address">
+                    <div>
+                        <strong t-field="company.partner_id.name"/>
+                    </div>
+                    <span t-field="company.partner_id" style="font-size: 11px !important;"
+                          t-options='{"widget": "contact", "fields": ["address"], "no_marker": False}'/>
+                </div>
+                <div class="float-right mt-3 col-6">
+                    <h3 t-if="o.state == 'draft'"><strong>Solicitud de Presupuesto #<span
+                            t-field="o.name"/></strong></h3>
+                    <h3 t-if="o.state in ['sent', 'to approve']"><strong>Orden de Compra #<span t-field="o.name"/>
+                        </strong></h3>
+                    <h3 t-if="o.state in ['purchase', 'done']"><strong>Orden de Compra #<span t-field="o.name"/>
+                        </strong></h3>
+                    <h4 t-if="o.state == 'cancel'"><strong>Orden de Compra Cancelada #<span t-field="o.name"/>
+                        </strong></h4>
+                </div>
+                <div t-if="company.logo or company.report_header" class="row zero_min_height">
+                    <div class="col-12">
+                        <div style="border-bottom: 1px solid #ddd;"/>
+                    </div>
+                </div>
+
+            </div>
+
+            <div t-attf-class="o_company_#{company.id}_layout article o_report_layout_background"
+                 t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id"
+                 t-att-data-oe-lang="o and o.env.context.get('lang')">
+                <t t-call="web.address_layout"/>
+                <t t-raw="0"/>
+            </div>
+
+            <div t-attf-class="o_company_#{company.id}_layout footer o_background_footer">
+                <div class="text-center">
+                    <ul class="list-inline">
+                        <li t-if="company.phone" class="list-inline-item"><i class="fa fa-phone" role="img"
+                                                                             aria-label="Phone" title="Phone"/> <span
+                                class="o_force_ltr" t-field="company.phone"/></li>
+                        <li t-if="company.email" class="list-inline-item"><i class="fa fa-at" role="img"
+                                                                             aria-label="Email"
+                                                                             title="Email"/> <span
+                                t-field="company.email"/></li>
+                        <li t-if="company.website" class="list-inline-item"><i class="fa fa-globe" role="img"
+                                                                               aria-label="Website"
+                                                                               title="Website"/> <span
+                                t-field="company.website"/></li>
+                        <li t-if="company.vat" class="list-inline-item"><i class="fa fa-building-o" role="img"
+                                                                           aria-label="Fiscal number"/><t
+                                t-esc="company.country_id.vat_label or 'Tax ID'"/>: <span t-field="company.vat"/></li>
+                    </ul>
+                    <div t-field="company.report_footer"/>
+                    <div t-if="report_type == 'pdf'" class="text-muted">
+                        Pag:
+                        <span class="page"/>
+                        de
+                        <span class="topage"/>
+                    </div>
+                </div>
+            </div>
+
+        </template>
+    </data>
+</odoo>

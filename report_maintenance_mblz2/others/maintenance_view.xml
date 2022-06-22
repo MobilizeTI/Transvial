@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--reportes 24 y 25 -->
+    <record id="maintenance_request_details_search" model="ir.ui.view"> 
+        <field name="name">Búsqueda mantenimientos preventivos ejecutados</field>
+        <field name="model">maintenance.request.details</field>
+        <field name="arch" type="xml"> 
+            <search> 
+                <field name="name_seq"/>
+                <field name="maintenance_id"/>
+                <field name="license_plate"/>
+                <filter name="preventivos" string="Tipo de mantenimiento: Preventivo" domain="[('preventivos', '!=', False)]"/>
+                <filter name="correctivos" string="Tipo de mantenimiento: Correctivo" domain="[('correctivos', '!=', False)]"/>
+                <separator/>
+                <filter name="new_request" string="Nueva solicitud" domain="[('stage_id', '=',1)]"/>
+                <filter name="in_progress" string="En progreso" domain="[('stage_id', '=',2)]"/>
+                <filter name="repaired" string="Reparado" domain="[('stage_id', '=',3)]"/>
+                <filter name="scrap" string="No reparado" domain="[('stage_id', '=',4)]"/>
+                <filter name="to_repair" string="Confirmada" domain="[('stage_id', '=',5)]"/>
+                <filter name="diferido" string="Diferido" domain="[('stage_id', '=',6)]"/>
+                <filter name="en_espera" string="En espera" domain="[('stage_id', '=',7)]"/>
+                <filter name="pendiente" string="Pendiente" domain="[('stage_id', '=',8)]"/>
+                <filter name="cerrada" string="Cerrada" domain="[('stage_id', '=',9)]"/>
+                <separator/>
+                <filter name="filter_date" date="request_date" default_period="this_month"/>
+                <filter string="Transacciones del día" name="dia" domain="[('request_date','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))), ('request_date','&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]" help="Transacciones del día"/>
+                <group expand="1" string="Group By">
+                    <filter string="Tipos de mantenimiento" name="maintenance_type" context="{'group_by':'maintenance_type'}"/>
+                    <filter string="Equipos" name="equipment_id" context="{'group_by':'equipment_id'}"/>
+                    <filter string="Estados" name="stage_id" context="{'group_by':'stage_id'}"/>
+                </group>
+            </search> 
+        </field>
+    </record>
+
+    <record id='maintenance_request_details_action' model='ir.actions.act_window'>
+        <field name="name">mantenimientos preventivos ejecutados</field>
+        <field name="res_model">maintenance.request.details</field>
+        <field name="view_mode">tree,graph,pivot,dashboard</field>
+        <field name="context">{"search_default_preventivos":"preventive"}</field>
+    </record>
+
+<!--    <menuitem name="Mantenimientos preventivos ejecutados"-->
+<!--              id="maintenance_request_details_menu"-->
+<!--              parent="maintenance.maintenance_reporting"-->
+<!--              action="maintenance_request_details_action"/>-->
+
+    <record id="maintenance_request_details_tree" model="ir.ui.view" > 
+        <field name="name">mantenimientos preventivos ejecutados</field> 
+        <field name="model">maintenance.request.details</field>
+        <field name="arch" type="xml"> 
+            <tree create="0" edit="0">
+                <!-- <field name="nbr"/> -->
+                <field name="name_seq" optional="show" options="{'no_open': True, 'no_create_edit': True}"/>
+                <field name="maintenance_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="stage_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="maintenance_type_view" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="equipment_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="license_plate" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="model_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="category_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="odometro_planificacion" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="odometro_ejecucion" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="request_date" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="schedule_date" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="execution_date" optional="show" options="{'no_open': True, 'no_create': True}"/>
+                <field name="company_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
+            </tree> 
+        </field>
+    </record>
+
+    <record id="maintenance_request_details_graph" model="ir.ui.view">
+        <field name="model">maintenance.request.details</field>
+        <field name="arch" type="xml">
+            <graph type="bar">
+                <field name="stage_id"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="maintenance_request_details_pivot" model="ir.ui.view">
+        <field name="model">maintenance.request.details</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="stage_id" type="row"/>
+                <field name="equipment_id" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="maintenance_request_details_dashboard" model="ir.ui.view">
+        <field name="name">maintenance.request.view.dashboard</field>
+        <field name="model">maintenance.request.details</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <dashboard>
+                <view type="graph" ref="report_maintenance_mblz2.maintenance_request_details_graph"/>
+                <group>
+                    <group col="2">
+                        <!-- <widget name="pie_chart" title="Estatus de Mantenimientos" attrs="{'groupby': 'stage_id'}"/> -->
+                        <widget name="pie_chart" title="Estatus de Mantenimientos" attrs="{'groupby': 'estado'}"/>
+                    </group>
+                    <group col="10">
+                        <aggregate name="total" string="# Total" group_operator="count" field="maintenance_id" measure="__count__"/>
+                        <aggregate name="new_request" string="# Nueva solicitud" domain="[('maintenance_id.stage_id.id', '=',1)]" group_operator="count" field="maintenance_id" measure="__count__"/>
+                        <aggregate name="in_progress" string="# En progreso" domain="[('maintenance_id.stage_id.id', '=',2)]" group_operator="count" field="maintenance_id" measure="__count__"/>
+                        <aggregate name="repaired" string="# Reparado" domain="[('maintenance_id.stage_id.id', '=',3)]" group_operator="count" field="maintenance_id" measure="__count__"/>
+                        <aggregate name="scrap" string="# No reparado" domain="[('maintenance_id.stage_id.id', '=',4)]" group_operator="count" field="maintenance_id" measure="__count__"/>
+                        <aggregate name="to_repair" string="# Confirmada" domain="[('maintenance_id.stage_id.id', '=',5)]" group_operator="count" field="maintenance_id" measure="__count__"/>
+                        <aggregate name="diferido" string="# Diferido" domain="[('maintenance_id.stage_id.id', '=',6)]" group_operator="count" field="maintenance_id" measure="__count__"/>
+                        <aggregate name="en_espera" string="# En espera" domain="[('maintenance_id.stage_id.id', '=',7)]" group_operator="count" field="maintenance_id" measure="__count__"/>
+                        <aggregate name="pendiente" string="# Pendiente" domain="[('maintenance_id.stage_id.id', '=',8)]" group_operator="count" field="maintenance_id" measure="__count__"/>
+                        <aggregate name="cerrada" string="# Cerrada" domain="[('maintenance_id.stage_id.id', '=',9)]" group_operator="count" field="maintenance_id" measure="__count__"/>
+                    </group>
+                </group>
+                <view type="pivot" ref="report_maintenance_mblz2.maintenance_request_details_pivot"/>
+            </dashboard>
+        </field>
+    </record>
+</odoo>
