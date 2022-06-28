@@ -46,3 +46,7 @@
 	path = third_trial_balance_mblz
 	url = git@github.com:MobilizeDevTeam/third_trial_balance_mblz.git
 	branch = 14.0
+[submodule "l10n_pe_mblz"]
+	path = l10n_pe_mblz
+	url = git@github.com:MobilizeDevTeam/l10n_pe_mblz.git
+	branch = 14.0
