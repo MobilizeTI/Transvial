@@ -153,10 +153,33 @@
                 <tree string="OT Masters" default_order="name desc">
                     <field name="name" string="Name"/>
                     <field name="user_id" widget="many2one_avatar_user" readonly="1"/>
-                    <field name="activity_ids" widget="list_activity" optional="show"/>
+                    <field name="maintenance_type"
+                           optional="hide"
+                           readonly="1"
+                           string="Naturaleza"
+                           widget="badge" decoration-danger="maintenance_type == 'corrective'"
+                           decoration-primary="maintenance_type == 'preventive'"/>
+                    <field name="description" optional="show"/>
+                    <field name="equipment_ids"
+                           string="Buses"
+                           options="{'no_create': True}"
+                           domain="[('vehicle_id', '!=', False)]"
+                           attrs="{'readonly': [('state', '!=', 'draft')]}"
+                           widget="many2many_tags" optional="hide"/>
+
+                    <field name="guideline_ids"
+                           domain="[('maintenance_type', '=', maintenance_type)]"
+                           options="{'no_create': True}"
+                           attrs="{'readonly': [('state', '!=', 'draft')]}"
+                           widget="many2many_tags" optional="hide"/>
+                    <field name="create_date" optional="hide" string="Fecha inicio"/>
+                    <field name="schedule_date" optional="hide"/>
+
+                    <field name="activity_ids" widget="list_activity" optional="hide"/>
                     <field name="state" widget="badge" decoration-info="state == 'draft'"
                            decoration-primary="state == 'progress'"
                            decoration-success="state == 'done'"/>
+                    <field name="request_done_percent" widget="progressbar"/>
                     <field name="company_id" groups="base.group_multi_company"/>
                 </tree>
             </field>

@@ -61,6 +61,38 @@ class MaintenanceRequestMaster(models.Model):
         string="Toda las ot's cerradas",
         compute='_compute_flag_complete_close')
 
+    request_done_count = fields.Integer('Cant. cerradas', compute='_compute_ot_done_count',
+                                        help="Número de ot's cerradas")
+
+    @api.depends('request_ids')
+    def _compute_ot_done_count(self):
+        for rec in self:
+            request_done_count = 0
+            if rec.request_ids:
+                tasks_done = rec.request_ids.filtered(lambda l: l.stage_id.id == 9)
+                if tasks_done:
+                    request_done_count = len(tasks_done)
+
+            rec.sudo().request_done_count = request_done_count
+
+    request_done_percent = fields.Float('Avance(%)', compute='_compute_request_done_count',
+                                        help='Porcentaje sobre las Ordenes de trabajo cerradas')
+    count_request = fields.Integer(
+        string='Count OTs',
+        compute='_compute_request_done_count')
+
+    @api.depends('request_ids', 'request_done_count')
+    def _compute_request_done_count(self):
+        for rec in self:
+            request_done_percent = 0
+            count_request = 0
+            if rec.request_ids:
+                count_request = len(rec.request_ids)
+                value = (rec.request_done_count / count_request) * 100
+                request_done_percent = value
+            rec.sudo().count_request = count_request
+            rec.sudo().request_done_percent = request_done_percent
+
     @api.depends('request_ids')
     def _compute_flag_complete_close(self):
         for rec in self:

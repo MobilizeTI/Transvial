@@ -1,4 +1,5 @@
 import datetime
+import difflib
 import json
 import time
 
@@ -24,6 +25,7 @@ class MaintenanceRequestType(models.Model):
         selection=[('preventive', 'Preventive'),
                    ('corrective', 'Corrective')],
         required=True, default='preventive')
+
     type_of_fault = fields.Selection(
         string=' Tipo de falla',
         selection=[('tec', 'Técnica'), ('ope', 'Operacional')],
@@ -31,7 +33,33 @@ class MaintenanceRequestType(models.Model):
 
     is_sirci = fields.Boolean(string='Es SIRCI', required=False)
     is_its = fields.Boolean(string='Es ITS', required=False)
-    description = fields.Html(string="Description", required=False)
+    # is_sirci_or_its = fields.Selection(
+    #     string='SIRCI/ITS',
+    #     selection=[('sirci', 'SIRCI'), ('its', 'ITS')],
+    #     required=False)
+
+    description = fields.Text(string="Description", required=False)
+
+    # _sql_constraints = [
+    #     ('unique_name', 'unique (name)', 'El tipo de OT debe ser única!'),
+    # ]
+
+    # @api.model
+    # def name_get(self):
+    #     result = []
+    #     for record in self:
+    #         name = record.name
+    #         type_trad = False
+    #         if record.maintenance_type:
+    #             type_trad = 'Correctivo' if record.maintenance_type == 'corrective' else 'Preventivo'
+    #         type_of_fault = False
+    #         if record.type_of_fault:
+    #             type_of_fault = 'Técnica' if record.type_of_fault == 'tec' else 'Operacional'
+    #         if type_trad and type_of_fault:
+    #             name = f'{record.name} [{type_trad} - {type_of_fault}]'
+    #         result.append((record.id, name))
+    #         result.append((record.id, record.name))
+    #     return result
 
 
 class MaintenanceRequest(models.Model):
@@ -128,7 +156,7 @@ class MaintenanceRequest(models.Model):
 
             rec.sudo().task_done_count = task_done_count
 
-    task_count = fields.Integer('Quantity activities', compute='compute_count_tasks')
+    task_count = fields.Integer('Quantity task', compute='compute_count_tasks')
     activity_count = fields.Integer('Quantity activities', compute='compute_count_tasks')
 
     def compute_count_tasks(self):
@@ -136,8 +164,30 @@ class MaintenanceRequest(models.Model):
             record.task_count = len(record.task_ids)
             record.activity_count = len(record.repetitive_activity_ids)
 
+    def update_is_complete_task(self):
+        for task in self.task_ids:
+            # todo:// uso la lista de materiales el modulo l10n_cl_mrp_maintenance
+            pickings_stage = task.picking_ids.filtered(lambda p: p.state not in ('done', 'cancel'))
+
+            # todo:// solicitudes de aprobación que esten pendientes
+            approvals_satge = task.approval_ids.filtered(
+                lambda r: r.request_status not in ('approved', 'refused', 'cancel'))
+
+            if len(pickings_stage) == 0:
+                if len(approvals_satge) == 0:
+                    if not task.employee_id:
+                        task.sudo().alert_close_task = 'no-employee'
+                    # else:
+                    #     task.sudo().alert_close_task = False
+                else:
+                    task.sudo().alert_close_task = 'approve_ma'
+            else:
+                task.sudo().alert_close_task = 'pickings'
+
     def get_tasks(self):
         self.ensure_one()
+        self.update_is_complete_task()  # actualiza la alerta de cierre
+
         action = \
             self.env.ref('l10n_cl_maintenance.maintenance_request_task_admin_action').sudo().read()[
                 0]
@@ -172,12 +222,14 @@ class MaintenanceRequest(models.Model):
                 for line in guideline.activities_ids:
                     for speciality in line.activity_speciality_ids:
                         set_speciality.add(speciality.id)
-            rec.sudo().guideline_speciality_ids = [(6, 0, list(set_speciality))]
+            rec.sudo().guideline_speciality_ids = [
+                (6, 0, list(set_speciality))]
 
     @api.onchange('maintenance_type')
     def onchange_maintenance_type(self):
         if self.maintenance_guideline_ids and not self.flag_from_otm:
-            self.sudo().update(dict(maintenance_guideline_ids=[(6, 0, [])]))
+            self.sudo().update(
+                dict(maintenance_guideline_ids=[(6, 0, [])]))
 
     def write(self, values):
         # Add code
@@ -197,8 +249,7 @@ class MaintenanceRequest(models.Model):
                                                  request_id=self.id)))
             values.update(dict(task_ids=data_task))
             if self.task_ids:
-                self.task_ids = [(6, 0, [])]
-
+                self.sudo().task_ids = [(6, 0, [])]
         rec = super(MaintenanceRequest, self).write(values)
         # if 'stage_id' in values:
         #     stage_id = self.stage_id.browse(values.get('stage_id'))
@@ -209,7 +260,6 @@ class MaintenanceRequest(models.Model):
         # FIXME: validar!
         # ot_new = self
         # self.create_write_log_odometer(ot_new)
-
         return rec
 
     def valid_create(self, equipment, guideline, opc=False):
@@ -268,7 +318,7 @@ class MaintenanceRequest(models.Model):
         if rep:
             filter_activity_ids = self.env['guideline.activity'].sudo().browse(list(rep))
             alert_repetitive = f"""En los últimos 7 días, el autobús {self.equipment_id.name} ha tenido las actividades designadas."""
-            self.sudo().with_context({'update_alert_relative': False}).write(
+            self.sudo().write(
                 {
                     'alert_repetitive': alert_repetitive,
                     'flag_alert_repetitive': True,
@@ -460,9 +510,9 @@ class MaintenanceRequest(models.Model):
 
     # Ejecutar Planificador
     @api.model
-    def run_scheduler(self):
-        print(f'>>>>> Run cron ot create new....!!!')
-
+    def run_scheduler(self, get_log=False):
+        _logger.info(f'>>>>> Ejecutar cron para crear una nueva OT...!!!')
+        data_log = []
         equipments = self.env['maintenance.equipment'].sudo().search([
             ('vehicle_id', '!=', False),
             ('active', '=', True),
@@ -489,22 +539,43 @@ class MaintenanceRequest(models.Model):
                             # cálculo de la diferencia entre el odometro actual y el ultimo registrado
                             dif_odometer_value = odometer_actual - log_last.last_odometer
                             if dif_odometer_value >= guideline.percentage_value:
-                                self._create_ot_auto(equipment, guideline)
+                                record_log = self._create_ot_auto(equipment, guideline)
+                                if record_log:
+                                    data_log.append(record_log)
                         else:
                             if odometer_actual >= log_last.odometer:
-                                self._create_ot_auto(equipment, guideline)
+                                record_log = self._create_ot_auto(equipment, guideline)
+                                if record_log:
+                                    data_log.append(record_log)
                     else:
-                        _logger.info(
-                            f'El odometro del bus: {equipment.name} no cumple con el % registrado en la pauta!')
+                        msj = f'El odómetro del bus: {equipment.name} no cumple con el % registrado en la pauta!'
+                        _logger.info(msj)
+                        # data_log.append({
+                        #     'bus': equipment.name,
+                        #     'msj': msj,
+                        #     'result': 'Advertencia'
+                        # })
+
                 else:
-                    _logger.info(f'Ya existe la ot creada para: {equipment.name} y la pauta {guideline.name}!')
+                    msj = f'Ya existe la ot creada para: {equipment.name} y la pauta {guideline.name}!'
+                    _logger.info(msj)
+                    data_log.append({
+                        'bus': equipment,
+                        'pauta': guideline,
+                        'msj': msj,
+                        'result': 'Advertencia'
+                    })
+
+        if get_log:
+            return data_log
 
     def _create_ot_auto(self, equipment, guideline):
-        # se crea la ot con la pauta actualo para el bus
+        # se crea la ot con la pauta actual para el bus
         # ot_template = self.env['ot.template'].sudo().search([('guideline_id', '=', guideline.id)],
         #                                                     limit=1)
         obj_maintenance_request = self.env['maintenance.request'].sudo()
         ot_template = guideline.ot_template_id
+        record_log = {}
         if ot_template:
             ot_vals = {
                 'name': f'{ot_template.name_header} - {equipment.name}',
@@ -519,15 +590,28 @@ class MaintenanceRequest(models.Model):
             }
             try:
                 ot_new = obj_maintenance_request.create(ot_vals)
-                # si la medición ed al alcanzar el valor se actualiza el flag para que ya no se vuelva a ejecutar
+                # si la medición al alcanzar el valor se actualiza el flag para que ya no se vuelva a ejecutar
                 if guideline.measurement == 'fixed':
                     guideline.flag_execute_auto = True
+                record_log = {
+                    'bus': equipment,
+                    'pauta': guideline,
+                    'msj': f'OT: {ot_new.name} SEQ: {ot_new.name_seq} creada correctamente',
+                    'result': 'Éxito'
+                }
                 _logger.info(f'>>> Nueva OT: {ot_new.name}')
             except Exception as e:
                 _logger.error(str(e))
         else:
-            raise ValidationError(
-                _(f'There is no template for the {guideline.name} maintenance guideline.'))
+            record_log = {
+                'bus': equipment,
+                'pauta': guideline,
+                'msj': f'No existe plantilla para la pauta de mantenimiento de {guideline.name}',
+                'result': 'Error'
+            }
+            # raise ValidationError(
+            #     _(f'There is no template for the {guideline.name} maintenance guideline.'))
+        return record_log
 
     def _validate_create_ot_cron(self, equipment_id, guideline_id):
         ot_ids = self.search(

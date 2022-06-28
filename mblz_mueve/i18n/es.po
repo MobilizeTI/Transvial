@@ -23,7 +23,7 @@ msgid " Create type"
 msgstr "Tipo de creación"
 
 #. module: mblz_mueve
-#: model:res.groups,comment:mblz_mueve.group_support_levels_tkt
+#: model:res.groups,comment:mblz_mueve.group_tecnicos_its
 msgid " Grupo dirigido a profesionales de ITS"
 msgstr ""
 
@@ -462,7 +462,7 @@ msgid "Niveles de soporte"
 msgstr ""
 
 #. module: mblz_mueve
-#: model:res.groups,name:mblz_mueve.group_support_levels_tkt
+#: model:res.groups,name:mblz_mueve.group_tecnicos_its
 msgid "Niveles de soporte (TKT)"
 msgstr ""
 

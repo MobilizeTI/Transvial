@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+<!--        <function name="clear_all_data" model="helpdesk.support.level"/>-->
+<!--        <function name="action_update_close_datetime" model="maintenance.request"/>-->
+    </data>
+
+</odoo>

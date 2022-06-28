@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Inherit Form View to Modify it -->
+        <record id="mblz_helpdesk_sla_view_form" model="ir.ui.view">
+            <field name="name">MBLZ: helpdesk.sla.form</field>
+            <field name="model">helpdesk.sla</field>
+            <field name="inherit_id" ref="helpdesk.helpdesk_sla_view_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='ticket_type_id']" position="attributes">
+                    <attribute name="widget">selection</attribute>
+                    <attribute name="string">Nivel de fallo</attribute>
+                    <attribute name="required">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='priority']" position="replace">
+                    <field name="priority" widget="selection"/>
+                </xpath>
+
+                <xpath expr="//field[@name='tag_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+<!--                    <attribute name="string">Canal de contacto</attribute>-->
+<!--                    <attribute name="options">{'no_create': True, 'no_create_edit': True, 'no_open': True}</attribute>-->
+                </xpath>
+
+                <!--                <xpath expr="//field[@name='priority']" position="after">-->
+                <!--                    <field name="failure_level_id" widget="selection" string="ANS"/>-->
+                <!--                </xpath>-->
+                <xpath expr="//field[@name='stage_id']" position="after">
+                    <div class="o_td_label">
+                        <label for="time_response"/>
+                    </div>
+                    <div class="o_row">
+                        <field name="time_response" widget="float_time"/> Minutos<br/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

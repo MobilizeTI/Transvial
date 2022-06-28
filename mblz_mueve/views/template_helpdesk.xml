@@ -1,11 +1,202 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+
     <template id="report_header_custom" inherit_id="portal.portal_breadcrumbs">
+
         <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
-            <a class="btn btn-primary btn-sm" style="margin-right:3px;margin-left:3px;" href="/helpdesk" role="button">
-                Crear</a>
+
+            <!--            <a t-if="page_name == 'ticket'" class="btn btn-primary btn-sm"-->
+            <!--               style="margin-right:3px;margin-left:3px;" href="/helpdesk" role="button">-->
+            <!--                Crear</a>-->
+            <a t-if="page_name == 'ticket'" class="btn btn-primary btn-sm"
+               style="margin-right:3px;margin-left:3px;"
+               role="button" data-toggle="modal" data-target="#mblz_rpt_ticket">
+                <i class="text-light fa fa-file-excel-o"></i>
+                <span class="text-light">Reporte</span></a>
+
+            <div class="modal  mt-3 fade" id="mblz_rpt_ticket" tabindex="-1" role="dialog"
+                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <form action="/ticket/report" method="post" enctype="multipart/form-data"
+                              id="file_upload_form">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Reporte de Tíckets</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                </button>
+                            </div>
+
+                            <div class="modal-body">
+
+                                <div class="form-group row text-small">
+                                    <label for="failure_level_id" class="col-sm-2 col-form-label col-form-label-sm">
+                                        Nivel de falla</label>
+                                    <div class="col-sm-10">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <select class="custom-select custom-select-sm" id="failure_level_id"
+                                                        name="failure_level_id">
+                                                    <t t-foreach="website.get_failure_levels()" t-as="fl">
+                                                        <t t-if="fl['id'] == 1">
+                                                            <option t-att-value="fl['id']" selected="selected">
+                                                                <t t-esc="fl['name']"/>
+                                                            </option>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <option t-att-value="fl['id']">
+                                                                <t t-esc="fl['name']"/>
+                                                            </option>
+                                                        </t>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row text-small">
+                                    <label for="domain_date" class="col-sm-2 col-form-label col-form-label-sm">
+                                        Fecha</label>
+                                    <div class="col-sm-10">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="domain_date"
+                                                   id="rb_month" value="rb_month">
+                                                <label class="form-check-label col-form-label-sm" for="domain_month">Por
+                                                    mes</label></input>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="domain_date"
+                                                   id="rb_dates" value="rb_dates">
+                                                <label class="form-check-label col-form-label-sm " for="domain_year">
+                                                    Fechas</label></input>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="domain_date"
+                                                   id="rb_day" value="rb_day">
+                                                <label class="form-check-label col-form-label-sm " for="domain_day">Por
+                                                    día</label></input>
+                                        </div>
+
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="domain_date"
+                                                   id="rb_all" value="rb_all">
+                                                <label class="form-check-label col-form-label-sm " for="domain_all">
+                                                    Todos</label></input>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group row text-small" id="div_month_year">
+                                    <label for="month_in" class="col-sm-2 col-form-label col-form-label-sm">
+                                        Mes / Año</label>
+                                    <div class="col-10">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <select class="custom-select custom-select-sm" id="month_in"
+                                                        name="month_in">
+                                                    <t t-foreach="website.get_months()" t-as="month">
+                                                        <t t-if="month['selected']">
+                                                            <option t-att-value="month['id']" selected="selected">
+                                                                <t t-esc="month['name']"/>
+                                                            </option>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <option t-att-value="month['id']">
+                                                                <t t-esc="month['name']"/>
+                                                            </option>
+                                                        </t>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                            <div class="col-6">
+                                                <select class="custom-select custom-select-sm" id="in_year"
+                                                        name="in_year">
+                                                    <t t-foreach="website.get_years()" t-as="year">
+                                                        <t t-if="year['selected']">
+                                                            <option t-att-value="year['id']" selected="selected">
+                                                                <t t-esc="year['name']"/>
+                                                            </option>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <option t-att-value="year['id']">
+                                                                <t t-esc="year['name']"/>
+                                                            </option>
+                                                        </t>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row text-small" id="div_from_to">
+                                    <label for="in_date_start" class="col-sm-2 col-form-label col-form-label-sm">
+                                        Desde / Hasta</label>
+                                    <div class="col-10">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <input type="date"
+                                                       class="form-control  custom-select-sm"
+                                                       name="in_date_start" id="in_date_start" required=""
+                                                       placeholder="Hasta"/>
+                                            </div>
+                                            <div class="col-6">
+                                                <input type="date"
+                                                       class="form-control  custom-select-sm"
+                                                       name="in_date_end" id="in_date_end"
+                                                       placeholder="Hasta"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row text-small" id="div_day">
+                                    <label for="in_day" class="col-sm-2 col-form-label col-form-label-sm">
+                                        Día </label>
+                                    <div class="col-10">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <input type="date"
+                                                       class="form-control  custom-select-sm"
+                                                       name="in_day" id="in_day"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                <button type="submit" class="btn btn-primary  ">
+                                    Confirmar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
         </xpath>
+    </template>
+
+
+    <template id="temp_result_wz_report" name="No exíste datos">
+        <t t-call="website.layout">
+            <t t-set="additional_title">Resultado</t>
+
+            <div id="wrap" class="container mt-4">
+                <div class="row mb16 d-block text-center" t-if="message">
+                    <h3>
+                        <label for="message" class="text-primary"><t t-esc="message"/></label>
+                    </h3>
+                </div>
+            </div>
+        </t>
     </template>
 
     <template id="heldesk_error" name="Helpdesk error">
@@ -46,7 +237,20 @@
 
     <template id="portal_my_home_timesheet" inherit_id="hr_timesheet.portal_my_home_timesheet">
         <xpath expr="//t[@t-call='portal.portal_docs_entry']" position="replace">
+            <!--        <xpath expr="." position="replace">-->
         </xpath>
     </template>
+
+    <template id="portal_my_timesheets" inherit_id="hr_timesheet.portal_my_timesheets">
+        <xpath expr="//t[@t-call='portal.portal_searchbar']" position="replace">
+        </xpath>
+    </template>
+
+
+    <template id="portal_my_projects" inherit_id="project.portal_my_projects">
+        <xpath expr="//t[@t-call='portal.portal_layout']" position="replace">
+        </xpath>
+    </template>
+
 
 </odoo>

@@ -58,9 +58,10 @@
                             <group>
                                 <field name="system_class_id"
                                        options="{'no_open': False, 'no_create': True, 'no_create_edit': True}"/>
+<!--                                <field name="is_sirci_or_its" widget="selection"/>-->
 
                                 <field name="complete_name" invisible="1"/>
-<!--                                <field name="parent_path_ids" invisible="1"/>-->
+                                <!--                                <field name="parent_path_ids" invisible="1"/>-->
                             </group>
                         </group>
 

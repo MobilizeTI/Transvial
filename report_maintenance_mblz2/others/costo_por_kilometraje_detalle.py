@@ -1,5 +1,6 @@
 # Copyright YEAR(S), AUTHOR(S)
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
+from pprint import pprint
 
 from odoo import fields, models, api, _, tools
 from datetime import timedelta
@@ -30,6 +31,19 @@ class CostoPorKilometraje(models.Model):
             rec.costo_km = res
 
     def get_query(self, dates=False, date=False):
+        if dates:
+            date_start, date_end = dates
+        elif date:
+            date_start = date
+            date_end = date
+        else:
+            first_record = self.env['fleet.vehicle.odometer'].sudo().search([], order='date asc', limit=1)
+            if first_record:
+                date_start = first_record.date
+            else:
+                date_start = fields.Datetime.now().date()
+            date_end = fields.Datetime.now().date()
+
         sql_where = ""
         if dates:
             date_start, date_end = dates
@@ -45,7 +59,9 @@ class CostoPorKilometraje(models.Model):
                     fv.company_id,
                     --ABS(svl.value) AS costo_total,
                     ABS(SUM(svl.value)) AS costo_total,
-                    T1.value AS odometer_actual,
+                    --T1.value AS odometer_actual,
+                    (SELECT sum(value_dif) as value_dif  FROM fleet_vehicle_odometer fvo WHERE fvo.vehicle_id=fv.id AND fvo.date BETWEEN '{date_start}' AND '{date_end}') AS odometer_actual,
+
                     (CASE fv.odometer_unit WHEN 'kilometers' THEN 'KM' END) AS unit,
                     T1.date AS fecha_registro
                 FROM maintenance_request AS mr 
@@ -55,10 +71,12 @@ class CostoPorKilometraje(models.Model):
                     INNER JOIN maintenance_equipment AS me ON me.id=mr.equipment_id
                     INNER JOIN fleet_vehicle AS fv ON fv.id=me.vehicle_id
                     INNER JOIN (SELECT vehicle_id, MAX(value) AS value, MAX(date) AS date FROM fleet_vehicle_odometer GROUP BY vehicle_id) AS T1 ON T1.vehicle_id=fv.id                        
-                    {0}
+                    {sql_where}
                 GROUP BY me.id, me.category_id, fv.license_plate, fv.company_id, odometer_actual, fecha_registro, unit, fv.id
-            """.format(sql_where)
-
+            """.format(date_start=date_start,
+                       date_end=date_end,
+                       sql_where=sql_where)
+        # pprint(sql)
         query = f"create or replace view costo_por_kilometraje_detalle as ({sql})"
 
         return query

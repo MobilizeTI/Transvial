@@ -135,7 +135,7 @@ class PurchaseOrder(models.Model):
                 aux_process += 1
                 line.active_level = False
         if total_lines_level_actual == aux_process:
-            # listo para el siguíente nivel
+            # listo para el siguiente nivel
             max_level = max(self.approval_user_ids.mapped('level'))
             if level_actual + 1 <= max_level:
                 self.level_actual_approve = level_actual + 1
@@ -160,7 +160,7 @@ class PurchaseOrder(models.Model):
                 l: not l.approve and l.user_id.id != self.env.user.id and l.level == self.level_actual_approve and l.active_level)
         print(f'len user notify: {len(users_notify)} users: {users_notify.mapped("user_id.name")}')
         for line in users_notify:
-            line.user_id.notify_warning(message=message, title=_('Warning'), sticky=True)
+            line.user_id.notify_info(message=message, title=_('Info'), sticky=True)
             self._send_email_approve(user=line.user_id)
 
     def _send_email_approve(self, user):

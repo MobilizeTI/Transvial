@@ -38,3 +38,35 @@ class FleetVehicle(models.Model):
             return False
         else:
             return super(FleetVehicle, self).return_action_to_open()
+    #
+    # @api.onchange('odometer')
+    # def onchange_odometer(self):
+    #     if self.equipment_id:
+    #         self.equipment_id.action_is_reiterative()
+
+    def get_dates_ot_reiteratives(self):
+        """
+            Devuelve la fecha de inicio y fín de un rango de 15000 km acumulados
+        @return:date_start: fecha de inicio
+                date_end: fecha de fin
+        """
+        odometers = self.env['fleet.vehicle.odometer'].sudo().search([('vehicle_id', '=', self.id)], order='date desc')
+        odoo_filter = []
+        sum_odoo = 0
+        max_odoo = self.odometer
+        for odoo in odometers:
+            if sum_odoo < 15000:
+                # sum_odoo += max_odoo - odoo.value
+                # max_odoo = odoo.value
+                sum_odoo += odoo.value_dif  # value_dif -> registrado en el módulo mblz_fleet
+                odoo_filter.append(odoo)
+            else:
+                break
+
+        date_start = False
+        date_end = False
+        if len(odoo_filter) >= 2 and sum_odoo >= 15000:
+            date_start = odometers[-1].date
+            date_end = odometers[0].date
+        # print(date_start, date_end)
+        return date_start, date_end

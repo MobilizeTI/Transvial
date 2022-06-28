@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_close_tkt_massive_wizard" model="ir.ui.view">
+        <field name="name">Close Massive Tickets</field>
+        <field name="model">close.tkt.massive</field>
+        <field name="arch" type="xml">
+            <form string="Parameters">
+
+                <div class="text-center">
+                    <field name="option"
+                           invisible="0" widget="selection_badge" options="{'horizontal':True}"/>
+                </div>
+
+                <group attrs="{'invisible':  [('option', '=', 'close_task')]}">
+                    <field name="tkt_master_id" invisible="1"/>
+                    <field name="select_all_request"
+                           limit="2"
+                           attrs="{
+                                'invisible': [('option', '=', 'close_task')],
+                                'required': [('option', '=', 'close_ot')],
+                           }"
+                           options="{'no_create':True,'no_create_edit': True,'no_open': True}"
+                           widget="many2many_tags"/>
+                </group>
+                <group attrs="{'invisible':  [('option', '=', 'close_task')]}">
+                    <field name="msj_solution_close"
+                           attrs="{'invisible': [('option', '=', 'close_task')], 'required': [('option', '=', 'close_ot')]}"
+                           widget="text"/>
+                </group>
+
+
+                <group>
+                    <field name="option_ots"
+                           attrs="{
+                                'invisible': [('option', '=', 'close_ot')],
+                                'required': [('option', '=', 'close_task')],
+                           }"
+                           widget="radio" options="{'horizontal':True}"/>
+
+                    <field name="ot_select_id"
+                           attrs="{
+                                'invisible': ['|',('option', '=', 'close_ot'),  ('option_ots', '!=', 'one')],
+                                'required': [('option', '=', 'close_task'), ('option_ots', '=', 'one')],
+                           }"
+                           options="{'no_create':True,'no_create_edit': True,'no_open': True}"
+                           domain="[('ticket_id', 'in', ticket_ids), ('stage_id', '!=', 9), ('is_complete_task', '=', False)]"
+                    />
+
+                    <field name="ticket_ids" invisible="1"/>
+                    <field name="ot_select_ids"
+                           attrs="{
+                                'invisible': ['|',('option', '=', 'close_ot'),  ('option_ots', '!=', 'custom')],
+                                'required': [('option', '=', 'close_task'), ('option_ots', '=', 'custom')],
+                           }"
+                           options="{'no_create':True,'no_create_edit': True,'no_open': True}"
+                           widget="many2many_tags"
+                           domain="[('ticket_id', 'in', ticket_ids), ('stage_id', '!=', 9), ('is_complete_task', '=', False)]"
+                           string="OT's"
+                    />
+
+
+                    <field name="flag_employee" widget="boolean_toggle"
+                           attrs="{'invisible': [('option', '=', 'close_ot')]}"/>
+                    <field name="specialty_tag_ids"
+                           widget="many2many_tags"
+                           options="{'color_field': 'color'}"
+                           attrs="{
+                                'invisible': ['|',('flag_employee', '=', False), ('option', '=', 'close_ot')],
+                           }"
+                    />
+                    <field name="employee_id"
+                           domain="[('speciality_ids', 'in', specialty_tag_ids),
+                                    '|', ('company_id', '=', False), ('company_id', '=', company_id), ('user_id', '!=', False)
+                                   ]"
+                           attrs="{
+                                'invisible': ['|',('flag_employee', '=', False), ('option', '=', 'close_ot')],
+                                'required': [('flag_employee', '=', True),('option', '=', 'close_task')],
+                           }"
+                           options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"/>
+
+                    <field name="flag_employees_additional" widget="boolean_toggle"
+                           attrs="{'invisible': ['|',('option', '=', 'close_ot'),
+                           ('flag_employee', '=', False)]}"
+                           options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"/>
+                    <field name="employee_ids" widget="many2many_tags"
+                           attrs="{
+                                'invisible': ['|','|',
+                                                ('option', '=', 'close_ot'),
+                                                ('flag_employee', '=', False),
+                                                ('flag_employees_additional', '=', False),
+                                ],
+                                'required': [('flag_employees_additional', '=', True)],
+                           }"
+                    />
+
+                    <field name="time_spent"
+                           string="Duración" class="oe_inline" widget="float_time"
+                           attrs="{
+                                'invisible': [('option', '=', 'close_ot')],
+                                'required': [('option', '=', 'close_task')],
+                           }"
+                    />
+                    <field name="description_ph"
+                           widget="text"
+                           placeholder="Describe your name timesheet..."
+                           attrs="{
+                                'invisible': [('option', '=', 'close_ot')],
+                                'required': [('option', '=', 'close_task')],
+                           }"
+                    />
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </group>
+                <!-- opciones parte de horas -->
+                <div class="alert alert-primary" role="alert"
+                     attrs="{'invisible': [('option', '=', 'close_ot')]}">
+                    <p>Se procederá a cerrar todas las tareas que <b><u>No</u></b> tengan restricciones por solicitud de
+                        material
+                        pendiente de validación y tengan un empleado asignado asociadas a las órdenes de trabajo, las
+                        que no
+                        cumplan se marcarán de color <span class="text-danger"><b>rojo</b></span></p>
+                </div>
+                <footer>
+                    <button name="action_close_ot"
+                            attrs="{'invisible': [('option', '=', 'close_task')]}"
+                            string="Aceptar" type="object" class="btn-primary"/>
+
+                    <button name="action_close_task"
+                            attrs="{'invisible': [('option', '=', 'close_ot')]}"
+                            string="Aceptar" type="object" class="btn-primary"/>
+                    <button string="Cancelar"
+                            class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

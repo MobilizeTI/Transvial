@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="system_ist_tkt" model="maintenance.system">
+            <field name="sequence">100</field>
+            <field name="name">STS</field>
+            <field name="description">Sistema creado por defecto para la caracterización de tikets</field>
+        </record>
+
+        <record id="system_stdi_tkt" model="maintenance.system">
+            <field name="sequence">100</field>
+            <field name="name">STDI</field>
+            <field name="description">Sistema creado por defecto para la caracterización de tikets</field>
+        </record>
+    </data>
+</odoo>

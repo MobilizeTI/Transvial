@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="mueve_approval_request_view_tree" model="ir.ui.view">
+            <field name="name">MUEVE: approval.request.view.tree</field>
+            <field name="model">approval.request</field>
+            <field name="inherit_id" ref="approvals.approval_request_view_tree"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='request_owner_id']" position="attributes">
+                    <attribute name="optional">hide</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='category_id']" position="attributes">
+                    <attribute name="optional">show</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="request_task_equipment_id" optional="show"/>
+                    <!--                    <field name="product_line_task_ids" widget="many2many_tags" optional="show" string="Componentes"/>-->
+                    <field name="product_line_task_txt" optional="show"/>
+                    <field name="rpt_approver_ids" optional="show"/>
+                    <!--                    <field name="approver_ids" optional="show" widget="many2many_tags"/>-->
+                </xpath>
+
+                <xpath expr="//field[@name='request_status']" position="after">
+                    <field name="date_approved" widget="datetime" optional="show"/>
+                </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>

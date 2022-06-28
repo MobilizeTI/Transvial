@@ -1,0 +1,5 @@
+"id","sequence","name","priority"
+"helpdesk.type_question","10","Bajo",'1'
+"helpdesk.type_incident","11","Medio",'1'
+"__export__.helpdesk_ticket_type_3_c4650d69","12","Alto",'2'
+"__export__.helpdesk_ticket_type_3_5fdf9cff","13","Emergencia",'3'

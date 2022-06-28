@@ -10,7 +10,7 @@ class ResUsers(models.Model):
     _inherit = 'res.users'
 
     # hide debug
-    # hide_debug_assets_permission = fields.Boolean(string='Hide Debug Assets')
+    hide_debug_assets_permission = fields.Boolean(string='Permitir odoo técnico')
 
     @api.depends('groups_id')
     def _compute_share(self):

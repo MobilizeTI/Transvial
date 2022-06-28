@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_close_aux_massive_wizard" model="ir.ui.view">
+        <field name="name">Close Massive Tickets</field>
+        <field name="model">close.tkt.massive.aux</field>
+        <field name="arch" type="xml">
+            <form string="Parameters">
+
+                <group class="text-center">
+                    <field name="option_tickets" widget="selection_badge" options="{'horizontal':True}" nolabel="1"/>
+                </group>
+
+                <group>
+                    <field name="tkt_master_id" invisible="1"/>
+                    <field name="tkt_select_id"
+                           attrs="{'invisible': [('option_tickets', 'in', ('custom','all'))],'required': [('option_tickets', '=', 'one')]}"
+                           options="{'no_create':True,'no_create_edit': True,'no_open': True}"
+                           domain="[('tkt_master_id', '=', tkt_master_id), ('stage_id', '!=', 3)]"
+                    />
+
+                    <field name="tkt_select_ids"
+                           attrs="{'invisible': [('option_tickets', 'in', ('one','all'))],'required': [('option_tickets', '=', 'custom')]}"
+                           options="{'no_create':True,'no_create_edit': True,'no_open': True}"
+                           widget="many2many_tags"
+                           domain="[('tkt_master_id', '=', tkt_master_id), ('stage_id', '!=', 3)]"
+                    />
+
+                    <field name="closing_comment" widget="text"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </group>
+
+                <footer>
+                    <button name="action_close_tkt"
+                            string="Aceptar" type="object" class="btn-primary"/>
+
+                    <button string="Cancelar"
+                            class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

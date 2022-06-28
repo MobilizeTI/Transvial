@@ -115,6 +115,20 @@
     </record>
 
 
+    <record id="mblz2_hr_equipment_request_view_tree" model="ir.ui.view">
+        <field name="name">MBLZ2:mblz:equipment.request.tree</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="l10n_cl_maintenance.mblz_hr_equipment_request_view_tree"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='schedule_date']" position="after">
+                <field name="close_datetime" optional="show"/>
+            </xpath>
+
+        </field>
+    </record>
+
+
     <!--    MENU DE MOTIVOS Y COMENTARIOS-->
     <!-- equiment.request : actions -->
     <record id="mblz_motives_hr_equipment_request_action" model="ir.actions.act_window">

@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
-        <record model="res.groups" id="group_support_levels_tkt">
-            <field name="name">Niveles de soporte (TKT)</field>
-            <field name="comment"> Grupo dirigido a profesionales de ITS</field>
+        <record id="category_group_tkt_mueve" model="ir.module.category">
+            <field name="name">Tickets</field>
         </record>
+
+        <!-- SUPERVISOR DE MTTO-->
+        <record model="res.groups" id="group_supervisor_mtto">
+            <field name="name">Supervisor</field>
+            <field name="category_id" ref="category_group_tkt_mueve"/>
+        </record>
+
+        <!-- TÉCNICOS ITS-->
+        <record model="res.groups" id="group_tecnicos_its">
+            <field name="name">Técnicos ITS</field>
+            <field name="category_id" ref="category_group_tkt_mueve"/>
+        </record>
+
     </data>
 </odoo>

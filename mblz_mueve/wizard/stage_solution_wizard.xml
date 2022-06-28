@@ -1,0 +1,33 @@
+<odoo>
+    <data>
+        <record id="stage_solution_wizard_view_form" model="ir.ui.view">
+            <field name="name">stage.solution.wizard.wizard</field>
+            <field name="model">stage.solution.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="stage_id" invisible="1"/>
+                        <field name="request_id" invisible="1"/>
+                        <field name="msj_solution_close" placeholder="Ingrese la descripción de la solución"/>
+                    </group>
+                    <footer>
+                        <button type="object"
+                                name="action_confirm"
+                                class="oe_highlight"
+                                string="Confirmar"/>
+                        <button special="cancel" string="Cancelar"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_stage_solution_wizard" model="ir.actions.act_window">
+            <field name="name">Añadir solución</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stage.solution.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="context">{}</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

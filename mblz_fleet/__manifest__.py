@@ -16,7 +16,7 @@
     'category': 'Mobilize/Apps',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'fleet', 'uom', 'hr'],
+    'depends': ['base', 'fleet', 'uom', 'hr', 'l10n_cl_maintenance'],
 
     # always loaded
     'data': [

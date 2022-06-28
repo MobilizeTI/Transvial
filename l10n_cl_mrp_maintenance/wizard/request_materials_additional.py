@@ -36,7 +36,7 @@ class RequestMaterialsAdditional(models.Model):
                 limit=1)
             if not category_id:
                 raise ValidationError(
-                    f'No exíste la categoría de aprovación Materiales Adicionales ({code_categ}) con código RMA para la companía {self.company_id.name}')
+                    f'No exíste la categoría de aprobación Materiales Adicionales ({code_categ}) con código RMA para la companía {self.company_id.name}')
             return category_id
 
         if len(self.product_line_ids) > 0:

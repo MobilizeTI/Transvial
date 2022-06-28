@@ -32,3 +32,17 @@ class FleetVehicle(models.Model):
         #     'domain': [('vehicle_id', '=', self.id)],
         #     'context': {'default_vehicle_id': self.id}
         # }
+
+    def get_odoo_dates(self, date_start, date_end):
+        sql = """
+            SELECT sum(fvo.value_dif) as value_odoo
+                FROM fleet_vehicle_odometer as fvo 
+            WHERE  fvo.date BETWEEN '{0}' AND '{1}' AND fvo.vehicle_id = {2}
+        """.format(date_start, date_end, self.id)
+        # print(sql)
+        self._cr.execute(sql)
+        sum_odoo = self._cr.dictfetchone()
+        # print(sum_odoo)
+        # odometers = self.env['fleet.vehicle.odometer'].sudo().search([('vehicle_id', '=', self.id)])
+        # odoo_total = sum(odometers.filtered(lambda l: date_start <= l.date <= date_end).mapped('value_dif'))
+        return sum_odoo.get('value_odoo', 0)

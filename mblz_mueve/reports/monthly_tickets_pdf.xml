@@ -176,7 +176,7 @@
                   name="Reporte de Tickets Mensual (PDF)"
                   parent="helpdesk.helpdesk_ticket_report_menu_main"
                   action="mblz_mueve.report_monthly_tickets_pdf_by_monthly"
-                  groups="mblz_mueve.group_support_levels_tkt"
+                  groups="mblz_mueve.group_tecnicos_its"
                   sequence="100"/>
     </data>
 </odoo>

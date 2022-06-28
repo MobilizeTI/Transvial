@@ -196,14 +196,18 @@ class MaintenanceRequestTask(models.Model):
 
     duration_compute = fields.Float(compute='_compute_duration_compute')
 
+    @api.onchange('activity_id')
+    def onchange_activity_id(self):
+        self.sudo().planned_hours = self.activity_id.duration
+
     @api.depends('activity_id')
     def _compute_duration_compute(self):
         for request in self:
             request.sudo().duration_compute = 0
             if request.activity_id:
                 request.sudo().duration_compute = request.activity_id.duration
-                if request.planned_hours == 0 and request.activity_id.duration > 0:
-                    request.sudo().planned_hours = request.activity_id.duration
+                # if request.planned_hours == 0 and request.activity_id.duration > 0:
+                #     request.sudo().planned_hours = request.activity_id.duration
 
     planned_hours = fields.Float("Initially Planned Hours",
                                  help='Time planned to achieve this task (including its sub-tasks).', tracking=True)
@@ -263,6 +267,7 @@ class MaintenanceRequestTask(models.Model):
         string='Request', ondelete='cascade',
         required=True)
     request_stage_id = fields.Many2one('maintenance.stage', string='Stage', related='request_id.stage_id')
+
     request_equipment_id = fields.Many2one('maintenance.equipment',
                                            string='Equipment', related='request_id.equipment_id')
 
@@ -270,6 +275,14 @@ class MaintenanceRequestTask(models.Model):
                                               string='request_speciality_ids')
 
     timesheet_ids = fields.One2many('account.analytic.line', 'task_request_id', 'Timesheets')
+    alert_close_task = fields.Selection(
+        string='Alerta de cierre de tarea',
+        selection=[('approve_ma', 'Solicitud de materiales'),
+                   ('pickings', 'Pickings abiertos'),
+                   ('no-employee', 'No existe empleado'),
+                   ('all', 'Todas'),
+                   ],
+        required=False, )
 
     @api.constrains("stage_id")
     def _check_task_dependent(self):
@@ -384,9 +397,11 @@ class MaintenanceRequestTask(models.Model):
             activity_id = self.activity_id.browse(values.get('activity_id'))
             name = f'{activity_id.name} ({self.name_seq})'
             values.update(dict(name=name, name_seq=self.name_seq))
-        rec = super(MaintenanceRequestTask, self).write(values)
+        result = super(MaintenanceRequestTask, self).write(values)
         flag_update_picking_from_task = self._context.get('flag_update_picking_from_task', False)
         if 'stage_id':
+            if values.get('stage_id', False) == 2 and not self.employee_id:
+                raise ValidationError(f'No se puede cerrar la tarea {self.name_seq} sin un empleado asignado!')
             tasks = self.search([('request_id', '=', self.request_id.id)])
             tasks_aux = tasks.filtered(lambda l: l.stage_id.id == 1)  # 1=Por Hacer
             if len(tasks_aux) == 0 and values and flag_update_picking_from_task:
@@ -395,8 +410,7 @@ class MaintenanceRequestTask(models.Model):
                     self.request_id.stage_id = self.env.ref('maintenance.stage_3').id
             # elif self.request_id.stage_id.name not in ('Nueva solicitud', 'Para Reparar'):
             #     self.request_id.stage_id = self.env.ref('maintenance.stage_1').id
-
-        return rec
+        return result
 
     @api.depends('timesheet_ids.unit_amount')
     def _compute_effective_hours(self):
@@ -421,7 +435,7 @@ class MaintenanceRequestTask(models.Model):
         context = dict(self._context or {})
         context['default_task_ids'] = [(6, 0, request_task_ids)]
         return {
-            'name': 'Asignación Masiva de Empleado',
+            'name': 'Asignación/Cierre Masivo',
             'type': 'ir.actions.act_window',
             'view_mode': 'form',
             'res_model': 'mtm.request.task.wz',
@@ -446,6 +460,25 @@ class MaintenanceRequestTask(models.Model):
                 flag_readonly = True
             record.flag_readonly = flag_readonly
 
+    def update_is_complete_task(self):
+        # todo:// uso la lista de materiales el modulo l10n_cl_mrp_maintenance
+        pickings_stage = self.picking_ids.filtered(lambda p: p.state not in ('done', 'cancel'))
+
+        # todo:// solicitudes de aprobación que esten pendientes
+        approvals_satge = self.approval_ids.filtered(
+            lambda r: r.request_status not in ('approved', 'refused', 'cancel'))
+
+        if len(pickings_stage) == 0:
+            if len(approvals_satge) == 0:
+                if not self.employee_id:
+                    self.sudo().alert_close_task = 'no-employee'
+                else:
+                    self.sudo().alert_close_task = False
+            else:
+                self.sudo().alert_close_task = 'approve_ma'
+        else:
+            self.sudo().alert_close_task = 'pickings'
+
 
 class AccountAnalyticLine(models.Model):
     _inherit = 'account.analytic.line'
@@ -463,7 +496,7 @@ class AccountAnalyticLine(models.Model):
     def _compute_datetime_create_line(self):
         for rec in self:
             if rec.create_date:
-                user_tz = pytz.timezone(self.env.user.tz or 'America/Bogota')
+                user_tz = pytz.timezone(self.env.user.tz or 'America/Bogotá')
                 time_in_timezone = pytz.utc.localize(rec.create_date).astimezone(user_tz)
                 rec.datetime_create_line = time_in_timezone.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
             else:

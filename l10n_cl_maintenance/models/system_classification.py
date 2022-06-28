@@ -13,9 +13,7 @@ class MaintenanceComponent(models.Model):
     is_critical = fields.Boolean(string='Es crítico', required=False)
     code = fields.Char(string='Code', required=True, copy=False)
     name = fields.Char(string='Name', required=True, copy=False)
-
     parent_ids = fields.Many2many('maintenance.system', string='Parents')
-
     description = fields.Html(string='Description', required=False)
 
     @api.returns('self', lambda value: value.id)

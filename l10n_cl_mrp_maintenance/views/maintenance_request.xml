@@ -64,6 +64,7 @@
                         name="action_view_delivery_bom"
                         class="oe_stat_button"
                         icon="fa-truck"
+                        context="{'turn_view_readonly': True}"
                         attrs="{'invisible': [('picking_count', '=', 0)]}"
                 >
                     <field name="picking_count" widget="statinfo" string="BoM Delivery"/>

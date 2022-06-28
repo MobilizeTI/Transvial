@@ -7,7 +7,7 @@ from odoo import models, fields, api, _
 class ResUsers(models.Model):
     _inherit = 'res.users'
 
-    flag_approve_po = fields.Boolean(string='Allow confirm purchase', required=False)
+    flag_approve_po = fields.Boolean(string='Permitir confirmar la compra', required=False)
 
     @api.model
     def default_get(self, field_list):

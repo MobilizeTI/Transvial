@@ -34,8 +34,15 @@ class CloseOtsMassive(models.TransientModel):
     option = fields.Selection(
         string='Option',
         selection=[('close_ot', "Cerrar ot's"),
-                   ('close_task', 'Cerrar tareas'), ],
+                   ('close_task', 'Cerrar tareas'), ('assign_emp', 'Asignar empleados')],
         required=True, default='close_ot')
+
+    @api.onchange('option')
+    def onchange_option(self):
+        if self.option == 'assign_emp':
+            self.flag_employee = True
+        else:
+            self.flag_employee = False
 
     specialty_tag_ids = fields.Many2many("hr.specialty.tag", string="Especialidades",
                                          compute='_compute_specialty_tag_ids')
@@ -184,3 +191,15 @@ class CloseOtsMassive(models.TransientModel):
 
             if len(tasks) == 0:
                 ot.sudo().is_complete_task = True
+
+    def action_upd_employee_massive(self):
+        requests = self._get_request_custom()
+        for ot in requests:
+            vals = {'employee_id': self.employee_id.id}
+            for task in ot.task_ids:
+                if self.flag_employees_additional:
+                    ids = task.employee_additional_ids.ids + self.employee_ids.ids
+                    vals.update({
+                        'employee_additional_ids': [(6, 0, ids)]
+                    })
+                task.write(vals)

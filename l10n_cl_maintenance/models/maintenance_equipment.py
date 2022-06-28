@@ -214,6 +214,28 @@ class MaintenanceEquipment(models.Model):
     # Tiene ot's reiterativas (Equipos con 3 o mas Ots cada 15000km)
     is_reiterative = fields.Boolean(string='Es reiterativo', required=False)
 
+    @api.onchange('odometer')
+    def onchange_odometer(self):
+        self.action_is_reiterative()
+
+    def action_is_reiterative(self):
+        date_start, date_end = self.vehicle_id.get_dates_ot_reiteratives()
+        if date_start and date_end:
+            sql = """
+                SELECT count(*) 
+                    FROM maintenance_request as mr 
+                WHERE  mr.request_date BETWEEN '{0}' AND '{1}' AND mr.equipment_id = {2} AND mr.company_id = {3}
+            """.format(date_start, date_end, self.id, self.company_id.id)
+            self._cr.execute(sql)
+            count_ots = self._cr.fetchone()
+            # print(count_ots)
+            self.sudo().is_reiterative = count_ots[0] >= 3
+
+    @api.model
+    def action_is_reiteratives(self):
+        for equipment in self.search([('company_id', '=', self.env.company.id)]):
+            equipment.action_is_reiterative()
+
     # def _register_hook(self):
     #     """ Patch models to correct the that should trigger action rules based on creation,
     #         modification, deletion of records and form onchanges.

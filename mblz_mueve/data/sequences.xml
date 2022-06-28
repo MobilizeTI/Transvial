@@ -10,6 +10,17 @@
             <field eval="1" name="number_next"/>
             <field eval="1" name="number_increment"/>
             <field eval="True" name="use_date_range"/>
+            <field name="padding">6</field>
+            <field name="implementation">no_gap</field>
+        </record>
+
+        <record id="tkt_master_sequence" model="ir.sequence">
+            <field name="name">helpdesk.ticket.master - SEQUENCE</field>
+            <field name="code">tkt.master.sequence</field>
+            <field name="prefix">TKM/%(y)s/</field>
+            <field eval="1" name="number_next"/>
+            <field eval="1" name="number_increment"/>
+            <field eval="True" name="use_date_range"/>
             <field name="padding">5</field>
             <field name="implementation">no_gap</field>
         </record>

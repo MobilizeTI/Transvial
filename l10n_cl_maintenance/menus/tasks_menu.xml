@@ -6,7 +6,7 @@
         <!--creating menus-->
         <menuitem id="maintenance_tasks_menu_root"
                   name="Maintenance Tasks"
-                  sequence="1" web_icon="l10n_cl_maintenance,static/img/task.jpg"/>
+                  sequence="1" web_icon="l10n_cl_maintenance,static/img/approve_materials.png"/>
 
         <!-- This Menu Item Must have a parent -->
         <menuitem id="my_tasks_menu" name="My Tasks"

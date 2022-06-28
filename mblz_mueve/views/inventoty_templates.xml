@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="mueve_stock_account_report_product_product_replenishment"
+              inherit_id="stock.report_replenishment_header">
+        <xpath expr="//div[@name='pending_forecasted']" position="after">
+            <div t-attf-class="mx-3 text-center"
+                 t-if="env.user.has_group('mblz_mueve.mueve_group_stock_analista_inventario')">
+                <div class="h3">
+                    <t t-esc="docs['value']"/>
+                </div>
+                <div>Valor disponible</div>
+            </div>
+        </xpath>
+    </template>
+</odoo>

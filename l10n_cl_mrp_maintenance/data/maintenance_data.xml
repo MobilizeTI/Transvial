@@ -23,7 +23,7 @@
 
         <!-- Standard stages for Maintenance Request -->
         <record id="stage_5" model="maintenance.stage">
-            <field name="name">To Repair</field>
+            <field name="name">Confirmada</field>
             <field name="sequence" eval="2"/>
             <field name="fold" eval="False"/>
             <field name="request_bom" eval="True"/>

@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta name="generator"/>
+        <title>Access Control</title>
+        <style type="text/css">
+            .p_line {
+                color: #0a0a0a !important;
+                font-size: 1.3rem !important;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12 d-flex justify-content-between"
+                     style="border-bottom: 1px solid #d5d5d5;">
+                    <div class="my-3">
+                        <img src="./images/logo.png" style="width: auto !important; height: 60px !important;">
+                    </div>
+                    <div class="my-3 d-flex align-items-center">
+                        <div
+                                style="background-color: #0a0a0a !important; color: #fff !important; font-weight: 600 !important; padding: 5px 15px 8px !important; margin: 0 5px !important;">
+                            <i class="fa fa-check mr-1"></i>Community
+                        </div>
+                        <div
+                                style="background-color: #0a0a0a !important; color: #fff !important; font-weight: 600 !important; padding: 5px 15px 8px !important; margin: 0 5px !important;">
+                            <i class="fa fa-check mr-1"></i>Enterprise
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="padding: 3.5rem 1.5rem !important; background-color: #ffffff !important;">
+            <div class="container">
+                <!-- Module -->
+                <div class="row">
+                    <div class="col-lg-12 d-flex flex-column justify-content-center"
+                         style="text-align: center; padding: 1rem !important;">
+                        <h1 class="text-center" style="color: #0a0a0a !important; font-size: 4rem !important;">
+                            <span
+                                    style="font-weight: 700 !important;">Control de Acceso
+                            </span>
+                        </h1>
+                        <!--                <p class="text-center"-->
+                        <!--                   style="color: #0a0a0a !important; font-size: 1.5rem !important; letter-spacing: 10px !important;">-->
+                        <!--                    M&oacute;dulo nuevo-->
+                        <!--                </p>-->
+                    </div>
+                </div>
+                <!-- END OF MODULE -->
+
+                <!-- OVERVIEW -->
+                <div class="row">
+                    <div class="col-lg-12 d-flex flex-column justify-content-center"
+                         style="text-align: center; padding: 2.5rem 1rem !important;">
+                        <h2 style="color: #0a0a0a !important;">Visi&oacute;n general</h2>
+                        <hr
+                                style="border: 3px solid #0a0a0a !important; background-color: #0a0a0a !important; width: 80px !important; margin-bottom: 2rem !important;"/>
+                        <p class="text-left" style="color: #0a0a0a !important; font-size: 1.3rem !important;">
+                            Este módulo permite gestionar los derechos de acceso de los usuarios mediante perfiles.
+                            Los grupos de Odoo son un conjunto coherente de reglas que son funcionalmente consistentes.
+                            Los perfiles permiten combinar varios grupos y adaptar eficazmente el acceso de los usuarios
+                            a cada uno de ellos.
+                        </p>
+
+                        <ul class="text-left" style="color: #0a0a0a !important; font-size: 1.2rem !important;">
+                            <li>
+                                <b>Grupo supervisor de MTTO:</b>
+                                crear una OT, modificar una OT, cancelar una OT, etc.
+                            </li>
+                            <li>
+                                <b>Grupo técnico de MTTO:</b>
+                                actualizar un OT y sus tareas asociadas
+                            </li>
+                        </ul>
+                        <p class="text-left" style="color: #0a0a0a !important; font-size: 1.3rem !important;">El
+                            administrador general de la empresa (ejem: Mueve Fontibon) probablemente
+                            pertenezca a ambos grupos.
+                            <b>mblz_access_control</b>
+                            permite combinar ambos grupos en un solo perfil. Es una forma alternativa de gestionar los
+                            derechos de los usuarios por perfiles funcionales. Básicamente, un «&nbsp;perfil&nbsp;» es
+                            un usuario inactivo ficticio (res.users) etiquetado como perfil. Significa que como antes
+                            (con las reglas básicas de Odoo), se puede añadir grupos a un perfil.
+                        </p>
+                    </div>
+                </div>
+                <!-- END OF OVERVIEW -->
+
+
+                <!-- CARACTERISTICAS -->
+                <div class="row">
+                    <div class="col-lg-12 d-flex flex-column justify-content-center"
+                         style="text-align: center; padding: 2.5rem 1rem !important;">
+                        <h2 style="color: #0a0a0a !important;">Caracter&iacute;sticas</h2>
+                        <hr
+                                style="border: 3px solid #0a0a0a !important; background-color: #0a0a0a !important; width: 80px !important; margin-bottom: 2rem !important;"/>
+                        <div class="row">
+                            <div class="col-lg-6">
+
+                                <div class="d-flex deep-2"
+                                     style="height: 60px !important; padding: 1rem 1.5rem !important; border-radius: 0 !important; margin: 1.5rem 0">
+                                    <img src="./images/checked.png"
+                                         style="height: 24px !important; width: 24px !important;"
+                                         class="mr-2" height="24px" width="24px">
+                                    <p class="text-left"
+                                       style="color: #0a0a0a !important; font-size: 1.3rem !important;">
+                                        <a href="#click_01" id="opc_01"
+                                           style="color: #0a0a0a !important; font-size: 1.3rem !important;">Distribución
+                                            de los menús de usuarios
+                                        </a>
+
+                                    </p>
+                                </div>
+
+                                <div class="d-flex deep-2"
+                                     style="height: 60px !important; padding: 1rem 1.5rem !important; border-radius: 0 !important; margin: 1.5rem 0">
+                                    <img src="./images/checked.png"
+                                         style="height: 24px !important; width: 24px !important;"
+                                         class="mr-2" height="24px" width="24px">
+                                    <p class="text-left"
+                                       style="color: #0a0a0a !important; font-size: 1.3rem !important;">
+                                        <a href="#click_02" id="opc_02"
+                                           style="color: #0a0a0a !important; font-size: 1.3rem !important;"> Crear un
+                                            perfil de usuario
+                                        </a>
+
+                                    </p>
+                                </div>
+
+
+                                <div class="d-flex deep-2"
+                                     style="height: 60px !important; padding: 1rem 1.5rem !important; border-radius: 0 !important; margin: 1.5rem 0">
+                                    <img src="./images/checked.png"
+                                         style="height: 24px !important; width: 24px !important;"
+                                         class="mr-2" height="24px" width="24px">
+                                    <p class="text-left"
+                                       style="color: #0a0a0a !important; font-size: 1.3rem !important;">
+                                        <a href="#click_03" id="opc_03"
+                                           style="color: #0a0a0a !important; font-size: 1.3rem !important;">Establecer
+                                            los campos a actualizar en el perfil de usuario
+                                        </a>
+
+                                    </p>
+                                </div>
+
+                                <div class="d-flex deep-2"
+                                     style="height: 60px !important; padding: 1rem 1.5rem !important; border-radius: 0 !important; margin: 1.5rem 0">
+                                    <img src="./images/checked.png"
+                                         style="height: 24px !important; width: 24px !important;"
+                                         class="mt-1 mr-2" height="24px" width="24px">
+                                    <p class="text-left"
+                                       style="color: #0a0a0a !important; font-size: 1.3rem !important;">
+                                        <a href="#click_04" id="opc_04"
+                                           style="color: #0a0a0a !important; font-size: 1.3rem !important;">Ocultar
+                                            menús específicos
+                                        </a>
+
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <div class="col-lg-6">
+
+
+                                <div class="d-flex deep-2"
+                                     style="height: 60px !important; padding: 1rem 1.5rem !important; border-radius: 0 !important; margin: 1.5rem 0">
+                                    <img src="./images/checked.png"
+                                         style="height: 24px !important; width: 24px !important;"
+                                         class="mt-1 mr-2" height="24px" width="24px">
+                                    <p class="text-left"
+                                       style="color: #0a0a0a !important; font-size: 1.3rem !important;">
+                                        <a href="#click_05" id="opc_05"
+                                           style="color: #0a0a0a !important; font-size: 1.3rem !important;">Restringir
+                                            el acceso a las opciones Acción o Imprimir por perfil o usuario
+                                        </a>
+                                    </p>
+                                </div>
+
+                                <div class="d-flex deep-2"
+                                     style="height: 60px !important; padding: 1rem 1.5rem !important; border-radius: 0 !important; margin: 1.5rem 0">
+                                    <img src="./images/checked.png"
+                                         style="height: 24px !important; width: 24px !important;"
+                                         class="mr-2" height="24px" width="24px">
+                                    <p class="text-left"
+                                       style="color: #0a0a0a !important; font-size: 1.3rem !important;">
+                                        <a href="#click_06" id="opc_06"
+                                           style="color: #0a0a0a !important; font-size: 1.3rem !important;"> Asociar un
+                                            perfil a los usuarios creados
+                                        </a>
+
+                                    </p>
+                                </div>
+
+                                <div class="d-flex deep-2"
+                                     style="height: 60px !important; padding: 1rem 1.5rem !important; border-radius: 0 !important; margin: 1.5rem 0">
+                                    <img src="./images/checked.png"
+                                         style="height: 24px !important; width: 24px !important;"
+                                         class="mt-1 mr-2" height="24px" width="24px">
+                                    <p class="text-left"
+                                       style="color: #0a0a0a !important; font-size: 1.3rem !important;">
+                                        <a href="#click_07" id="opc_07"
+                                           style="color: #0a0a0a !important; font-size: 1.3rem !important;">Restringir
+                                            el acceso al modo desarrollador por perfil o usuario
+                                        </a>
+
+                                    </p>
+                                </div>
+
+                                <div class="d-flex deep-2"
+                                     style="height: 60px !important; padding: 1rem 1.5rem !important; border-radius: 0 !important; margin: 1.5rem 0">
+                                    <img src="./images/checked.png"
+                                         style="height: 24px !important; width: 24px !important;"
+                                         class="mt-1 mr-2" height="24px" width="24px">
+                                    <p class="text-left"
+                                       style="color: #0a0a0a !important; font-size: 1.3rem !important;">
+                                        <a href="#click_08" id="opc_08"
+                                           style="color: #0a0a0a !important; font-size: 1.3rem !important;">Vídeo de
+                                            demostración
+                                        </a>
+
+                                    </p>
+                                </div>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- END CARACTERISTICAS -->
+
+                <!-- DETALLE DE CARACTERISTICAS -->
+                <div class="row">
+                    <div class="col-lg-12 d-flex flex-column justify-content-center"
+                         style="padding: 2.5rem 1rem !important;">
+                        <h2 style="text-align: center;  color: #0a0a0a !important;">Detalle del Módulo</h2>
+                        <hr
+                                style="border: 3px solid #0a0a0a !important; background-color: #0a0a0a !important; width: 80px !important; margin-bottom: 2rem !important;"/>
+
+                        <!-- img -->
+                        <div class="d-flex m-0" id="click_01">
+                            <div class="mr-3">
+                                <h3
+                                        style="font-size: 2rem !important; font-weight: 800 !important; color: #ffffff !important; background-color: #0a0a0a !important; padding: 1rem !important; width: 70px !important; height: 90px !important;">
+                                    01
+                                </h3>
+                            </div>
+                            <div>
+                                <h3 style="font-size: 1.7rem !important; font-weight: 600 !important;">Distribución de
+                                    los menús de usuarios
+                                </h3>
+                                <p class="text-left"
+                                   style="color: #0a0a0a !important; font-size: 1.0rem !important;">
+                                    Usuarios:
+                                    <strong>Configuración &gt; Usuarios y Compañías &gt;Usuarios</strong>
+                                    <br>
+                                    Perfiles:
+                                    <strong>Configuración &gt; Usuarios y Compañías &gt; Perfiles de usuario</strong>
+                                    <br>
+                                    Admistradores:
+                                    <strong>Configuración &gt; Usuarios y Compañías &gt;Admistradores</strong>
+                                </p>
+                            </div>
+                        </div>
+                        <img src="./images/01.png" class="img-responsive"
+                             style="margin-top: -15px !important; border-top: 5px solid #0a0a0a !important; margin-bottom: 4rem !important; width: auto !important;">
+
+
+                        <div class="d-flex m-0" id="click_02">
+                            <div class="mr-3">
+                                <h3 style="font-size: 2rem !important; font-weight: 800 !important; color: #ffffff !important; background-color: #0a0a0a !important; padding: 1rem !important; width: 70px !important; height: 90px !important;">
+                                    02
+                                </h3>
+                            </div>
+                            <div>
+                                <h3 style="font-size: 1.7rem !important; font-weight: 600 !important;">Crear un perfil
+                                    de usuario
+                                </h3>
+                                <p style="color: #0a0a0a !important; font-size: 1.2rem !important; font-weight: 300 !important;">
+                                    Ir al nuevo menú
+                                    <strong>Configuración &gt; Usuarios &amp; Compañías &gt; Perfiles de Usuario
+                                    </strong>
+                                    y crear los perfiles que necesite.
+                                </p>
+                            </div>
+                        </div>
+
+                        <img src="./images/02.png" class="img-responsive"
+                             style="margin-top: -15px !important; border-top: 5px solid #0a0a0a !important; margin-bottom: 4rem !important; width: auto !important;">
+                        <!-- end of img -->
+
+
+                        <div class="d-flex m-0" id="click_03">
+                            <div class="mr-3">
+                                <h3 style="font-size: 2rem !important; font-weight: 800 !important; color: #ffffff !important; background-color: #0a0a0a !important; padding: 1rem !important; width: 70px !important; height: 90px !important;">
+                                    03
+                                </h3>
+                            </div>
+                            <div>
+                                <h3 style="font-size: 1.7rem !important; font-weight: 600 !important;">Establecer los
+                                    campos a actualizar para los usuarios asociados
+                                </h3>
+                                <p style="color: #0a0a0a !important; font-size: 1.2rem !important; font-weight: 300 !important;">
+                                    En la configuración de un perfil se detallan los campos a actualizar para los
+                                    usuarios vinculados al perfil. La opción de
+                                    <b>Actualizar los usuarios después de la creación</b>
+                                    permite actualizar o no la configuración actual todos los usuarios asociados al
+                                    perfil.
+                                </p>
+                            </div>
+                        </div>
+                        <img src="./images/03.png" class="img-responsive"
+                             style="margin-top: -15px !important; border-top: 5px solid #0a0a0a !important; margin-bottom: 4rem !important; width: auto !important;">
+                        <!-- end of img -->
+
+
+                        <div class="d-flex m-0" id="click_04">
+                            <div class="mr-3">
+                                <h3 style="font-size: 2rem !important; font-weight: 800 !important; color: #ffffff !important; background-color: #0a0a0a !important; padding: 1rem !important; width: 70px !important; height: 90px !important;">
+                                    04
+                                </h3>
+                            </div>
+                            <div>
+                                <h3 style="font-size: 1.7rem !important; font-weight: 600 !important;">Ocultar menús
+                                    específicos
+                                </h3>
+                                <p style="color: #0a0a0a !important; font-size: 1.2rem !important; font-weight: 300 !important;">
+                                    Esta característica se tomó del proyecto de
+                                    <a href="https://apps.odoo.com/apps/modules/14.0/hide_menu_user/" target="_blank">
+                                        hide_menu_user
+                                    </a>
+                                    el cual permite ocultar menús específicos. Ejem. En la imagen un usuario con perfil
+                                    PERFIL JEFE DE PLANIFICACIÓN - DIRECTOR No tendrá disponible la app de proyectos y
+                                    parte de horas
+                                </p>
+                            </div>
+                        </div>
+                        <img src="./images/04.png" class="img-responsive"
+                             style="margin-top: -15px !important; border-top: 5px solid #0a0a0a !important; margin-bottom: 4rem !important; width: auto !important;">
+                        <!-- end of img -->
+
+
+                        <div class="d-flex m-0" id="click_05">
+                            <div class="mr-3">
+                                <h3 style="font-size: 2rem !important; font-weight: 800 !important; color: #ffffff !important; background-color: #0a0a0a !important; padding: 1rem !important; width: 70px !important; height: 90px !important;">
+                                    05
+                                </h3>
+                            </div>
+                            <div>
+                                <h3 style="font-size: 1.7rem !important; font-weight: 600 !important;">Restringir el
+                                    acceso a las opciones Acción o Imprimir por perfil o usuario
+                                </h3>
+                                <p style="color: #0a0a0a !important; font-size: 1.2rem !important; font-weight: 300 !important;">
+                                    Se creó dos grupos seguridad para restringir las opciones de Acción e Impresión en
+                                    todos los módulos
+                                </p>
+                            </div>
+                        </div>
+                        <img src="./images/05.png" class="img-responsive"
+                             style="margin-top: -15px !important; border-top: 5px solid #0a0a0a !important; margin-bottom: 4rem !important; width: auto !important;">
+                        <!-- end of img -->
+
+
+                        <div class="d-flex m-0" id="click_06">
+                            <div class="mr-3">
+                                <h3 style="font-size: 2rem !important; font-weight: 800 !important; color: #ffffff !important; background-color: #0a0a0a !important; padding: 1rem !important; width: 70px !important; height: 90px !important;">
+                                    06
+                                </h3>
+                            </div>
+                            <div>
+                                <h3 style="font-size: 1.7rem !important; font-weight: 600 !important;">Asociar un perfil
+                                    a los usuarios creados
+                                </h3>
+                                <p style="color: #0a0a0a !important; font-size: 1.2rem !important; font-weight: 300 !important;">
+                                    Ir al nuevo menú
+                                    <strong>Configuración &gt; Usuarios &amp; Compañías &gt; Usuario</strong>
+                                    crear o seleccionar un usuario existente y asignar un perfil previamente creado.
+                                </p>
+                            </div>
+                        </div>
+                        <img src="./images/06.png" class="img-responsive"
+                             style="margin-top: -15px !important; border-top: 5px solid #0a0a0a !important; margin-bottom: 4rem !important; width: auto !important;">
+                        <!-- end of img -->
+
+
+                        <div class="d-flex m-0" id="click_07">
+                            <div class="mr-3">
+                                <h3 style="font-size: 2rem !important; font-weight: 800 !important; color: #ffffff !important; background-color: #0a0a0a !important; padding: 1rem !important; width: 70px !important; height: 90px !important;">
+                                    07
+                                </h3>
+                            </div>
+                            <div>
+                                <h3 style="font-size: 1.7rem !important; font-weight: 600 !important;">Restringir el
+                                    acceso al modo desarrollador por perfil o usuario
+                                </h3>
+                                <p style="color: #0a0a0a !important; font-size: 1.2rem !important; font-weight: 300 !important;">
+                                    Esta opción permite restringir el acceso al modo desarrollador a los usuarios que
+                                    tengan habilitado la opción de
+                                    <b>Permitir odoo técnico</b>
+                                    en las preferencias del usuario.
+                                </p>
+                            </div>
+                        </div>
+                        <img src="./images/07.png" class="img-responsive"
+                             style="margin-top: -15px !important; border-top: 5px solid #0a0a0a !important; margin-bottom: 4rem !important; width: auto !important;">
+                        <!-- end of img -->
+
+
+                        <div class="d-flex m-0" id="click_08">
+                            <div class="mr-3">
+                                <h3 style="font-size: 2rem !important; font-weight: 800 !important; color: #ffffff !important; background-color: #0a0a0a !important; padding: 1rem !important; width: 70px !important; height: 90px !important;">
+                                    08
+                                </h3>
+                            </div>
+                            <div>
+                                <h3 style="font-size: 1.7rem !important; font-weight: 600 !important;">Vídeo de
+                                    demostración
+                                </h3>
+                                <p style="color: #0a0a0a !important; font-size: 1.2rem !important; font-weight: 300 !important;">
+                                    Click
+                                    <a href="" target="_blank">aquí</a> para por
+                                    visualizar la demostración del módulo.
+                                </p>
+                            </div>
+                        </div>
+                        <!-- end of img -->
+
+
+                        <!-- END OF FEATURES -->
+
+
+                        <!-- Footer -->
+                        <section class="oe_container" style="padding: 2rem 3rem 1rem;">
+                            <div class="row" style="max-width:1540px; margin: 0 auto; margin-right: 3rem; ">
+                                <!-- Logo -->
+                                <div class="col-lg-12 d-flex justify-content-center align-items-center"
+                                     style="margin-top: 3rem;">
+                                    <img src="./images/logo.png" width="100px" height="auto"/>
+                                    <!--                                    <p>-->
+                                    <!--                                        Hacemos que Odoo sea aún más increíble-->
+                                    <!--                                    </p>-->
+                                </div>
+                                <!-- End of Logo -->
+                                <div class="col-lg-12">
+                                    <hr
+                                            style="margin-top: 3rem;background: linear-gradient(90deg, rgba(2,0,36,0) 0%, rgba(229,229,229,1) 33%, rgba(229,229,229,1) 58%, rgba(0,212,255,0) 100%); height: 2px; border-style: none;">
+                                    <!-- End of Footer Section -->
+                                </div>
+                            </div>
+                        </section>
+                        <!-- END OF FOOTER -->
+
+
+                    </div>
+                </div>
+
+    </body>
+</html>

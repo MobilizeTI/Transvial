@@ -1,6 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, fields, models, _
+from odoo.tools.misc import formatLang, get_lang
+from odoo.osv import expression
+from odoo.tools import float_is_zero, float_compare
+import json
+from pprint import pprint
+from lxml import etree
+import simplejson
 
 
 class ProcurementGroup(models.Model):
@@ -45,16 +52,29 @@ class StockPicking(models.Model):
             })
         return resp
 
-    # def write(self, values):
-    #     # Add code here
-    #     if 'state' in values:
-    #         state = values['state']
-    #         if state == 'done':
-    #             values.update({
-    #                 'partner_id': self.partner_id_aux.id,
-    #                 'flag_from_mtto': 'process'
-    #             })
-    #     return super(StockPicking, self).write(values)
+    @api.model
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+        context = self._context
+        res = super(StockPicking, self).fields_view_get(view_id, view_type, toolbar=toolbar, submenu=False)
+        turn_view_readonly = context.get('turn_view_readonly', False)
+        if turn_view_readonly:
+            doc = etree.XML(res['arch'])
+            if view_type == 'form':
+                for node in doc.xpath('//field'):
+                    node.set('readonly', '1')
+                    node_values = node.get('modifiers')
+                    modifiers = json.loads(node_values)
+                    modifiers['readonly'] = True
+                    node.set('modifiers', simplejson.dumps(modifiers))
+
+                for node in doc.xpath('//button'):
+                    node_values = node.get('modifiers')
+                    modifiers = json.loads(node_values)
+                    modifiers['invisible'] = True
+                    node.set('modifiers', simplejson.dumps(modifiers))
+
+                res['arch'] = etree.tostring(doc)
+        return res
 
 
 class StockMove(models.Model):

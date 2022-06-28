@@ -8,6 +8,51 @@
             <field name="model">helpdesk.ticket</field>
             <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="required">1</attribute>
+                    <attribute name="options">{'no_create': True, 'no_create_edit': True, 'no_open': True}</attribute>
+
+                </xpath>
+                <xpath expr="//field[@name='partner_name']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='priority']" position="replace">
+                    <field name="priority" widget="selection" invisible="1"/>
+                    <field name="create_date" string="Fecha de créación" readonly="1"
+                           attrs="{'invisible': [('create_date', '=', False)]}"/>
+                </xpath>
+
+                <xpath expr="//field[@name='sla_deadline']" position="after">
+                    <!-- invisible para cuando el estado es resuelto(3) o cancelado(4) o no exista mnj-->
+                    <field name="msj_dif_dates" readonly="1" class="alert alert-primary text-bf"
+                           string="Tiempo restante"
+                           attrs="{'invisible': ['|',('msj_dif_dates', '=', False),
+                                                     ('stage_id', 'in', (3,4))]}"/>
+
+                </xpath>
+
+                <xpath expr="//field[@name='tag_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='ticket_type_id']" position="attributes">
+                    <attribute name="widget">selection</attribute>
+                    <attribute name="string">Nivel de fallo</attribute>
+                    <attribute name="required">1</attribute>
+                </xpath>
+
+
+                <xpath expr="//field[@name='partner_email']" position="attributes">
+                    <attribute name="attrs">{'required': [('flag_create_ot_auto', '=', True)]}</attribute>
+                </xpath>
+
+                <xpath expr="//button[@name='action_get_attachment_tree_view']" position="after">
+                    <button name="action_view_ot" string="OT" type="object"
+                            attrs="{'invisible':[('mtm_request_id', '=',False)]}"
+                            icon='fa-arrow-right'
+                            class="oe_stat_button"/>
+                </xpath>
 
 
                 <xpath expr="//button[@name='assign_ticket_to_self']" position="after">
@@ -16,99 +61,105 @@
                             class="oe_highlight"
                             string="Create OT"
                             icon="fa-plus-circle"
-                            attrs="{'invisible': [('mtm_request_id','!=', False)]}"
-                            groups="mblz_mueve.group_support_levels_tkt"/>
+                            attrs="{'invisible': ['|',('mtm_request_id','!=', False),('id','=', False)]}"
+                            groups="mblz_mueve.group_tecnicos_its"/>
                 </xpath>
 
-                <xpath expr="//field[@name='kanban_state']" position="before">
-                    <field name="name_seq" string="Sequence" class="text-primary text-bf"/>
 
+                <xpath expr="//field[@name='sla_status_ids']" position="after">
+                    <h5>
+                        <field name="name_seq" string="Sequence" class="text-primary text-bf"/>
+                    </h5>
+                    <div attrs="{'invisible': [('mtm_request_id', '!=', False),]}">
+                        <label for="flag_create_ot_auto" string="Crear OT" style="font-weight:bold;"/>
+                        <field name="flag_create_ot_auto" widget="boolean_toggle"/>
+                    </div>
                 </xpath>
+
+                <xpath expr="//field[@name='user_id']" position="attributes">
+                    <attribute name="attrs">{'required': [('flag_create_ot_auto', '=', True)],
+                                             'readonly': [('mtm_request_id', '!=', False)]}</attribute>
+                    <attribute name="domain">[('is_technical_its', '=', True)]</attribute>
+                    <attribute name="options">{'no_create': True, 'no_create_edit': True, 'no_open': False}</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="domain">[
+                        ('type_client_tkt', 'in', ('technical-its', 'glider', 'supervisor-mtto'))]</attribute>
+                    <attribute name="context">{'default_type_client_tkt': 'technical-its'}</attribute>
+                </xpath>
+
 
                 <xpath expr="//field[@name='ticket_type_id']" position="after">
-                    <field name="vehicle_id" widget="many2one"/>
-                    <field name="equipment_id"/>
-                    <field name="equipment_category_id"/>
+                    <field name="tag_id"
+                           required="1"
+                           options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"/>
+
+                    <field name="nature_type" options="{'horizontal': True}" widget="radio"/>
+
+                    <field name="equipment_id" widget="many2one"
+                           attrs="{'required': [('flag_create_ot_auto', '=', True)],
+                                   'invisible': [('flag_create_ot_auto', '=', False),],
+                                   'readonly': [('mtm_request_id', '!=', False)]}"
+                           string="ID vehículo"
+                           options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"
+                    />
+                    <field name="vehicle_id" attrs="{'invisible': [('equipment_id', '=', False)]}" invisible="1"/>
+                    <field name="equipment_category_id" attrs="{'invisible': [('equipment_id', '=', False)]}"/>
+
+                    <!-- tipo ot y pautas-->
+                    <field name="type_ot"
+                           domain="[('maintenance_type', '=', nature_type), '|',('is_sirci', '=', True),('is_its', '=', True)]"
+                           attrs="{'required': [('flag_create_ot_auto', '=', True)],
+                                   'invisible': [('flag_create_ot_auto', '=', False)],
+                                   'readonly': [('mtm_request_id', '!=', False)],}"
+                           options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"/>
+
+                    <!--                    <field name="guide_line_ids" invisible="1"/>-->
+                    <!--                    <field name="maintenance_guideline_ids"-->
+                    <!--                           widget="many2many_tags"-->
+                    <!--                           readonly="1"-->
+                    <!--                           invisible="1"-->
+                    <!--                           groups="base.group_no_one"-->
+                    <!--                    />-->
+
                 </xpath>
 
                 <xpath expr="//field[@name='partner_email']" position="after">
-                    <field name="failure_level_id" widget="many2one"/>
+                    <!--                    <field name="failure_level_id" widget="selection" string="ANS"/>-->
                     <field name="support_level_ids"
                            widget="many2many_tags"
                            options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"
-                           groups="mblz_mueve.group_support_levels_tkt"/>
-                    <field name="place_of_care"/>
+                           groups="mblz_mueve.group_tecnicos_its"/>
+                    <!--                    <field name="place_of_care"/>-->
 
                 </xpath>
 
-                <xpath expr="//field[@name='tag_ids']" position="after">
+                <xpath expr="//field[@name='email_cc']" position="before">
+
+                    <!-- caracterización-->
+                    <field name="categ_id" required="1"
+                           options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"/>
+                    <field name="element_ids" widget="many2many_tags" invisible="1"/>
+                    <field name="categ_code" attrs="{'invisible': [('categ_id', '=', False)]}"/>
+                    <field name="element_id"
+                           domain="[('id', '=', element_ids), ('categ_ids', 'in', equipment_category_id)]"
+                           attrs="{'invisible': [('categ_id', '=', False)],
+                           'required': [('categ_id', '!=', False)]}"
+                           options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"/>
+                    <field name="element_code" attrs="{'invisible': [('element_id', '=', False)]}"/>
+                    <field name="element_system_id" attrs="{'invisible': [('element_id', '=', False)]}"/>
+
                     <field name="mtm_request_id"
-                           string="OT"
+                           string="Orden de Trabajo"
                            attrs="{'invisible': [('mtm_request_id', '=', False)]}"
                            readonly="1"/>
+                    <field name="ot_close_datetime" attrs="{'invisible': [('ot_close_datetime', '=', False)]}"/>
+                    <field name="user_default_id" widget="many2one_avatar_user" readonly="1" invisible="1"/>
+                    <field name="tkt_master_id" readonly="1" attrs="{'invisible': [('tkt_master_id', '=', False)]}"/>
+                    <field name="closing_comment" string="Comentario de cierre"
+                           attrs="{'invisible': ['|', ('tkt_master_id', '=', False),('stage_id', '!=', 3)]}"/>
                 </xpath>
-
-                <!--                <xpath expr="//field[@name='description']" position="after">-->
-                <!--                    <notebook>-->
-                <!--                        <page name="page_activities" string="Activities"-->
-                <!--                              attrs="{'invisible': [('support_level_ids', '=', [])]}"-->
-                <!--                              groups="mblz_mueve.group_support_levels_tkt">-->
-                <!--                            <field-->
-                <!--                                    name="support_activity_ids"-->
-                <!--                                    widget="section_and_note_one2many"-->
-                <!--                                    readonly="1"-->
-                <!--                                    mode="tree,form">-->
-                <!--                                <tree string="Activities Lines">-->
-                <!--                                    <field name="sequence" widget="handle"/>-->
-                <!--                                    <field name="guideline_id" invisible="1"/>-->
-                <!--                                    <field name="company_id" invisible="1"/>-->
-
-                <!--                                    <field name="activity_id" domain="[('specialty_tag_ids', '!=', False)]"/>-->
-
-                <!--                                    <field name="activity_url_video" invisible="1"/>-->
-                <!--                                    <button name="action_open_url_video"-->
-                <!--                                            attrs="{'invisible': [('activity_url_video', '=', False)]}"-->
-                <!--                                            icon="fa-link"-->
-                <!--                                            type="object"/>-->
-                <!--                                    <field name="activity_code" invisible="0"/>-->
-
-
-                <!--                                    <field-->
-                <!--                                            name="activity_speciality_ids"-->
-                <!--                                            widget="many2many_tags"-->
-                <!--                                            options="{'color_field': 'color'}"-->
-                <!--                                    />-->
-
-                <!--                                    <field name="system_class_id" class="text-primary"-->
-                <!--                                           options="{'no_open': True, 'no_create': True}"/>-->
-                <!--                                </tree>-->
-                <!--                                <form>-->
-                <!--                                    <group>-->
-                <!--                                        <group>-->
-                <!--                                            <field name="activity_id"/>-->
-                <!--                                            <field name="activity_code"/>-->
-                <!--                                            <field name="system_class_id"-->
-                <!--                                                   options="{'no_open': True, 'no_create': True}"/>-->
-                <!--                                        </group>-->
-                <!--                                        <group>-->
-                <!--                                            <field name="activity_att_documents"-->
-                <!--                                                   attrs="{'invisible': [('activity_att_documents', '=', [])]}"-->
-                <!--                                                   widget="many2many_binary"/>-->
-                <!--                                            <field-->
-                <!--                                                    name="activity_speciality_ids"-->
-                <!--                                                    widget="many2many_tags"-->
-                <!--                                                    options="{'color_field': 'color'}"-->
-                <!--                                            />-->
-                <!--                                        </group>-->
-
-
-                <!--                                    </group>-->
-                <!--                                </form>-->
-                <!--                            </field>-->
-                <!--                        </page>-->
-                <!--                    </notebook>-->
-                <!--                </xpath>-->
-
             </field>
         </record>
 
@@ -123,8 +174,8 @@
                 <xpath expr="//page[@name='description']" position="after">
                     <!-- Add your fields or attributes here -->
                     <page name="page_activities" string="Activities"
-                          attrs="{'invisible': [('support_level_ids', '=', [])]}"
-                          groups="mblz_mueve.group_support_levels_tkt">
+                          attrs="{'invisible': ['|', ('support_level_ids', '=', []), ('support_activity_ids', '=', [])]}"
+                          groups="mblz_mueve.group_tecnicos_its">
                         <field
                                 name="support_activity_ids"
                                 widget="section_and_note_one2many"
@@ -178,6 +229,14 @@
                             </form>
                         </field>
                     </page>
+
+                    <page name="technical_add" string="Técnicos adicionales">
+                        <group>
+                            <field name="user_technical_add_ids" widget="many2many_tags_avatar" string="Añadír"
+                                   domain="[('id', '!=', user_id)]"
+                                   options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"/>
+                        </group>
+                    </page>
                 </xpath>
 
             </field>
@@ -192,6 +251,24 @@
 
                 <xpath expr="//field[@name='display_name']" position="before">
                     <field name="name_seq" string="Sequence"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        <!-- Inherit Form View to Modify it -->
+        <record id="mblz_helpdesk_tickets_view_search" model="ir.ui.view">
+            <field name="name">mblz_helpdesk.ticket.search</field>
+            <field name="model">helpdesk.ticket</field>
+            <field name="inherit_id" ref="helpdesk.helpdesk_tickets_view_search"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='name']" position="before">
+                    <field name="name_seq" string="SEQ"/>
+                </xpath>
+                <xpath expr="//filter[@name='my_ticket']" position="after">
+                    <!-- Add your fields or attributes here -->
+                    <filter string="Desde Maestra" domain="[('tkt_master_id','!=',False)]" name="tkt_from_master"/>
                 </xpath>
 
             </field>

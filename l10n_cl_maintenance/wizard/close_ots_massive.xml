@@ -15,15 +15,14 @@
                     <field name="ot_master_id" invisible="1"/>
                     <field name="select_all_request"
                            attrs="{
-                                'invisible': [('option', '=', 'close_task')],
+                                'invisible':  [('option', 'in', ('close_task','assign_emp'))],
                                 'required': [('option', '=', 'close_ot')],
                            }"
                            options="{'no_create':True,'no_create_edit': True,'no_open': True}"
                            widget="many2many_tags"/>
                 </group>
-                <group attrs="{'invisible':  [('option', '=', 'close_task')]}">
+                <group attrs="{'invisible':  [('option', 'in', ('close_task','assign_emp'))]}">
                     <field name="closing_comment"
-                           attrs="{'invisible': [('option', '=', 'close_task')]}"
                            widget="text"/>
                 </group>
 
@@ -58,7 +57,7 @@
 
 
                     <field name="flag_employee" widget="boolean_toggle"
-                           attrs="{'invisible': [('option', '=', 'close_ot')]}"/>
+                           attrs="{'invisible': [('option', 'in', ('close_ot', 'assign_emp', 'close_task'))]}"/>
                     <field name="specialty_tag_ids"
                            widget="many2many_tags"
                            options="{'color_field': 'color'}"
@@ -67,12 +66,12 @@
                            }"
                     />
                     <field name="employee_id"
-                           domain="[('speciality_ids', 'in', specialty_tag_ids), ('user_id', '!=', False),
+                           domain="[('speciality_ids', 'in', specialty_tag_ids),
                                     '|', ('company_id', '=', False), ('company_id', '=', company_id)
                                    ]"
                            attrs="{
                                 'invisible': ['|',('flag_employee', '=', False), ('option', '=', 'close_ot')],
-                                'required': [('flag_employee', '=', True),('option', '=', 'close_task')],
+                                'required': [('flag_employee', '=', True),('option', 'in', ('close_task', 'assign_emp'))],
                            }"
                            options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"/>
 
@@ -88,12 +87,13 @@
                                 ],
                                 'required': [('flag_employees_additional', '=', True)],
                            }"
+                           options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"
                     />
 
                     <field name="time_spent"
                            string="Duración" class="oe_inline" widget="float_time"
                            attrs="{
-                                'invisible': [('option', '=', 'close_ot')],
+                                'invisible':  [('option', 'in', ('close_ot','assign_emp'))],
                                 'required': [('option', '=', 'close_task')],
                            }"
                     />
@@ -101,7 +101,7 @@
                            widget="text"
                            placeholder="Describe your name timesheet..."
                            attrs="{
-                                'invisible': [('option', '=', 'close_ot')],
+                                'invisible':  [('option', 'in', ('close_ot','assign_emp'))],
                                 'required': [('option', '=', 'close_task')],
                            }"
                     />
@@ -109,18 +109,30 @@
                 </group>
                 <!-- opciones parte de horas -->
                 <div class="alert alert-primary" role="alert"
-                     attrs="{'invisible': [('option', '=', 'close_ot')]}">
-                    <p>Se procederá a cerrar todas las tareas que <b><u>No</u></b> tengan restricciones por solicitud de material
-                    pendiente de validación y tengan un empleado asignado asociadas a las órdenes de trabajo, las que no
-                    cumplan se marcarán de color <span class="text-danger"><b>rojo</b></span></p>
+                     attrs="{'invisible': [('option', 'in', ('close_ot','assign_emp'))]}">
+                    <p>Se procederá a cerrar todas las tareas que <b><u>No</u></b> tengan restricciones por solicitud de
+                        material
+                        pendiente de validación y tengan un empleado asignado asociadas a las órdenes de trabajo, las
+                        que no
+                        cumplan se marcarán de color <span class="text-danger"><b>rojo</b></span></p>
+                </div>
+
+                <div class="alert alert-warning" role="alert"
+                     attrs="{'invisible': [('option', '!=', 'assign_emp')]}">
+                    <p class="text-bf font-italic">¡Si ya existe empleado asignado se reemplazará por el nuevo empleado, no siendo así para los
+                        empleados adicionales los cuales se añaden a los existentes en la tarea!</p>
                 </div>
                 <footer>
                     <button name="action_close_ot"
-                            attrs="{'invisible': [('option', '=', 'close_task')]}"
+                            attrs="{'invisible': [('option', 'in', ('close_task','assign_emp'))]}"
                             string="Accept" type="object" class="btn-primary"/>
 
                     <button name="action_close_task"
-                            attrs="{'invisible': [('option', '=', 'close_ot')]}"
+                            attrs="{'invisible': [('option', 'in', ('close_ot','assign_emp'))]}"
+                            string="Accept" type="object" class="btn-primary"/>
+
+                    <button name="action_upd_employee_massive"
+                            attrs="{'invisible': [('option', '!=', 'assign_emp')]}"
                             string="Accept" type="object" class="btn-primary"/>
                     <button string="Cancel"
                             class="btn-secondary" special="cancel"/>

@@ -9,6 +9,7 @@ from odoo.tools import float_is_zero
 class MaintenanceStage(models.Model):
     _inherit = 'maintenance.stage'
 
+    name = fields.Char('Name', required=True, translate=False)
     request_bom = fields.Boolean("Request Bill of Material")
     require_bom = fields.Boolean("Require Bill of Material")
     require_employees = fields.Boolean("Require Validate Employees")
@@ -172,6 +173,7 @@ class MaintenanceRequest(models.Model):
 
         action['context'] = dict(
             self._context,
+            # turn_view_readonly=True,
             default_picking_id=picking_id.id,
             default_picking_type_id=picking_id.picking_type_id.id,
             default_origin=self.name_seq,

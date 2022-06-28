@@ -75,3 +75,8 @@ class HelpdeskSupportLevel(models.Model):
         except ValueError:
             default['name'] = self.name
         return super(HelpdeskSupportLevel, self).copy(default)
+
+    @api.model
+    def clear_all_data(self):
+        for record in self.search([]):
+            record.support_activity_ids = [(6, 0, [])]

@@ -4,7 +4,7 @@
 
         <!-- Actualización masiva-->
         <record id="action_massive_employee_update" model="ir.actions.server">
-            <field name="name">Asignación Masiva de Empleado</field>
+            <field name="name">Asignación/Cierre Masivo</field>
             <field name="model_id" ref="model_maintenance_request_task"/>
             <field name="binding_model_id" ref="l10n_cl_maintenance.model_maintenance_request_task"/>
             <field name="state">code</field>
@@ -23,8 +23,8 @@
                                 attrs="{'invisible': ['|', '|',('flag_timer', '=', True), ('display_timer_stop', '=', True), ('stage_id', 'in', (2,3))]}"
                                 icon="fa-clock-o"/>
                         <button class="btn-secondary" name="action_timer_start" type="object" string="Start"
-                                attrs="{'invisible': [ '|', '|',('display_timer_start_secondary', '=', False),
-                                                            ('encode_uom_in_days', '=', True), ('stage_id', 'in', (2,3))
+                                attrs="{'invisible': [ '|', ('display_timer_start_secondary', '=', False),
+                                                            ('encode_uom_in_days', '=', True),
                                                       ]}"
                                 icon="fa-clock-o"/>
                         <button class="btn-primary btn-danger o_fsm_stop" name="action_timer_stop"
@@ -88,7 +88,8 @@
                             <group>
                                 <field name="flag_create_task" invisible="1"/>
                                 <field name="request_id" style="color:red;font-weight: bold;"
-                                       attrs="{'readonly': ['|', ('flag_create_task', '=', True), ('flag_from_request', '=', True)]}"
+                                       attrs="{'readonly': ['|', '|',('flag_create_task', '=', True),
+                                                                 ('flag_from_request', '=', True), ('request_id', '!=', False)]}"
                                        options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"/>
 
                                 <field name="activity_id"
@@ -98,10 +99,12 @@
                                 <field name="flag_from_request" invisible="1"/>
 
                                 <field name="employee_id"
+                                       help="Empleados que tengan usuarios asignados"
                                        domain="[
-                                                ('user_id', '!=', False),
                                                 ('speciality_ids', 'in', activity_speciality_ids),
-                                                '|', ('company_id', '=', False), ('company_id', '=', company_id)
+                                                '|', ('company_id', '=', False),
+                                                ('company_id', '=', company_id),
+                                                ('user_id', '!=', False)
                                        ]"
                                        options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"
                                        attrs="{'readonly': [('flag_readonly', '=', True)]}"
@@ -288,9 +291,9 @@
                                     <field name="employee_additional_ids"
                                            domain="[('id', '!=', employee_id),
                                                     ('speciality_ids','!=', False)]"
-                                           nolabel="1"
+                                           string="Añadir"
                                            options="{'no_create': True, 'no_open': True}"
-                                           widget="many2many_tags"/>
+                                           widget="many2many_tags_avatar"/>
                                 </group>
                             </page>
                         </notebook>
@@ -473,7 +476,6 @@
             </field>
         </record>
 
-
         <record id="request_task_view_calendar" model="ir.ui.view">
             <field name="name">maintenance.request.task.calendar.fsm</field>
             <field name="model">maintenance.request.task</field>
@@ -582,6 +584,9 @@
                     <field name="active"/>
                     <filter string="My Tasks" name="my_tasks" domain="[('user_id', '=', uid)]"/>
                     <separator/>
+                    <filter string="Listas para cierre" name="ready_close"
+                            domain="[('alert_close_task', '=', False), ('stage_id', '!=', 2)]"/>
+                    <separator/>
                     <filter string="To Schedule" name="schedule"
                             domain="[
                                     '|',
@@ -601,6 +606,14 @@
                         ('planned_date_begin','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
                     <filter name="planned_future" string="Future"
                             domain="[('planned_date_begin', '>=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
+                    <separator/>
+                    <filter string="Para asignación masiva"
+                            name="filter_assign_massive"
+                            domain="[('alert_close_task', '!=', False), ('stage_id', '=',1)]"/>
+                    <filter string="Para cierre masivo"
+                            name="filter_close_massive"
+                            domain="[('alert_close_task', '=', False), ('stage_id', '!=',2)]"/>
+
                     <group expand="0" string="Group By">
                         <filter string="Responsible" name="groupby_user" context="{'group_by':'user_id'}"/>
                         <filter string="Stage" name="groupby_stage" context="{'group_by':'stage_id'}"/>
@@ -620,7 +633,13 @@
             <field name="name">maintenance_request_task_admin_view_tree</field>
             <field name="model">maintenance.request.task</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree decoration-danger="alert_close_task != False">
+                    <header>
+                        <button name="action_massive_employee_update"
+                                type="object" string="Asignación/Cierre Masivo" class="btn btn-success"/>
+                    </header>
+                    <field name="alert_close_task" invisible="0" string="Alerta" optional="hide"
+                           options='{"bg_color": "#bdc3c7"}'/>
                     <field name="name_seq" string="Name" readonly="1"/>
                     <field name="flag_create_task" invisible="1"/>
                     <field name="flag_from_request" invisible="1"/>
@@ -656,8 +675,7 @@
         </record>
 
         <!--  ================== vista desde la solicitud (fin) ================== -->
-
-
+        <!-- request_id.stage_id -> 2 En progreso-->
         <record id="maintenance_request_task_action" model="ir.actions.act_window">
             <field name="name">Maintenance Request Task</field>
             <field name="type">ir.actions.act_window</field>
@@ -681,6 +699,7 @@
             </field>
         </record>
 
+        <!-- request_id.stage_id -> 2 En progreso-->
         <record id="maintenance_request_task_user_action" model="ir.actions.act_window">
             <field name="name">Maintenance Request Task</field>
             <field name="type">ir.actions.act_window</field>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Inherit Form View to Modify it -->
+        <record id="mueve_view_department_form" model="ir.ui.view">
+            <field name="name">MUEVE: hr.department.form</field>
+            <field name="model">hr.department</field>
+            <field name="inherit_id" ref="hr.view_department_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='parent_id']" position="before">
+                    <field name="code"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        <!-- Inherit Form View to Modify it -->
+        <record id="mueve_view_hr_job_form" model="ir.ui.view">
+            <field name="name">MUEVE: hr.job.form</field>
+            <field name="model">hr.job</field>
+            <field name="inherit_id" ref="hr.view_hr_job_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//div[hasclass('oe_title')]" position="after">
+                    <div>
+                        <label for="can_create_ot" class="oe_edit_only"/>
+                        <field name="can_create_ot" widget="boolean_toggle"/>
+                    </div>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="mueve_view_hr_job_tree" model="ir.ui.view">
+            <field name="name">MUEVE: hr.job.tree</field>
+            <field name="model">hr.job</field>
+            <field name="inherit_id" ref="hr.view_hr_job_tree"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='state']" position="before">
+                    <!-- Add new fields here -->
+                    <field name="can_create_ot"/>
+                </xpath>
+
+            </field>
+        </record>
+
+    </data>
+</odoo>

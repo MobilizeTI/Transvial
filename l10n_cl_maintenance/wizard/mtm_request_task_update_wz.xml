@@ -8,8 +8,10 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Update massive employee">
-
-                    <group>
+                    <group class="text-center">
+                        <field name="option" widget="selection_badge" nolabel="1"/>
+                    </group>
+                    <group attrs="{'invisible': [('option', '=', 'close')]}">
                         <field name="task_ids" widget="many2many_tags" invisible="1"/>
                         <field name="count_task_ids"/>
                         <field name="specialty_tag_ids"
@@ -17,18 +19,67 @@
                                options="{'color_field': 'color'}"
                         />
                         <field name="employee_id"
-                               domain="['|', ('company_id', '=', False),
-                                             ('company_id', '=', company_id)]"
+                               attrs="{'required': [('option', '=', 'assign')]}"
+                               widget="many2one_avatar_employee"
                                options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"/>
+                        <field name="employee_additional_ids"
+                               domain="[('id', '!=', employee_id),
+                                                    ('speciality_ids','!=', False)]"
+                               options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"
+                               widget="many2many_tags_avatar"/>
+
                         <field name="company_id" groups="base.group_multi_company"/>
                     </group>
+                    <div class="alert alert-danger" role="alert"
+                         attrs="{'invisible': ['|', ('option', '=', 'assign'), ('task_close_ids', '!=', [])]}">
+                        <b>¡No existe ninguna tarea seleccionada que se pueda cerrar!</b>
+                    </div>
+                    <group attrs="{'invisible': [('option', '=', 'assign')]}">
+                        <field name="description" widget="text"
+                               placeholder="Ingrese una descripción de la(s) tarea(s) a cerrar"/>
+                    </group>
+                    <notebook attrs="{'invisible': ['|', ('option', '=', 'assign'), ('task_close_ids', '=', [])]}">
+                        <page name="page_tasks" string="Tareas">
+                            <div class="text-nowrap text-primary" style="width: 8rem;">
+                                <p>Se procederá a cerrar las siguientes tareas las cuales <b><u>No</u></b> tienen
+                                    restricciones por solicitud de material pendiente de validación y cuentan con un
+                                    empleado asignado.</p>
+                            </div>
+                            <field name="task_close_ids" widget="one2many"
+                                   readonly="1"
+                                   domain="[('flag_create_task', '=', False),('stage_id', '!=', 2)]">
+                                <tree create="0" delete="0" edit="0">
+                                    <field name="alert_close_task" invisible="1"/>
+                                    <field name="name_seq" string="Name" readonly="1"/>
+                                    <field name="flag_create_task" invisible="1"/>
+                                    <field name="flag_from_request" invisible="1"/>
+                                    <field name="request_id"
+                                           optional="hide"
+                                           attrs="{'readonly': ['|', ('flag_create_task', '=', True),
+                            ('flag_from_request', '=', True)]}"
+                                           options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"/>
 
+                                    <field name="activity_id" optional="hide" required="1"/>
+                                    <field name="activity_speciality_ids" widget="many2many_tags"
+                                           options="{'color_field': 'color'}" optional="hide"/>
+                                    <field name="employee_id"
+                                           domain="[('speciality_ids', 'in', activity_speciality_ids)]"
+                                           options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"
+                                           widget="many2one_avatar_employee"/>
+                                    <field name="stage_id"/>
+                                    <field name="activity_ids" widget="list_activity" optional="hide"/>
+                                    <field name="company_id" optional="show" groups="base.group_multi_company"
+                                           readonly="1"/>
+
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
                     <footer>
                         <div class="text-left">
                             <button name="btn_confirm" type="object" string="Confirm"
                                     icon="fa-check-square-o"
                                     class="oe_highlight"/>
-                            or
                             <button string="Cancel" special="cancel"/>
                         </div>
                     </footer>

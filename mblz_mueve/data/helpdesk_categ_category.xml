@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="helpdesk_categ_categpry_cctv" model="helpdesk.categ.category">
+            <field name="name">CCTV</field>
+            <field name="code">cctv</field>
+            <field name="element_ids" eval="[(5, 0, 0),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0001')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0002')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0003')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0003_1')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0004')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0005')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0006_1')}),
+            ]"/>
+
+
+        </record>
+
+        <record id="helpdesk_categ_categpry_camcon" model="helpdesk.categ.category">
+            <field name="name">Cámara conductor</field>
+            <field name="code">camcon</field>
+            <field name="element_ids" eval="[(5, 0, 0),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0006')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0007')}),
+            ]"/>
+        </record>
+
+        <record id="helpdesk_categ_categpry_senmotcon" model="helpdesk.categ.category">
+            <field name="name">Sensores del motor y conducción del vehículo</field>
+            <field name="code">senmotcon</field>
+            <field name="element_ids" eval="[(5, 0, 0),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0008')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0010')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0011')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0012')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0013')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0015')}),
+            ]"/>
+        </record>
+
+        <record id="helpdesk_categ_categpry_sencabveh" model="helpdesk.categ.category">
+            <field name="name">Sensores de la cabina del vehículo</field>
+            <field name="code">sencabveh</field>
+            <field name="element_ids" eval="[(5, 0, 0),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0009')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0014')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0016')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0044')})
+            ]"/>
+        </record>
+
+        <record id="helpdesk_categ_categpry_senconpas" model="helpdesk.categ.category">
+            <field name="name">Sensor de conteo de pasajeros</field>
+            <field name="code">senconpas</field>
+            <field name="element_ids" eval="[(5, 0, 0),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0021')}),
+            ]"/>
+        </record>
+
+        <record id="helpdesk_categ_categpry_stdi" model="helpdesk.categ.category">
+            <field name="name">Sistema STDI</field>
+            <field name="code">stdi</field>
+            <field name="element_ids" eval="[(5, 0, 0),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0026')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0028')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0033')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0034')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0035')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0036')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0037')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0038')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0039')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0040')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0041')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0042')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0045')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0046')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0048')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0050')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0051')}),
+            ]"/>
+        </record>
+
+        <record id="helpdesk_categ_categpry_botpan" model="helpdesk.categ.category">
+            <field name="name">Botón de pánico</field>
+            <field name="code">botpan</field>
+            <field name="element_ids" eval="[(5, 0, 0),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0023')}),
+            ]"/>
+        </record>
+
+        <record id="helpdesk_categ_categpry_senapecie" model="helpdesk.categ.category">
+            <field name="name">Sensores de la apertura y cierre de puertas</field>
+            <field name="code">senapecie</field>
+            <field name="element_ids" eval="[(5, 0, 0),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0022')}),
+            ]"/>
+        </record>
+
+        <record id="helpdesk_categ_categpry_camfrontra" model="helpdesk.categ.category">
+            <field name="name">Cámara frontal y Cámara trasera</field>
+            <field name="code">camfrontra</field>
+            <field name="element_ids" eval="[(5, 0, 0),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0017')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0018')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0019')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0020')}),
+            ]"/>
+        </record>
+
+        <record id="helpdesk_categ_categpry_discentral" model="helpdesk.categ.category">
+            <field name="name">Dispositivo central</field>
+            <field name="code">discentral</field>
+            <field name="element_ids" eval="[(5, 0, 0),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0024')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0025')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0027')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0029')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0030')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0031')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0032')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0043')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0047')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0049')}),
+                    (0, 0, {'element_id': ref('mblz_mueve.tkt_categ_elemt_0052')}),
+            ]"/>
+        </record>
+    </data>
+</odoo>

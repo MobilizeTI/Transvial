@@ -56,6 +56,7 @@
                     <field name="picking_task_mtto_id"
                            readonly="1" string="Picking"
                            attrs="{'invisible': [('picking_task_mtto_id', '=', False)]}"/>
+                    <field name="date_approved" attrs="{'invisible': [('date_approved', '=', False)]}"/>
                 </xpath>
 
                 <xpath expr="//page[@name='approvers']" position="after">
@@ -77,6 +78,10 @@
 
                 </xpath>
 
+
+                <xpath expr="//field[@name='approver_ids']/tree//field[@name='status']" position="after">
+                    <field name="date_approved" widget="datetime"/>
+                </xpath>
 
             </field>
         </record>

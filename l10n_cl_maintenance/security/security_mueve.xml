@@ -2,7 +2,7 @@
 <odoo>
     <data noupdate="0">
         <record id="category_group_perfil_mueve" model="ir.module.category">
-            <field name="name">Perfiles</field>
+            <field name="name">Grupos de perfiles</field>
         </record>
 
         <!-- ANALISTA -->

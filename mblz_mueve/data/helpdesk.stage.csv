@@ -1,0 +1,5 @@
+"ID","Secuencia","Nombre de la etapa","Equipo/ID","Plantilla de correo electrónico/ID","Plegado en Kanban","Etapa de cierre","Descripción"
+"helpdesk.stage_new","0","Nuevo","helpdesk.helpdesk_team1","mblz_mueve.new_ticket_request_email_template_mblz","","",""
+"helpdesk.stage_in_progress","1","En proceso","helpdesk.helpdesk_team1","","","",""
+"helpdesk.stage_solved","2","Resuelto","helpdesk.helpdesk_team1","","True","True",""
+"helpdesk.stage_cancelled","3","Cancelado","helpdesk.helpdesk_team1","","True","True",""

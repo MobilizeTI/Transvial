@@ -53,12 +53,12 @@
             </field>
         </record>
 
-        <menuitem name="Failure Level"
-                  id="helpdesk_failure_level_menu"
-                  parent="helpdesk.helpdesk_menu_config"
-                  action="helpdesk_failure_level_act_window"
-                  sequence="20"
-        />
+<!--        <menuitem name="Failure Level"-->
+<!--                  id="helpdesk_failure_level_menu"-->
+<!--                  parent="helpdesk.helpdesk_menu_config"-->
+<!--                  action="helpdesk_failure_level_act_window"-->
+<!--                  sequence="20"-->
+<!--        />-->
 
     </data>
 </odoo>

@@ -14,7 +14,7 @@
                 </xpath>
 
                 <xpath expr="//field[@name='value']" position="after">
-                    <field name="value_dif" optional="hide" readonly="1"/>
+                    <field name="value_dif" optional="hide" readonly="1" sum="value_dif"/>
                 </xpath>
 
             </field>

@@ -21,6 +21,7 @@
                         </button>
                         <button type="object"
                                 name="get_pickings"
+                                context="{'turn_view_readonly': True}"
                                 class="oe_stat_button"
                                 icon="fa-truck"
                                 attrs="{'invisible': [('picking_count', '=', 0)]}"
@@ -37,6 +38,7 @@
                 </xpath>
 
                 <xpath expr="//field[@name='stage_id']" position="after">
+<!--                    invisible cuando el estado de la ot es reparado o cerrado-->
                     <button name="button_create_approval_request"
                             attrs="{'invisible': ['|','|',('user_id', '=', False), ('stage_id', '!=', 1), ('request_stage_id', 'in', (3,9))]}"
                             groups="l10n_cl_maintenance.group_jefe_planificacion,l10n_cl_maintenance.group_tecnicos,l10n_cl_maintenance.group_ing_llantas_config,l10n_cl_maintenance.group_jefe_soporte_mtto"
@@ -87,6 +89,7 @@
                                 <field name="product_uom_id"/>
                                 <field name="system_class_id"
                                        options="{'no_open': True, 'no_create': True}"/>
+                                <field name="approval_request_id" invisible="1"/>
                                 <field name="request_status"
                                        widget="badge"
                                        decoration-info="request_status in ('new', 'pending')"

@@ -69,6 +69,13 @@ class MaintenanceSystem(models.Model):
             "domain": [("id", "in", self.child_ids.ids)],
         }
 
+    def name_get(self):
+        # Add code here
+        show_name_clear = self.env.context.get('show_name_clear', False)
+        if show_name_clear:
+            return [(record.id, "%s" % record.name) for record in self]
+        return super(MaintenanceSystem, self).name_get()
+
     # @api.depends('parent_id')
     # def _compute_parent_path(self):
     #     for system in self:

@@ -3,10 +3,11 @@
 {
     "name": "MBLZ: Access Control",
     "version": "1.0",
-    "author": "Mobilize,->Smile",
+    "author": "Mobilize",
     "license": 'LGPL-3',
     "category": "Mobilize/Tools",
-    "description": "",
+    "description": "Control de acceso a los usuario utilizando perfiles",
+    "summary": "Control de acceso a los usuario utilizando perfiles",
     "depends": ['base', 'web', 'hide_menu_user'],
     "data": [
         'security/security.xml',
@@ -27,3 +28,5 @@
     "active": False,
     "uninstall_hook": "uninstall_hook",
 }
+
+# créditos SMILE

@@ -1,21 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <data noupdate="0">
-
-        <!-- Users -->
-        <!-- Add widget selection to choose a profile to apply -->
-        <record id="mblz3_view_users_form" model="ir.ui.view">
-            <field name="name">mblz3_res.users.form</field>
-            <field name="model">res.users</field>
-            <field name="inherit_id" ref="base.view_users_form"/>
-            <field name="arch" type="xml">
-
-                <xpath expr="//field[@name='tz']" position="after">
-                    <field name="is_mtto_supervisor"/>
-                </xpath>
-
-            </field>
-        </record>
         <record id="view_res_user_form" model="ir.ui.view">
             <field name="name">res.users.form</field>
             <field name="model">res.users</field>
@@ -29,9 +14,9 @@
                         <field name="is_mtto_supervisor"/>
                     </xpath>
 
-                    <!--                    <xpath expr="//field[@name='tz']" position="after">-->
-                    <!--                        <field name="hide_debug_assets_permission"/>-->
-                    <!--                    </xpath>-->
+                    <xpath expr="//field[@name='tz']" position="after">
+                        <field name="hide_debug_assets_permission"/>
+                    </xpath>
                 </data>
             </field>
         </record>
@@ -75,10 +60,6 @@
             <field name="priority">10</field>
             <field name="arch" type="xml">
                 <data>
-<!--                    <xpath expr="//field[@name='tz']" position="after">-->
-<!--                        <field name="is_mtto_supervisor"/>-->
-<!--                    </xpath>-->
-
 
                     <field name="name" position="attributes">
                         <attribute name="placeholder">Profile ...</attribute>

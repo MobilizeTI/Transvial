@@ -108,7 +108,7 @@ class MaintenanceRequest(models.Model):
             return self._set_maintenance_stage(next_stage_id)
 
     def _set_maintenance_stage(self, next_stage_id):
-        self.sudo().with_context({'update_alert_relative': False}).write({"stage_id": next_stage_id})
+        self.sudo().write({"stage_id": next_stage_id})
         self.set_date_stage(next_stage_id)
 
     @api.model
@@ -157,8 +157,7 @@ class MaintenanceRequest(models.Model):
     @api.depends('motive_log_ids')
     def _compute_flag_with_motive(self):
         for request in self:
-            request.sudo().with_context(
-                {'update_alert_relative': False}).flag_with_motive = request.motive_log_ids.exists()
+            request.sudo().flag_with_motive = request.motive_log_ids.exists()
             record_filters = request.motive_log_ids.filtered(lambda l: l.motive_id.id in (5, 6))
             request.flag_with_motive_diff = record_filters.exists()
 
@@ -166,14 +165,14 @@ class MaintenanceRequest(models.Model):
     def _compute_last_motive_comment(self):
         for request in self:
             if request.motive_log_ids:
-                request.sudo().with_context({'update_alert_relative': False}).flag_with_motive = True
+                request.sudo().flag_with_motive = True
                 record = request.motive_log_ids.sorted(lambda l: l.date, reverse=True)[0]
-                request.sudo().with_context({'update_alert_relative': False}).last_motive = record.motive_id.id
-                request.sudo().with_context({'update_alert_relative': False}).last_comment = record.comment
+                request.sudo().last_motive = record.motive_id.id
+                request.sudo().last_comment = record.comment
             else:
-                request.sudo().with_context({'update_alert_relative': False}).flag_with_motive = False
-                request.sudo().with_context({'update_alert_relative': False}).last_motive = False
-                request.sudo().with_context({'update_alert_relative': False}).last_comment = False
+                request.sudo().flag_with_motive = False
+                request.sudo().last_motive = False
+                request.sudo().last_comment = False
 
     @api.model
     def update_is_deferred_waiting(self):

@@ -11,7 +11,8 @@
 
                 <xpath expr="//field[@name='tz']" position="after">
                     <!-- Add your fields or attributes here -->
-                    <field name="flag_crete_tkt_portal"/>
+<!--                    <field name="flag_crete_tkt_portal"/>-->
+                    <field name="is_technical_its"/>
                 </xpath>
 
             </field>

@@ -1,7 +1,24 @@
 # Copyright YEAR(S), AUTHOR(S)
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
+from pprint import pprint
 
 from odoo import fields, models, api, _, tools
+import subprocess
+import sys
+
+
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+
+try:
+    import numpy as np
+except:
+    install('numpy')
+
+import numpy as np
+
+import datetime as dt
 from odoo.exceptions import UserError, RedirectWarning, ValidationError
 from datetime import timedelta
 from odoo.exceptions import Warning
@@ -19,11 +36,17 @@ class ProductividadMantenimiento(models.Model):
     name = fields.Char(string='Nombre de la tarea', readonly=True)
 
     # activity_speciality_ids = fields.Many2one('maintenance.request.task', string='', readonly = True)
-    employee_id = fields.Many2one('hr.employee', string='Empleado', readonly=True)
-    duration = fields.Float(string='Horas Programadas', readonly=True)
-    unit_amount = fields.Float(string='Horas Efectivas', readonly=True)
+    employee_id = fields.Many2one('hr.employee', string='Empleado', readonly=False)
+    duration = fields.Float(string='Horas Programadas')
+    unit_amount = fields.Float(string='Horas Efectivas', readonly=False)
+
+    percentage_e_p = fields.Float(string='Hs E/P(%)')
+    percentage_p_l = fields.Float(string='Hs P/L(%)')
+    percentage_e_l = fields.Float(string='Hs E/L(%)')
+
     resource_calendar_id = fields.Float(string='Horas Laborales', readonly=True)
-    analytic_line_ids = fields.Many2one('account.analytic.line', readonly=True)
+
+    analytic_line_ids = fields.Many2one('account.analytic.line', readonly=True, string='Cuenta analítica')
     prom_hrs_efectivas = fields.Float(compute='_promedio_horas_efectivas', string='Promedio de hrs efectivas')
     duracion = fields.Boolean(string='Duración', readonly=True)
     company_id = fields.Many2one('res.company', string='Unidad de Negocio', readonly=True)
@@ -31,28 +54,35 @@ class ProductividadMantenimiento(models.Model):
 
     @api.depends('analytic_line_ids')
     def _promedio_horas_efectivas(self):
-        suma = 0
-        num_task = 1
-        if self.analytic_line_ids:
-            for x in self.analytic_line_ids:
-                suma = sum(line.unit_amount for line in
-                           self.analytic_line_ids.filtered(lambda x: x.task_request_id == self.activity_id))
-                num_task = len(self.analytic_line_ids)
-        self.prom_hrs_efectivas = suma / num_task
+        for record in self:
+            suma = 0
+            num_task = 1
+            if record.analytic_line_ids:
+                for x in record.analytic_line_ids:
+                    suma = sum(line.unit_amount for line in
+                               record.analytic_line_ids.filtered(
+                                   lambda x: x.task_request_id.id == record.activity_id.id))
+                    num_task = len(record.analytic_line_ids)
+            record.prom_hrs_efectivas = suma / num_task
 
-    @api.model
-    def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
-        res = super(ProductividadMantenimiento, self).read_group(domain, fields, groupby, offset=offset, limit=limit,
-                                                                 orderby=orderby, lazy=lazy)
-        for group in res:
-            if group.get('__domain'):
-                records = self.search(group['__domain'])
-                group['duration'] = False
-                group['resource_calendar_id'] = False
-        return res
+    # @api.model
+    # def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
+    #     res = super(ProductividadMantenimiento, self).read_group(domain, fields, groupby, offset=offset, limit=limit,
+    #                                                              orderby=orderby, lazy=lazy)
+    #     for group in res:
+    #         if group.get('__domain'):
+    #             records = self.search(group['__domain'])
+    #             group['resource_calendar_id'] = sum(records.mapped('resource_calendar_id')) / (
+    #                 len(records) if records else 1)
+    #     return res
 
     def get_query(self, dates=False, date=False):
-        sql = """
+        nro_dias_lab = 1
+        if dates:
+            date_start, date_end = dates
+            nro_dias_lab = np.busday_count(date_start, date_end)
+
+        sql = f"""
         SELECT row_number() OVER() as id,
             mr.id AS maintenance_id, 
             mr.name_seq, 
@@ -62,10 +92,12 @@ class ProductividadMantenimiento(models.Model):
             aat.employee_id,
             mrt.planned_hours AS duration, 
             aat.unit_amount,
-            (rc.hours_per_day*5) AS resource_calendar_id, 
+            (rc.hours_per_day*{nro_dias_lab}) AS resource_calendar_id, 
             aat.id AS analytic_line_ids,
+            (aat.unit_amount / NULLIF(mrt.planned_hours, 0)) AS percentage_e_p,
+            (mrt.planned_hours / NULLIF((rc.hours_per_day * 1), 0)) AS percentage_p_l,
+            (aat.unit_amount / NULLIF((rc.hours_per_day * 1), 0)) AS percentage_e_l,
             (CASE WHEN mrt.employee_id = aat.employee_id THEN True ELSE False END) duracion,
-            --(SELECT (SUM(unit_amount)/COUNT(task_request_id)) FROM account_analytic_line AS line WHERE line.task_request_id=mrt.id) AS suma,
             mr.company_id,
             mr.request_date 
         FROM maintenance_request AS mr
@@ -84,7 +116,7 @@ class ProductividadMantenimiento(models.Model):
         if sql_where != "":
             sql += sql_where
         query = f"create or replace view productividad_mantenimiento as ({sql})"
-
+        # pprint(query)
         return query
 
     def init(self):
@@ -120,6 +152,8 @@ class ProductividadMantenimiento(models.Model):
             # 'domain': [],
             'target': 'current',
             'context': {
-                "search_default_preventivos": "preventive"
+                "search_default_preventivos": "preventive",
+                "search_default_group_employee": True,
+
             }
         }

@@ -43,7 +43,9 @@ class FleetVehicleOdometer(models.Model):
         # Add code here
         if 'value' and 'vehicle_id' and 'date' in values:
             value = values.get('value', 0.0)
-            date = datetime.strptime(values.get('date', False), "%Y-%m-%d")
+            date = values.get('date', False)
+            if type(date) is str:
+                date = datetime.strptime(date, "%Y-%m-%d")
             vehicle_id = values.get('vehicle_id', False)
             vehicle_id = self.vehicle_id.sudo().browse(vehicle_id)
             valid, value_dif = self._valida_value(value, date, vehicle_id)
@@ -51,7 +53,10 @@ class FleetVehicleOdometer(models.Model):
                 raise ValidationError(
                     f'El valor {value} debe ser mayor o igual al odómetro actual: {vehicle_id.odometer} para el vehículo {vehicle_id.name}')
             values['value_dif'] = value_dif
-        return super(FleetVehicleOdometer, self).create(values)
+        new_odoo = super(FleetVehicleOdometer, self).create(values)
+        if new_odoo and new_odoo.vehicle_id and new_odoo.vehicle_id.equipment_id:
+            new_odoo.vehicle_id.equipment_id.action_is_reiterative()
+        return new_odoo
 
     def write(self, values):
         # Add code here
@@ -62,4 +67,7 @@ class FleetVehicleOdometer(models.Model):
                 raise ValidationError(
                     f'El valor {value} debe ser mayor o igual al odómetro actual: {self.vehicle_id.odometer} para el vehículo {self.vehicle_id.name}')
             values['value_dif'] = value_dif
-        return super(FleetVehicleOdometer, self).write(values)
+        upd_odoo = super(FleetVehicleOdometer, self).write(values)
+        if self.vehicle_id and self.vehicle_id.equipment_id:
+            self.vehicle_id.equipment_id.action_is_reiterative()
+        return upd_odoo

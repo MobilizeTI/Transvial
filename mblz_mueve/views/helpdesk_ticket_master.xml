@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="helpdesk_ticket_master_form_view" model="ir.ui.view">
+            <field name="name">helpdesk_ticket_master.form</field>
+            <field name="model">helpdesk.ticket.master</field>
+            <field name="arch" type="xml">
+                <form string="Ticket Maestro">
+                    <header>
+
+                        <button name="action_close_all_request" type="object"
+                                class="btn btn-danger"
+                                string="CIERRE MASIVO DE OT'S / TKT's"
+                                icon="fa-check"
+                                states="progress"
+                                help="Si se cierra una OT automáticamnte se ciera su ticket asociado."
+                                attrs="{'invisible': ['|','|',('flag_complete_tkt_close', '=', False), ('flag_create_ot_auto', '=', False)]}"/>
+
+                        <!--                        <button name="action_close_all_tickets" type="object"-->
+                        <!--                                class="btn btn-danger"-->
+                        <!--                                string="CIERRE MASIVO DE TICKETS"-->
+                        <!--                                icon="fa-check"-->
+                        <!--                                states="progress"-->
+                        <!--                                attrs="{'invisible': ['|','|',('flag_complete_close', '=', False),('flag_create_ot_auto', '=', True)]}"/>-->
+
+                        <button name="action_done" type="object"
+                                class="oe_highlight"
+                                string="A Terminado"
+                                states="progress"
+                                groups="l10n_cl_maintenance.group_jefe_planificacion"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,progress,done"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" attrs="{'readonly': [('state',  'in', ('progress', 'done'))]}"/>
+                            </h1>
+                            <div style="font-weight:bold;"
+                                 attrs="{'invisible': [('name_seq', 'in', ['new', 'Nuevo'])]}">
+                                <label for="name_seq" string="SEQ: "/>
+                                <field name="name_seq"/>
+                            </div>
+                        </div>
+                        <group>
+                            <field name="flag_create_ot_auto" invisible="1"/>
+                            <field name="equipment_ids"
+                                   string="Buses"
+                                   options="{'no_create': True}"
+                                   domain="[('vehicle_id', '!=', False)]"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"
+                                   widget="many2many_tags"/>
+
+                            <field name="guideline_ids" string="Pautas"
+                                   domain="[('maintenance_type', '=', nature_type)]"
+                                   options="{'no_create': True}"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"
+                                   widget="many2many_tags"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="refresh_alert_otm" invisible="1"/>
+                                <field name="flag_complete_close" invisible="1"/>
+                                <field name="flag_complete_tkt_close" invisible="1"/>
+                                <field name="flag_request_completed" invisible="1"/>
+
+                                <field name="team_id" attrs="{'readonly': [('state',  'in', ('progress', 'done'))]}"
+                                       required="1"/>
+                                <field name="user_id" class="field_user_id"
+                                       domain="['&amp;', '&amp;',('id', 'in', domain_user_ids), ('share', '=', False),('is_technical_its', '=', True)]"
+                                       options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"
+                                       widget="many2one_avatar_user"
+                                       attrs="{'readonly': [('state',  'in', ('progress', 'done'))]}"/>
+                                <field name="domain_user_ids" invisible="1"/>
+                                <!--                                <field name="ticket_type_id"/>-->
+
+                                <field name="nature_type" widget="radio" options="{'horizontal': true}" readonly="1"/>
+                                <field name="type_ot"
+                                       attrs="{'readonly': [('state',  'in', ('progress', 'done'))]}"
+                                       domain="[('maintenance_type', '=', nature_type), '|',('is_sirci', '=', True),('is_its', '=', True)]"
+                                       options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"/>
+                                <field name="partner_id" class="field_partner_id"
+                                       required="1"
+                                       domain="['|', ('company_id', '=', False),
+                                                     ('company_id', '=', company_id),
+                                                     ('type_client_tkt', 'in', ('technical-its', 'glider', 'supervisor-mtto'))]"
+                                       widget="res_partner_many2one"
+                                       options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"
+                                       attrs="{'readonly': [('state',  'in', ('progress', 'done'))]}"/>
+                                <!--                                <field name="partner_name"-->
+                                <!--                                       attrs="{'invisible': [('partner_id', '!=', False)],'readonly': [('state',  'in', ('progress', 'done'))]}"-->
+                                <!--                                />-->
+                                <field name="partner_email" required="1"
+                                       attrs="{'readonly': [('state',  'in', ('progress', 'done'))]}"/>
+
+                            </group>
+                            <group>
+                                <field name="tag_id"
+                                       required="1"
+                                       options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"/>
+                                <field name="ticket_type_id" widget="selection" required="1"
+                                       attrs="{'readonly': [('state',  'in', ('progress', 'done'))]}"/>
+                                <field name="priority" widget="selection" invisible="1"/>
+
+                                <field name="support_level_ids"
+                                       widget="many2many_tags"
+                                       attrs="{'readonly': [('state',  'in', ('progress', 'done'))]}"
+                                       options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"
+                                       groups="mblz_mueve.group_tecnicos_its"/>
+                                <!--                                <field name="place_of_care"/>-->
+
+                                <!-- caracterización-->
+                                <field name="categ_id"
+                                       readonly="1"
+                                       attrs="{'readonly': [('state',  'in', ('progress', 'done'))]}"
+                                       options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"/>
+                                <field name="element_ids" widget="many2many_tags" invisible="1"/>
+                                <field name="categ_code"
+                                       readonly="1"
+                                       attrs="{'invisible': [('categ_id', '=', False)]}"/>
+                                <field name="element_id" domain="[('id', '=', element_ids)]"
+                                       readonly="1"
+                                       attrs="{'invisible': [('categ_id', '=', False)],
+                                               'required': [('categ_id', '!=', False)],
+                                               'readonly': [('state',  'in', ('progress', 'done'))]}"
+                                       options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"/>
+                                <field name="element_code" attrs="{'invisible': [('element_id', '=', False)]}"/>
+                                <field name="element_system_id" attrs="{'invisible': [('element_id', '=', False)]}"/>
+
+
+                                <field name="user_default_id"
+                                       invisible="1"
+                                       widget="many2one_avatar_user" readonly="1"/>
+                                <field name="flag_ot_ok" invisible="1"/>
+                                <field name="flag_request_completed" invisible="1"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+                        <group class="text-center">
+                            <button name="action_create_tickets"
+                                    type="object"
+                                    string="Crear Tickets"
+                                    icon="fa-hand-o-right"
+                                    class="oe_highlight"
+                                    style="margin-bottom : 16px;"
+                                    confirm="¿Confirmar la creación de tickets del servicio de asistencia?"
+                                    attrs="{'invisible': ['|','|','|',('ticket_ids', '!=', []),
+                                                               ('type_ot', '=', False),
+                                                               ('equipment_ids', '=', []),
+                                                               ('id', '=', False),
+                                    ]}"/>
+
+                        </group>
+
+                        <notebook>
+
+                            <page name="page_tickets"
+                                  attrs="{'invisible': [('state', '=', 'draft')]}"
+                                  string="Tickets">
+
+                                <field
+                                        name="ticket_ids"
+                                        widget="one2many"
+                                        mode="tree,form">
+                                    <tree string="Ticket Lines"
+                                          create="0" delete="0"
+                                          context="{'default_tkt_master_id' : id}"
+                                          edit="1"
+                                          default_order="name_seq"
+                                          decoration-danger="alert_otm in ('approve_ma', 'pickings')"
+                                    >
+                                        <field name="alert_otm" invisible="1"/>
+                                        <field name="tkt_master_id" invisible="1"/>
+                                        <field name="name_seq" string="SEQ"/>
+                                        <field name="name" string="Nombre"/>
+                                        <field name="partner_id"/>
+                                        <field name="user_id"/>
+                                        <field name="type_ot"
+                                               widget="selection"
+                                               domain="[('maintenance_type', '=', 'preventive')]"
+                                               optional="hide"
+                                        />
+                                        <!--                                                                                 options='{"bg_color": "gray: type_ot == False"}'-->
+                                        <field name="nature_type"
+                                               optional="hide"
+                                               readonly="1"
+                                               string="Naturaleza"
+                                               widget="badge" decoration-danger="nature_type == 'corrective'"
+                                               decoration-primary="nature_type == 'preventive'"/>
+                                        <field name="equipment_id"
+                                               optional="show"
+                                               string="Bus"
+                                               readonly="1"/>
+
+                                        <field name="stage_id"
+                                               decoration-info="stage_id == 1"
+                                               decoration-primary="stage_id == 2"
+                                               decoration-success="stage_id == 3"
+                                               decoration-danger="stage_id == 4"
+                                               widget="badge"
+                                        />
+                                        <field name="mtm_request_id" string="OT"
+                                               optional="show"
+                                               attrs="{'column_invisible': [('parent.flag_create_ot_auto', '=', False)]}"
+                                               options='{"bg_color": "#dff9fb"}'
+                                        />
+                                        <field name="task_done_percent"
+                                               optional="show"
+                                               attrs="{'column_invisible': [('parent.flag_create_ot_auto', '=', False)]}"
+                                               string="Avance OT"
+                                               widget="progressbar"
+                                               options='{"bg_color": "#dff9fb"}'
+                                        />
+
+                                        <field name="maintenance_guideline_ids"
+                                               optional="show"
+                                               readonly="1"
+                                               options='{"bg_color": "#dff9fb"}'
+                                               widget="many2many_tags"
+                                        />
+                                        <field name="request_stage_id"
+                                               string="Estado OT"
+                                               optional="show"
+                                               attrs="{'column_invisible': [('parent.flag_create_ot_auto', '=', False)]}"
+                                               options='{"bg_color": "#dff9fb"}'
+                                        />
+
+                                        <!--                                        <field name="is_complete_task" nolabel="1"/>-->
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="description_page" string="Descripción">
+                                <field name="description" type="html"/>
+                                <div class="d-none oe_clear"/>
+                            </page>
+                            <page name="page_activities" string="Actividades"
+                                  attrs="{'invisible': ['|', ('support_level_ids', '=', []), ('support_activity_ids', '=', [])]}"
+                                  groups="mblz_mueve.group_tecnicos_its">
+                                <field
+                                        name="support_activity_ids"
+                                        widget="section_and_note_one2many"
+                                        readonly="1"
+                                        mode="tree,form">
+                                    <tree string="Activities Lines">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="guideline_id" invisible="1"/>
+                                        <field name="company_id" invisible="1"/>
+
+                                        <field name="activity_id" domain="[('specialty_tag_ids', '!=', False)]"/>
+
+                                        <field name="activity_url_video" invisible="1"/>
+                                        <button name="action_open_url_video"
+                                                attrs="{'invisible': [('activity_url_video', '=', False)]}"
+                                                icon="fa-link"
+                                                type="object"/>
+                                        <field name="activity_code" invisible="0"/>
+
+
+                                        <field
+                                                name="activity_speciality_ids"
+                                                widget="many2many_tags"
+                                                options="{'color_field': 'color'}"
+                                        />
+
+                                        <field name="system_class_id" class="text-primary"
+                                               options="{'no_open': True, 'no_create': True}"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <group>
+                                                <field name="activity_id"/>
+                                                <field name="activity_code"/>
+                                                <field name="system_class_id"
+                                                       options="{'no_open': True, 'no_create': True}"/>
+                                            </group>
+                                            <group>
+                                                <field name="activity_att_documents"
+                                                       attrs="{'invisible': [('activity_att_documents', '=', [])]}"
+                                                       widget="many2many_binary"/>
+                                                <field
+                                                        name="activity_speciality_ids"
+                                                        widget="many2many_tags"
+                                                        options="{'color_field': 'color'}"
+                                                />
+                                            </group>
+
+
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+
+                            <page name="technical_add" string="Técnicos adicionales">
+                                <group>
+                                    <field name="user_technical_add_ids" widget="many2many_tags_avatar" string="Añadír"
+                                           domain="[('id', '!=', user_id), ('employee_id', '!=', False)]"
+                                           attrs="{'readonly': [('state',  'in', ('progress', 'done'))]}"
+                                           options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"/>
+                                </group>
+                            </page>
+
+
+                        </notebook>
+
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"
+                               options="{'post_refresh':True}" groups="base.group_user"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="helpdesk_ticket_master_tree_view" model="ir.ui.view">
+            <field name="name">helpdesk_ticket_master.tree</field>
+            <field name="model">helpdesk.ticket.master</field>
+            <field name="arch" type="xml">
+                <tree string="Ticket Maestro" default_order="name_seq desc">
+                    <field name="name_seq"/>
+                    <field name="name" string="Nombre"/>
+                    <field name="user_id" widget="many2one_avatar_user" readonly="1"/>
+                    <field name="activity_ids" widget="list_activity" optional="show"/>
+                    <field name="state" widget="badge" decoration-info="state == 'draft'"
+                           decoration-primary="state == 'progress'"
+                           decoration-success="state == 'done'"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="helpdesk_ticket_master_search_view" model="ir.ui.view">
+            <field name="name">helpdesk_ticket_master.search</field>
+            <field name="model">helpdesk.ticket.master</field>
+            <field name="arch" type="xml">
+                <search string="Ticket Maestro">
+                    <field name="name" string="Nombre"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="helpdesk_ticket_master_act_window" model="ir.actions.act_window">
+            <field name="name">Ticket Maestro</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">helpdesk.ticket.master</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    No hay ejemplos, haga clic aquí para agregar nuevos tickets maestros.
+                </p>
+            </field>
+        </record>
+
+        <menuitem name="Ticket Maestro"
+                  id="helpdesk_ticket_master_menu"
+                  parent="helpdesk.helpdesk_ticket_menu_main"
+                  action="helpdesk_ticket_master_act_window"
+                  sequence="11"
+        />
+
+    </data>
+</odoo>

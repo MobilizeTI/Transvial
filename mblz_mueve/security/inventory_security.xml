@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="stock.group_stock_user" model="res.groups">
+            <field name="active" eval="False"/>
+            <field name="implied_ids" eval="[(6, 0, [])]"/>
+        </record>
+
+        <record id="stock.group_stock_manager" model="res.groups">
+            <field name="implied_ids" eval="[(6, 0, [])]"/>
+        </record>
+
+        <record id="mueve_group_stock_analista_inventario" model="res.groups">
+            <field name="name">Analista de Almacén (mueve)</field>
+            <field name="category_id" ref="base.module_category_inventory_inventory"/>
+            <field name="comment">Una copia del usuario administrador con las restricciones para mueve</field>
+        </record>
+
+        <record id="base.default_user" model="res.users">
+            <field name="groups_id" eval="[(4,ref('mueve_group_stock_analista_inventario'))]"/>
+        </record>
+
+
+        <record id="mueve_group_stock_auxillar_almacen" model="res.groups">
+            <field name="name">Auxiliar del almacén (mueve)</field>
+            <field name="category_id" ref="base.module_category_inventory_inventory"/>
+        </record>
+
+
+        <!--        &lt;!&ndash; Auxiliar del almacén no puede revisar y realizar transferencias internas&ndash;&gt;-->
+        <!--        <record model="ir.rule" id="stock_picking_not_type_int_auxillar_almacen_rule">-->
+        <!--            <field name="name">stock_picking multi-company (Sin Transferencias internas)</field>-->
+        <!--            <field name="model_id" search="[('model','=','stock.picking')]" model="ir.model"/>-->
+        <!--            <field name="domain_force">[('company_id', 'in', company_ids), ('picking_type_code', '!=', 'INT')]</field>-->
+        <!--        </record>-->
+
+    </data>
+</odoo>

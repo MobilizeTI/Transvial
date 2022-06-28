@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="new_ticket_request_email_template_mblz" model="mail.template">
+            <field name="name">Ticket: Reception Acknowledgment2</field>
+            <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
+            <field name="subject">${object.display_name}</field>
+            <field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="email_to">
+                ${(object.partner_email if not object.sudo().partner_id.email or object.sudo().partner_id.email != object.partner_email else '') | safe}
+            </field>
+            <field name="partner_to">
+                ${object.partner_id.id if object.sudo().partner_id.email and object.sudo().partner_id.email == object.partner_email else ''}
+            </field>
+            <field name="body_html" type="xml">
+                <div>
+                    Estimado ${object.sudo().partner_id.name or 'Sr/Sra'},
+                    <br/>
+                    <br/>
+                    Su solicitud
+                    % if object.get_portal_url():
+                    <a href="/my/ticket/${object.id}/${object.access_token}">${object.name}</a>
+                    % endif
+                    ha sido recibida correctamente.
+                    <!--                    has been received and is being reviewed by our ${object.team_id.name or ''} team.-->
+                    <!--                    The reference of your ticket is ${object.id}.-->
+                    <br/>
+
+                    % if object.mtm_request_id:
+                    <br/>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered">
+                            <tr>
+                                <th colspan="2" class="text-center text-color-blue">Ticket</th>
+                                <th colspan="2" class="text-center">Orden de Trabajo</th>
+                            </tr>
+<!--                            <tr>-->
+<!--                                <th class="text-center">SEQ</th>-->
+<!--                                <th class="text-center">Nombre</th>-->
+<!--                                <th class="text-center">SEQ</th>-->
+<!--                                <th class="text-center">Nombre</th>-->
+<!--                            </tr>-->
+                            <tr>
+                                <td class="text-black-75">${object.sudo().name_seq or 'NA'}</td>
+                                <td class="text-black-75">${object.sudo().name or 'NA'}</td>
+                                <td class="text-black-75">${object.sudo().mtm_request_id.name_seq or 'NA'}</td>
+                                <td class="text-black-75">${object.sudo().mtm_request_id.name or 'NA'}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    % endif
+                    <br/>
+                    <div style="text-align: center; margin: 16px 0px 16px 0px;">
+                        <a style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;"
+                           href="${object.get_portal_url()}">Ver el ticket
+                        </a>
+                        <br/>
+                    </div>
+
+                    <div>
+                        <a><b>Fecha y hora de creación:</b> ${format_datetime(object.sudo().create_date)}</a>
+                        <br/>
+                        <a><b>Creador:</b> ${object.sudo().user_default_id.name}</a>
+                        <br/>
+                    </div>
+
+                    <!--                    To add additional comments, reply to this email.-->
+                    <!--                    <br/>-->
+                    <!--                    <br/>-->
+
+                    Gracias,
+                    <br/>
+                    <br/>
+                    Equipo de ${object.team_id.name or 'Helpdesk'}.
+                </div>
+            </field>
+            <field name="lang">${object.partner_id.lang or object.user_id.lang or user.lang}</field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+        <record id="helpdesk.stage_new" model="helpdesk.stage">
+            <field name="template_id" ref="new_ticket_request_email_template_mblz"/>
+        </record>
+
+    </data>
+</odoo>

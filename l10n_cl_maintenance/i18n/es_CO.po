@@ -399,7 +399,7 @@ msgstr "¿Estás seguro de que quieres continuar?"
 
 #. module: l10n_cl_maintenance
 #: model:ir.actions.server,name:l10n_cl_maintenance.action_massive_employee_update
-msgid "Asignación Masiva de Empleado"
+msgid "Asignación/Cierre Masivo"
 msgstr ""
 
 #. module: l10n_cl_maintenance

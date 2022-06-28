@@ -5,15 +5,20 @@
         <field name="model">scheduler.ot.new</field>
         <field name="arch" type="xml">
             <form string="Parameters">
-
-                <div class="alert alert-primary" role="alert">
+                <div class="alert alert-primary" role="alert" attrs="{'invisible': [('name_file', '!=', False)]}">
                     <p>
-                        A Maintenance Request (OT) will be created for equipment that meets the corresponding deadlines.
+                        Se creará una solicitud de mantenimiento (OT) para los equipos que cumplan con los
+                        parámetros correspondientes.
                     </p>
                 </div>
+                <group attrs="{'invisible': [('name_file', '=', False)]}">
+                    <field name="name_file" invisible="1"/>
+                    <field name="file_log" invisible="0" filename="name_file"/>
+                </group>
                 <footer>
                     <button name="button_run_cron"
-                            string="Execute" type="object" class="btn-primary"/>
+                            string="Execute" type="object" class="btn-primary"
+                            attrs="{'invisible': [('name_file', '!=', False)]}"/>
                     <button string="Cancel"
                             class="btn-secondary" special="cancel"/>
                 </footer>

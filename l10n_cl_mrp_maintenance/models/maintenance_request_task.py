@@ -96,13 +96,13 @@ class MaintenanceRequestTask(models.Model):
                 'context': {'default_task_id': self.id},
                 }
 
-    @api.constrains("stage_id")
-    def _check_pickings_stage(self):
-        if self.stage_id.require_valid_picking:
-            pickings_not_done = self.picking_ids.filtered(lambda p: p.state != 'done')
-            if len(pickings_not_done) > 0:
-                raise ValidationError(
-                    _('You have pickings that have not yet been processed related to the request {}'.format(self.name)))
+    # @api.constrains("stage_id")
+    # def _check_pickings_stage(self):
+    #     if self.stage_id.require_valid_picking:
+    #         pickings_not_done = self.picking_ids.filtered(lambda p: p.state not in ('done', 'cancel'))
+    #         if len(pickings_not_done) > 0:
+    #             raise ValidationError(
+    #                 _('You have pickings that have not yet been processed related to the request {}'.format(self.name)))
 
 
 class TaskLineMaterials(models.Model):

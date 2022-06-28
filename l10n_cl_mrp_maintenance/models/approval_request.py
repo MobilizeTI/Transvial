@@ -16,35 +16,41 @@ class ApprovalCategory(models.Model):
 
     group_ids = fields.Many2many('res.groups', string='Groups')
 
-    # user_id_domain = fields.Char(
-    #     compute="_compute_product_id_domain",
-    #     readonly=True,
-    #     store=False,
-    # )
 
-    # @api.depends('group_ids')
-    # def _compute_product_id_domain(self):
-    #     for rec in self:
-    #         aux_user_ids = []
-    #         domain = [('share', '=', False)]
-    #         if rec.group_ids:
-    #             user_ids = rec.env['res.users'].sudo().search([])
-    #             for user in user_ids:
-    #                 sm = difflib.SequenceMatcher(None, rec.group_ids.ids, user.groups_id.ids)
-    #                 if sm.ratio() > 0:
-    #                     aux_user_ids.append(user.id)
-    #             domain += [('id', 'in', aux_user_ids)]
-    #
-    #         rec.user_id_domain = json.dumps(domain)
+class ApprovalApprover(models.Model):
+    _inherit = 'approval.approver'
+
+    date_approved = fields.Datetime(string="Fecha de aprobación", readonly=True)
+
+    def _get_str_status(self, status):
+        str_status = 'A enviar'
+        if status == 'approved':
+            str_status = 'Aprobado'
+        elif status == 'pending':
+            str_status = 'Por aprobar'
+        elif status == 'refused':
+            str_status = 'Rechazado'
+        elif status == 'cancel':
+            str_status = 'Cancelado'
+        return str_status
+
+    def name_get(self):
+        return [
+            (record.id, f"{record.user_id.name} {record._get_str_status(record.status)} {record.date_approved or ''}")
+            for record in self]
 
 
 class ApprovalRequest(models.Model):
     _inherit = 'approval.request'
 
     request_task_id = fields.Many2one('maintenance.request.task', 'Task request')
+    request_task_equipment_id = fields.Many2one('maintenance.equipment', 'Bus',
+                                                related='request_task_id.request_id.equipment_id')
     wz_material_add_id = fields.Many2one('request.materials.additional', 'Wz Materials Additional')
     product_line_task_ids = fields.Many2many('task.line.materials', compute='_compute_product_line_task_ids')
+    product_line_task_txt = fields.Text('Componentes', compute='_compute_product_line_task_ids')
     picking_task_mtto_id = fields.Many2one('stock.picking', string='Picking de tarea MTTO', required=False)
+    date_approved = fields.Datetime(string="Fecha de aprobación", readonly=True)
 
     @api.depends('request_task_id', 'wz_material_add_id')
     def _compute_product_line_task_ids(self):
@@ -54,11 +60,26 @@ class ApprovalRequest(models.Model):
                     lambda l: l.wz_material_add_id.id == rec.wz_material_add_id.id)
                 if materials:
                     rec.product_line_task_ids = [(6, 0, materials.ids)]
+                    product_line_task_txt = ''
+                    for m in materials:
+                        product_line_task_txt += f"{m.product_id.name}\n"
+                    rec.product_line_task_txt = product_line_task_txt
+
+                else:
+                    rec.product_line_task_ids = [(6, 0, [])]
+                    rec.product_line_task_txt = False
             else:
                 rec.product_line_task_ids = [(6, 0, [])]
+                rec.product_line_task_txt = False
 
     def action_approve(self, approver=None):
-        super(ApprovalRequest, self).action_approve(approver)
+        if not isinstance(approver, models.BaseModel):
+            approver = self.mapped('approver_ids').filtered(
+                lambda approver: approver.user_id == self.env.user
+            )
+        approver.write({'status': 'approved', 'date_approved': fields.Datetime.now()})
+        self.sudo()._get_user_approval_activities(user=self.env.user).action_feedback()
+        self.date_approved = fields.Datetime.now()
         if self.request_status == 'approved' and self.request_task_id:
             self.create_picking()
 

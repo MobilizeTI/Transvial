@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <template id="assets_custom" inherit_id="web.assets_common_minimal_js">
+            <xpath expr="//t[@t-call='web._assets_common_minimal_js']" position="after">
+                <script type="text/javascript" src="/mblz_mueve/static/src/js/jquery-3.5.1.min.js"></script>
+                <script type="text/javascript" src="/mblz_mueve/static/src/js/rpt_tickets.js"></script>
+            </xpath>
+        </template>
+
+
+    </data>
+</odoo>

@@ -1,5 +1,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import Warning, ValidationError, UserError
+from odoo.osv import expression
 
 
 class MaintenanceGuidelineActivity(models.Model):
@@ -41,6 +42,11 @@ class MaintenanceGuidelineActivity(models.Model):
     # parent_path_ids = fields.Char(compute='_compute_parent_path')
     child_ids = fields.One2many('guideline.activity', 'parent_id', 'Child activities')
     duration = fields.Float(help="Duration in hours.")
+
+    # is_sirci_or_its = fields.Selection(
+    #     string='SIRCI/ITS',
+    #     selection=[('sirci', 'SIRCI'), ('its', 'ITS')],
+    #     required=False)
 
     @api.depends("child_ids")
     def _compute_child_count(self):
@@ -150,13 +156,11 @@ class MaintenanceGuidelineActivity(models.Model):
     @api.model
     def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
         args = args or []
-        if name:
-            activity_ids = self._search(['|', ('name', operator, name),
-                                         ('code', operator, name)] + args,
-                                        limit=limit, access_rights_uid=name_get_uid)
+        if operator == 'ilike' and not (name or '').strip():
+            domain = []
         else:
-            activity_ids = self._search([])
-        return activity_ids
+            domain = ['|', ('name', 'ilike', name), ('code', 'ilike', name)]
+        return self._search(expression.AND([domain, args]), limit=limit, access_rights_uid=name_get_uid)
 
     _sql_constraints = [
         ('unique_name', 'unique (name)', 'The activity name must be unique!'),

@@ -1,49 +1,51 @@
 ==============
-Access Control
+MBLZ: Control de Accesos
 ==============
 
-This module allows to manage users' rights using profiles.
+Este módulo permite gestionar los derechos de acceso de los usuarios mediante perfiles.
 
-Odoo's groups are a coherent set of rules that functionally consistent. Profiles allow you to combine several groups and effectively tailor users' access to each user.
+Los grupos de Odoo son un conjunto coherente de reglas que son funcionalmente consistentes. Los perfiles permiten combinar varios grupos y adaptar eficazmente el acceso de los usuarios a cada uno de ellos.
 
-Here an exemple :
+Aquí un ejemplo :
 
-* accounting group : create an invoice, modify an invoice, cancel an invoice
-* business develloper group : create a lead, modify data of lead, close a deal
+* Grupo supervisor de MTTO: crear una OT, modificar una OT, cancelar una OT, etc.
+* Grupo técnico de MTTO: actualizar un OT y sus tareas asociadas
 
-The CEO of an SME will probably belong to both groups. Profils allows to combine the both groups in one profil.
+El administrador general de la empresa (ejem: Mueve Fontibon) probablemente pertenezca a ambos grupos. **mblz_access_control** permite combinar ambos grupos en un solo perfil.
 
-This is an alternative way to manage users rights by functional profiles.
+Es una forma alternativa de gestionar los derechos de los usuarios por perfiles funcionales.
 
-Basically, a « profile » is a fictive user (res.users) tagged as a profile.
+Básicamente, un « perfil » es un usuario inactivo ficticio (res.users) etiquetado como perfil.
 
-It means that like before (with the basic rules of Odoo),
-you can add groups to your profile.
+Significa que como antes (con las reglas básicas de Odoo), se puede añadir grupos a un perfil.
 
-Features:
+Características:
 
-* You can associate a profile to created users.
-* You can add users by profile.
-* You can set fields to update for linked users.
-* You have the choice to update or not in write mode for associated users,
-  with field 'Update users' in profiles.
+* Puede asociar un perfil a los usuarios creados.
+* Puede añadir usuarios por perfil.
+* Puede establecer los campos a actualizar para los usuarios asociados.
+* Tiene la opción de actualizar o no en modo de escritura para los usuarios asociados,  con el campo 'Actualizar los usuarios después de la creación' en los perfiles.
+* Puede ocultar menus especificos
+* Puede restringir el acceso al módo desarrollor por perfil o usuario
+* Puede restringir el acceso al botón de **Impresión** por perfil o usuario
+* Puede restringir el acceso al botón de **Acción por** perfil o usuario
 
-**Table of contents**
+**Índice de contenidos**
 
 .. contents::
    :local:
 
-Configuration
+Configuración
 =============
 
-To configure this module, you need to:
+Para configurar este módulo, es necesario:
 
-* Go to new menu **Settings > Users & Companies > User Profiles** and create the
-  profiles you need.
+* Ir al nuevo menú **Configuración > Usuarios y Compañías > Perfiles de Usuario** y crear los
+  perfiles que necesite.
 
-Usage
+Uso
 =====
 
-* Go to new menu **Settings > Users & Companies > Users** and create a new
-  user, choose the profile and after saving you will have user access rights set.
+* Vaya al nuevo menú **Configuración > Usuarios y Compañías > Usuarios** y cree un nuevo
+  usuario, elija el perfil y después de guardar tendrá los derechos de acceso del usuario establecidos.
 

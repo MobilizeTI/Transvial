@@ -186,7 +186,7 @@ class ReportFleetTechnicalUnreliability(models.Model):
             #     'res_model': 'show.message.mtto',
             #     'target': 'new',
             # }
-        print(message)
+        # print(message)
 
     def get_act_window(self, data):
         if data['opc'] == 'dates':

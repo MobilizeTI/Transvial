@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!--reportes 1-32 y 1-33-->
-    <record id="productividad_mantenimiento_search" model="ir.ui.view"> 
+    <record id="productividad_mantenimiento_search" model="ir.ui.view">
         <field name="name">Búsqueda Productividad Mantenimiento</field>
         <field name="model">productividad.mantenimiento</field>
-        <field name="arch" type="xml"> 
+        <field name="arch" type="xml">
             <search>
                 <field name="employee_id"/>
                 <separator/>
                 <group expand="1" string="Group By">
                     <filter string="Numero de OT" name="maintenance_id" context="{'group_by':'maintenance_id'}"/>
-                    <filter string="Empleados" name="employee_id" context="{'group_by':'employee_id'}"/>
-                    <filter string="Unidad de Negocio" name="company_id" context="{'group_by':'company_id'}"/>
+                    <filter string="Empleado" name="group_employee" context="{'group_by':'employee_id'}"/>
+                    <filter string="Horas Programadas" name="group_hp" context="{'group_by':'duration'}"/>
+<!--                    <filter string="Horas Efectivas" name="group_he" context="{'group_by':'unit_amount'}"/>-->
+<!--                    <filter string="Unidad de Negocio" name="company_id" context="{'group_by':'company_id'}"/>-->
                 </group>
-            </search> 
+            </search>
         </field>
     </record>
 
@@ -21,67 +23,81 @@
         <field name="name">Productividad Mantenimiento</field>
         <field name="res_model">productividad.mantenimiento</field>
         <field name="view_mode">tree,graph,pivot,dashboard</field>
-        <field name="context">{"search_default_maintenance_id":"maintenance_id"}</field>
+        <field name="context">{"search_default_maintenance_id": "maintenance_id"}</field>
     </record>
 
-<!--    <menuitem name="Productividad Mantenimiento" id="productividad_mantenimiento_menu" parent="maintenance.maintenance_reporting" action="productividad_mantenimiento_action"/>-->
+    <!--    <menuitem name="Productividad Mantenimiento" id="productividad_mantenimiento_menu" parent="maintenance.maintenance_reporting" action="productividad_mantenimiento_action"/>-->
 
-    <record id="productividad_mantenimiento_tree" model="ir.ui.view" > 
+    <record id="productividad_mantenimiento_tree" model="ir.ui.view">
         <field name="name">Productividad Mantenimiento</field>
         <field name="model">productividad.mantenimiento</field>
-        <field name="arch" type="xml"> 
+        <field name="arch" type="xml">
             <tree create="0" edit="0">
                 <!-- <field name="nbr"/> -->
                 <field name="name_seq" optional="show" options="{'no_open': True, 'no_create_edit': True}"/>
                 <field name="maintenance_id" optional="show" options="{'no_open': True, 'no_create_edit': True}"/>
-                <field name="type_ot" optional="show" options="{'no_open': True, 'no_create': True}"/>
-                <field name="activity_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
-                <field name="employee_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
-                <field name="duration" optional="show" options="{'no_open': True, 'no_create': True}"/>
-                <field name="unit_amount" optional="show" options="{'no_open': True, 'no_create': True}" sum="Total Hrs Efectivas"/>
-                <field name="prom_hrs_efectivas" optional="show" options="{'no_open': True, 'no_create': True}"/>
-                <field name="resource_calendar_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
-                <field name="analytic_line_ids" optional="show" options="{'no_open': True, 'no_create': True}"/>                
-                <field name="company_id" optional="show" options="{'no_open': True, 'no_create': True}"/>
-            </tree> 
+                <field name="type_ot" optional="show"/>
+                <field name="activity_id" optional="show"/>
+                <field name="employee_id" optional="show"/>
+                <field name="duration" sum="duration" optional="show"/>
+                <field name="unit_amount" sum="Total Hrs Efectivas" optional="show"/>
+
+                <field name="prom_hrs_efectivas" widget="percentage" sum="Promedio de hrs efectivas" optional="show"/>
+                <field name="resource_calendar_id" optional="show"/>
+
+                <field name="percentage_e_p" widget="percentage" sum="Hs E/P(%)" optional="show"/>
+                <field name="percentage_p_l" widget="percentage" sum="Hs P/L(%)" optional="show"/>
+                <field name="percentage_e_l" widget="percentage" sum="Hs E/L(%)" optional="show"/>
+
+                <field name="analytic_line_ids" optional="hide"/>
+                <field name="company_id" optional="show"/>
+            </tree>
         </field>
     </record>
 
     <record id="productividad_mantenimiento_graph" model="ir.ui.view">
         <field name="model">productividad.mantenimiento</field>
         <field name="arch" type="xml">
-            <graph type="bar">
-                <field name="employee_id"/>
-                <field name="unit_amount" type="measure"/>
+            <graph type="bar" sample="1" disable_linking="1" stacked="1">
+                <field name="employee_id" type="col"/>
+                <field name="unit_amount" type="measure" operator="+"/>
+                <field name="duration" type="measure" operator="+"/>
+
             </graph>
         </field>
     </record>
-     
+
     <record id="productividad_mantenimiento_pivot" model="ir.ui.view">
         <field name="model">productividad.mantenimiento</field>
         <field name="arch" type="xml">
             <pivot>
                 <field name="employee_id" type="row"/>
-                <field name="maintenance_id" type="row"/>
+                <field name="duration" type="measure"/>
+                <field name="unit_amount" type="measure"/>
             </pivot>
         </field>
     </record>
-    
+
     <record id="productividad_mantenimiento_dashboard" model="ir.ui.view">
         <field name="name">productividad.mantenimiento.dashboard</field>
         <field name="model">productividad.mantenimiento</field>
         <field name="mode">primary</field>
         <field name="arch" type="xml">
             <dashboard>
-                <view type="graph" ref="productividad_mantenimiento_graph"/>
+                <view type="graph" ref="report_maintenance_mblz2.productividad_mantenimiento_graph"/>
                 <group>
                     <group>
-                        <aggregate name="total_hrs_programadas" string="# Total Hrs Programadas" domain="[('duracion','=',True)]" field="duration" group_operator="sum" value_label="Hrs"/>
-                        <aggregate name="total_hrs_efectivas" string="# Total Hrs Efectivas" group_operator="sum" field="unit_amount" value_label="Hrs"/>
-                        <formula name="porc_cumplimiento" string="# Trabajo Efectivo" value="(record.total_hrs_efectivas / record.total_hrs_programadas) * 100" value_label="%"/>
+                        <aggregate name="total_hrs_programadas" string="# Total Hrs Programadas"
+                                   domain="[('duracion','=',True)]" field="duration" group_operator="sum"
+                                   value_label="Hrs"/>
+                        <aggregate name="total_hrs_efectivas" string="# Total Hrs Efectivas" group_operator="sum"
+                                   field="unit_amount" value_label="Hrs"/>
+                        <formula name="porc_cumplimiento" string="# Trabajo Efectivo (Hs E/P)"
+                                 value="(record.total_hrs_efectivas / record.total_hrs_programadas) * 100"
+                                 value_label="%"/>
                     </group>
                 </group>
-                <view type="pivot" ref="productividad_mantenimiento_pivot"/>
+                <view type="pivot" ref="report_maintenance_mblz2.productividad_mantenimiento_pivot"/>
             </dashboard>
         </field>
     </record>

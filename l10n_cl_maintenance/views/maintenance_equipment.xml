@@ -287,13 +287,12 @@
                         attrs="{'invisible': [('vehicle_type', '!=', 'car')]}">
                     <field string="Odometer" name="odometer_count" widget="statinfo"/>
                 </button>
-
-
-                <xpath expr="//field[@name='active']" position="before">
-                    <field name="is_reiterative" readonly="1" groups="base.group_no_one"/>
-                </xpath>
-
             </div>
+
+
+            <xpath expr="//field[@name='active']" position="before">
+                <field name="is_reiterative" readonly="1" groups="base.group_no_one"/>
+            </xpath>
 
         </field>
     </record>
