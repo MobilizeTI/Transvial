@@ -17,6 +17,7 @@
                 </xpath>
 
                 <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="name_seq_ot"/>
                     <field name="request_task_equipment_id" optional="show"/>
                     <!--                    <field name="product_line_task_ids" widget="many2many_tags" optional="show" string="Componentes"/>-->
                     <field name="product_line_task_txt" optional="show"/>

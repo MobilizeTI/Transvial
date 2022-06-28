@@ -16,6 +16,7 @@ class ApprovalRequest(models.Model):
     _inherit = 'approval.request'
 
     rpt_approver_ids = fields.Text(string='Aprobadores', compute='_compute_rpt_approver_ids')
+    name_seq_ot = fields.Char(string='#OT', related='request_task_id.request_id.name_seq')
 
     @api.depends('approver_ids')
     def _compute_rpt_approver_ids(self):
@@ -23,12 +24,13 @@ class ApprovalRequest(models.Model):
             rpt_approver_ids = ''
             if record.approver_ids:
                 for approver in record.approver_ids:
-                    if approver.date_approved:
-                        date_approved = approver.date_approved.strftime(
-                            DEFAULT_SERVER_DATETIME_FORMAT)
-                        rpt_approver_ids += f"{approver.user_id.name} - {approver._get_str_status(approver.status)} - {date_approved}\n"
-                    else:
-                        rpt_approver_ids += f"{approver.user_id.name} - {approver._get_str_status(approver.status)}\n"
+                    if approver.status in ('approved', 'refused'):
+                        if approver.date_approved:
+                            date_approved = approver.date_approved.strftime(
+                                DEFAULT_SERVER_DATETIME_FORMAT)
+                            rpt_approver_ids += f"{approver.user_id.name} - {approver._get_str_status(approver.status)} - {date_approved}\n"
+                        else:
+                            rpt_approver_ids += f"{approver.user_id.name} - {approver._get_str_status(approver.status)}\n"
             record.rpt_approver_ids = rpt_approver_ids
 
     def _date_to_datetime(self, value, h=0, m=0, s=0):

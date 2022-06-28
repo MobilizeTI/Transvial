@@ -172,8 +172,8 @@
                            options="{'no_create': True}"
                            attrs="{'readonly': [('state', '!=', 'draft')]}"
                            widget="many2many_tags" optional="hide"/>
-                    <field name="create_date" optional="hide" string="Fecha inicio"/>
-                    <field name="schedule_date" optional="hide"/>
+                    <field name="create_date" optional="show" string="Fecha de creación"/>
+                    <field name="schedule_date" optional="show"/>
 
                     <field name="activity_ids" widget="list_activity" optional="hide"/>
                     <field name="state" widget="badge" decoration-info="state == 'draft'"
