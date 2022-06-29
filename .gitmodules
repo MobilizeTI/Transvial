@@ -50,3 +50,7 @@
 	path = l10n_pe_mblz
 	url = git@github.com:MobilizeDevTeam/l10n_pe_mblz.git
 	branch = 14.0
+[submodule "mblz_multi_level_approval"]
+	path = mblz_multi_level_approval
+	url = git@github.com:MobilizeDevTeam/mblz_multi_level_approval.git
+	branch = 14.0
