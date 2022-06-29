@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 {
     'name': "MBLZ: Aprobación de RFQ múlti-nivel",
-
     'summary': """
         Aplicación de aprobación de múltiples niveles de órdenes de compra""",
     'description': """
