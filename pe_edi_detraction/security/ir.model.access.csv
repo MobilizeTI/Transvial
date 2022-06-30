@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_table_option_detraction,access_table_option_detraction,model_table_option_detraction,base.group_system,1,1,1,1

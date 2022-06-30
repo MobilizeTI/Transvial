@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="detraction_001" model="table.option.detraction">
+            <field name="code">001</field>
+            <field name="description">Azúcar</field>
+            <field name="amount_min">2075</field>
+            <field name="percentage">10</field>
+            <field name="comment">El monto mínimo equivale a 1/2 UIT, tendiendo en cuenta que el valor de la unidad impositiva tributaria (UIT) es de S/. 4 300 nuevos soles.</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_003" model="table.option.detraction">
+            <field name="code">003</field>
+            <field name="description">Alcohol etílico</field>
+            <field name="amount_min">2075</field>
+            <field name="percentage">10</field>
+            <field name="comment">El monto mínimo equivale a 1/2 UIT, tendiendo en cuenta que el valor de la unidad impositiva tributaria (UIT) es de S/. 4 150 nuevos soles.</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_004" model="table.option.detraction">
+            <field name="code">004</field>
+            <field name="description">Recursos hidrobiológicos</field>
+            <field name="amount_min">700</field>
+           <field name="percentage">40</field>
+            <field name="comment">Ninguno</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_005" model="table.option.detraction">
+            <field name="code">005</field>
+            <field name="description">Maíz amarillo duro</field>
+            <field name="amount_min">700</field>
+           <field name="percentage">40</field>
+            <field name="comment">Ninguno</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_006" model="table.option.detraction">
+            <field name="code">006</field>
+            <field name="description">Algodón</field>
+            <field name="amount_min">0</field>
+            <field name="percentage">0</field>
+            <field name="comment">Derogado</field>
+            <field name="active">False</field>
+        </record>
+        <record id="detraction_007" model="table.option.detraction">
+            <field name="code">007</field>
+            <field name="description">Caña de Azúcar</field>
+            <field name="amount_min">0</field>
+            <field name="percentage">0</field>
+            <field name="comment">Derogado</field>
+            <field name="active">False</field>
+        </record>
+        <record id="detraction_008" model="table.option.detraction">
+            <field name="code">008</field>
+            <field name="description">Madera</field>
+            <field name="amount_min">700</field>
+           <field name="percentage">40</field>
+            <field name="comment">Ninguno</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_009" model="table.option.detraction">
+            <field name="code">009</field>
+            <field name="description">Arena y piedra</field>
+            <field name="amount_min">700</field>
+            <field name="percentage">10</field>
+            <field name="comment">Ninguno</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_010" model="table.option.detraction">
+            <field name="code">010</field>
+            <field name="description">Residuos, subproductos, desechos, recortes y desperdicios</field>
+            <field name="amount_min">700</field>
+            <field name="percentage">10</field>
+            <field name="comment">Ninguno</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_011" model="table.option.detraction">
+            <field name="code">011</field>
+            <field name="description">Bienes del inciso A) del Apéndice I de la Ley del IGV (Bienes gravados con el IGV por renuncia de exoneración)</field>
+            <field name="amount_min">0</field>
+            <field name="percentage">0</field>
+            <field name="comment">Derogado</field>
+            <field name="active">False</field>
+        </record>
+        <record id="detraction_012" model="table.option.detraction">
+            <field name="code">012</field>
+            <field name="description">Intermediación laboral y tercerización</field>
+            <field name="amount_min">700</field>
+            <field name="percentage">12</field>
+            <field name="comment">Ninguno</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_013" model="table.option.detraction">
+            <field name="code">013</field>
+            <field name="description">Animales vivos</field>
+            <field name="amount_min">0</field>
+            <field name="percentage">0</field>
+            <field name="comment">Derogado</field>
+            <field name="active">False</field>
+        </record>
+        <record id="detraction_014" model="table.option.detraction">
+            <field name="code">014</field>
+            <field name="description">Carnes y despojos comestibles</field>
+            <field name="amount_min">700</field>
+           <field name="percentage">40</field>
+            <field name="comment">Ninguno</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_015" model="table.option.detraction">
+            <field name="code">015</field>
+            <field name="description">Abonos, cueros y pieles de origen animal</field>
+            <field name="amount_min">0</field>
+            <field name="percentage">0</field>
+            <field name="comment">Derogado</field>
+            <field name="active">False</field>
+        </record>
+        <record id="detraction_016" model="table.option.detraction">
+            <field name="code">016</field>
+            <field name="description">Aceite de pescado</field>
+            <field name="amount_min">0</field>
+            <field name="percentage">0</field>
+            <field name="comment">Derogado</field>
+            <field name="active">False</field>
+        </record>
+        <record id="detraction_017" model="table.option.detraction">
+            <field name="code">017</field>
+            <field name="description">Harina, polvo y “pellets” de pescado, crustáceos, moluscos y demás invertebrados acuáticos</field>
+            <field name="amount_min">700</field>
+           <field name="percentage">40</field>
+            <field name="comment">Ninguno</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_018" model="table.option.detraction">
+            <field name="code">018</field>
+            <field name="description">Embarcaciones pesqueras</field>
+            <field name="amount_min">0</field>
+            <field name="percentage">0</field>
+            <field name="comment">Derogado</field>
+            <field name="active">False</field>
+        </record>
+        <record id="detraction_019" model="table.option.detraction">
+            <field name="code">019</field>
+            <field name="description">Arrendamiento de bienes muebles</field>
+            <field name="amount_min">700</field>
+            <field name="percentage">10</field>
+            <field name="comment"></field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_020" model="table.option.detraction">
+            <field name="code">020</field>
+            <field name="description">Mantenimiento y reparación de bienes muebles</field>
+            <field name="amount_min">700</field>
+            <field name="percentage">12</field>
+            <field name="comment">Ninguno</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_021" model="table.option.detraction">
+            <field name="code">021</field>
+            <field name="description">Movimiento de carga</field>
+            <field name="amount_min">700</field>
+            <field name="percentage">10</field>
+            <field name="comment">Ninguno</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_022" model="table.option.detraction">
+            <field name="code">022</field>
+            <field name="description">Otros servicios empresariales</field>
+            <field name="amount_min">700</field>
+            <field name="percentage">12</field>
+            <field name="comment">Ninguno</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_023" model="table.option.detraction">
+            <field name="code">023</field>
+            <field name="description">Leche</field>
+            <field name="amount_min">0</field>
+            <field name="percentage">0</field>
+            <field name="comment">Derogado</field>
+            <field name="active">False</field>
+        </record>
+        <record id="detraction_024" model="table.option.detraction">
+            <field name="code">024</field>
+            <field name="description">Comisión mercantil</field>
+            <field name="amount_min">700</field>
+            <field name="percentage">10</field>
+            <field name="comment">Ninguno</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_025" model="table.option.detraction">
+            <field name="code">025</field>
+            <field name="description">Fabricación de bienes por encargo</field>
+            <field name="amount_min">700</field>
+            <field name="percentage">10</field>
+            <field name="comment">Ninguno</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_026" model="table.option.detraction">
+            <field name="code">026</field>
+            <field name="description">Servicio de transporte de personas</field>
+            <field name="amount_min">700</field>
+            <field name="percentage">10</field>
+            <field name="comment">Ninguno</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_027" model="table.option.detraction">
+            <field name="code">027</field>
+            <field name="description">Servicio de transporte </field>
+            <field name="amount_min">400</field>
+           <field name="percentage">40</field>
+            <field name="comment">Ninguno</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_029" model="table.option.detraction">
+            <field name="code">029</field>
+            <field name="description">Algodón en rama sin desmontar</field>
+            <field name="amount_min">0</field>
+            <field name="percentage">0</field>
+            <field name="comment">Derogado</field>
+            <field name="active">False</field>
+        </record>
+        <record id="detraction_030" model="table.option.detraction">
+            <field name="code">030</field>
+            <field name="description">Contratos de construcción</field>
+            <field name="amount_min">700</field>
+           <field name="percentage">40</field>
+            <field name="comment">Ninguno</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_031" model="table.option.detraction">
+            <field name="code">031</field>
+            <field name="description">Oro gravado con el IGV</field>
+            <field name="amount_min">0</field>
+            <field name="percentage">10</field>
+            <field name="comment">No importa el monto</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_032" model="table.option.detraction">
+            <field name="code">032</field>
+            <field name="description">Páprika y otros frutos de los géneros capsicum o pimienta</field>
+            <field name="amount_min">0</field>
+            <field name="percentage">0</field>
+            <field name="comment">Derogado</field>
+            <field name="active">False</field>
+        </record>
+        <record id="detraction_033" model="table.option.detraction">
+            <field name="code">033</field>
+            <field name="description">Espárragos</field>
+            <field name="amount_min">0</field>
+            <field name="percentage">0</field>
+            <field name="comment">Derogado</field>
+            <field name="active">False</field>
+        </record>
+        <record id="detraction_034" model="table.option.detraction">
+            <field name="code">034</field>
+            <field name="description">Minerales metálicos no auríferos</field>
+            <field name="amount_min">0</field>
+            <field name="percentage">10</field>
+            <field name="comment">No importa el monto</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_034" model="table.option.detraction">
+            <field name="code">034</field>
+            <field name="description">Minerales metálicos no auríferos</field>
+            <field name="amount_min">0</field>
+            <field name="percentage">10</field>
+            <field name="comment">No importa el monto</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_035" model="table.option.detraction">
+            <field name="code">035</field>
+            <field name="description">Bienes exonerados del IGV</field>
+            <field name="amount_min">700</field>
+            <field name="percentage">15</field>
+            <field name="comment">Ninguno</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_036" model="table.option.detraction">
+            <field name="code">036</field>
+            <field name="description">Oro y demás minerales metálicos exonerados del IGV</field>
+            <field name="amount_min">0</field>
+            <field name="percentage">15</field>
+            <field name="comment">No importa el monto</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_037" model="table.option.detraction">
+            <field name="code">037</field>
+            <field name="description">Demás servicios gravados con el IGV</field>
+            <field name="amount_min">700</field>
+            <field name="percentage">12</field>
+            <field name="comment">Ninguno</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_039" model="table.option.detraction">
+            <field name="code">039</field>
+            <field name="description">Minerales no metálicos</field>
+            <field name="amount_min">700</field>
+            <field name="percentage">10</field>
+            <field name="comment">Ninguno</field>
+            <field name="active">True</field>
+        </record>
+        <record id="detraction_040" model="table.option.detraction">
+            <field name="code">040</field>
+            <field name="description">Bien inmueble gravado con IGV</field>
+            <field name="amount_min">0</field>
+           <field name="percentage">40</field>
+            <field name="comment">No importa el monto</field>
+            <field name="active">True</field>
+        </record>
+    </data>
+</odoo>
