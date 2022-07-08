@@ -3,7 +3,7 @@
     <data noupdate="0">
         <record id="detraction_001" model="table.option.detraction">
             <field name="code">001</field>
-            <field name="description">Azúcar</field>
+            <field name="description">Azúcar y melaza de caña</field>
             <field name="amount_min">2075</field>
             <field name="percentage">10</field>
             <field name="comment">El monto mínimo equivale a 1/2 UIT, tendiendo en cuenta que el valor de la unidad impositiva tributaria (UIT) es de S/. 4 300 nuevos soles.</field>
@@ -21,7 +21,7 @@
             <field name="code">004</field>
             <field name="description">Recursos hidrobiológicos</field>
             <field name="amount_min">700</field>
-           <field name="percentage">40</field>
+           <field name="percentage">4</field>
             <field name="comment">Ninguno</field>
             <field name="active">True</field>
         </record>
@@ -29,7 +29,7 @@
             <field name="code">005</field>
             <field name="description">Maíz amarillo duro</field>
             <field name="amount_min">700</field>
-           <field name="percentage">40</field>
+           <field name="percentage">4</field>
             <field name="comment">Ninguno</field>
             <field name="active">True</field>
         </record>
@@ -53,7 +53,7 @@
             <field name="code">008</field>
             <field name="description">Madera</field>
             <field name="amount_min">700</field>
-           <field name="percentage">40</field>
+           <field name="percentage">4</field>
             <field name="comment">Ninguno</field>
             <field name="active">True</field>
         </record>
@@ -69,7 +69,7 @@
             <field name="code">010</field>
             <field name="description">Residuos, subproductos, desechos, recortes y desperdicios</field>
             <field name="amount_min">700</field>
-            <field name="percentage">10</field>
+            <field name="percentage">15</field>
             <field name="comment">Ninguno</field>
             <field name="active">True</field>
         </record>
@@ -85,7 +85,7 @@
             <field name="code">012</field>
             <field name="description">Intermediación laboral y tercerización</field>
             <field name="amount_min">700</field>
-            <field name="percentage">12</field>
+            <field name="percentage">10</field>
             <field name="comment">Ninguno</field>
             <field name="active">True</field>
         </record>
@@ -101,7 +101,7 @@
             <field name="code">014</field>
             <field name="description">Carnes y despojos comestibles</field>
             <field name="amount_min">700</field>
-           <field name="percentage">40</field>
+           <field name="percentage">4</field>
             <field name="comment">Ninguno</field>
             <field name="active">True</field>
         </record>
@@ -125,7 +125,7 @@
             <field name="code">017</field>
             <field name="description">Harina, polvo y “pellets” de pescado, crustáceos, moluscos y demás invertebrados acuáticos</field>
             <field name="amount_min">700</field>
-           <field name="percentage">40</field>
+           <field name="percentage">4</field>
             <field name="comment">Ninguno</field>
             <field name="active">True</field>
         </record>
@@ -149,7 +149,7 @@
             <field name="code">020</field>
             <field name="description">Mantenimiento y reparación de bienes muebles</field>
             <field name="amount_min">700</field>
-            <field name="percentage">12</field>
+            <field name="percentage">10</field>
             <field name="comment">Ninguno</field>
             <field name="active">True</field>
         </record>
@@ -165,7 +165,7 @@
             <field name="code">022</field>
             <field name="description">Otros servicios empresariales</field>
             <field name="amount_min">700</field>
-            <field name="percentage">12</field>
+            <field name="percentage">10</field>
             <field name="comment">Ninguno</field>
             <field name="active">True</field>
         </record>
@@ -269,7 +269,7 @@
             <field name="code">035</field>
             <field name="description">Bienes exonerados del IGV</field>
             <field name="amount_min">700</field>
-            <field name="percentage">15</field>
+            <field name="percentage">1.5</field>
             <field name="comment">Ninguno</field>
             <field name="active">True</field>
         </record>
@@ -277,7 +277,7 @@
             <field name="code">036</field>
             <field name="description">Oro y demás minerales metálicos exonerados del IGV</field>
             <field name="amount_min">0</field>
-            <field name="percentage">15</field>
+            <field name="percentage">1.5</field>
             <field name="comment">No importa el monto</field>
             <field name="active">True</field>
         </record>

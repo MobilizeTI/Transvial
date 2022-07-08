@@ -15,6 +15,12 @@ class TableOptionDetraction(models.Model):
     percentage = fields.Float(string='Porcentaje')
     comment = fields.Text(string='Comentario')
     active = fields.Boolean(default=True, string='Activo')
+    member_ids = fields.One2many('product.template', 'option_detraction_id')
+    product_count = fields.Char(string='Cantidad de productos', compute='get_count_products', store=True)
+
+    @api.depends('member_ids')
+    def get_count_products(self):
+        self.product_count = len(self.member_ids)
 
 
 class ProductTemplate(models.Model):

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="detraction_l10n_latam_invoice_view_move_form" model="ir.ui.view">
+            <field name="name">DETRACTION: detraction_l10n_account.move.form</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="l10n_latam_invoice_document.view_move_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='l10n_latam_document_number']" position="after">
+                    <field name="reload_is_affect_detraction" invisible="1"/>
+                    <field name="is_affect_detraction"
+                           force_save="1"
+                           attrs="{'invisible': ['|',
+                            ('move_type', 'not in', ('in_invoice', 'out_invoice')),
+                            ('is_affect_detraction', '=', False)
+                           ]}"/>
+                    <!--                    <field name="payment_detraction_id"/>-->
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="detraction_view_move_form" model="ir.ui.view">
+            <field name="name">DETRACTION: account.move.form</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+
+<!--                <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='move_name']" position="before">-->
+<!--                    <field name="is_detraction" invisible="1"/>-->
+<!--                </xpath>-->
+
+<!--                 <xpath expr="//field[@name='line_ids']/tree//field[@name='account_id']" position="before">-->
+<!--                    <field name="is_detraction" invisible="1"/>-->
+<!--                </xpath>-->
+
+                <xpath expr="//group[@id='header_left_group']/*" position="before">
+                    <field name="name_supplier_invoice" attrs="{'invisible': [
+                        ('move_type', '!=', 'in_invoice')
+                    ]}"/>
+                </xpath>
+
+                <field name="amount_total" position="before">
+                    <field name="currency_pe_id" invisible="1"/>
+                    <field name="currency_symbol" invisible="1"/>
+                    <field name="amount_detraction" style="color: #37b1b8"
+                           attrs="{'invisible': [('move_type', 'not in', ('in_invoice', 'out_invoice'))]}"/>
+                    <field name="amount_detraction_pen" style="color: #37b1b8"
+                           widget='monetary' options="{'currency_field': 'currency_pe_id'}"
+                           attrs="{'invisible':['|',('currency_symbol','=','S/'), ('move_type', 'not in', ('in_invoice', 'out_invoice'))]}"/>
+                </field>
+
+                <xpath expr="//page[@name='other_info']" position="after">
+
+                    <page name="page_detraction" string="Detracción"
+                          attrs="{'invisible': ['|',
+                                                    ('move_type', 'not in', ('in_invoice', 'out_invoice')),
+                                                    ('detraction_lines', '=', []),
+                                            ]}">
+
+                        <group col="4" attrs="{'invisible': [('move_type', '!=', 'in_invoice')]}">
+                            <field name="supplier_account_detraction"/>
+                            <field name="supplier_nro_constancia"/>
+                            <field name="payer_detraction_id"
+                                   options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                        </group>
+                        <field
+                                name="detraction_lines"
+                                widget="section_and_note_one2many"
+                                context="{'default_move_id': id}"
+                                mode="tree,form">
+
+                            <tree editable="bottom" delete="0" create="0">
+                                <field name="move_id" invisible="1"/>
+                                <field name="currency_id" invisible="1"/>
+                                <field name="move_line_id" invisible="1"/>
+                                <field name="product_id"
+                                       readonly="1"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="option_detraction_id"
+                                       readonly="1"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <field name="percentage" readonly="0"/>
+                                <field name="company_id" groups="base.group_multi_company" invisible="1"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <group>
+                                        <field name="product_id"
+                                               options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                        <field name="option_detraction_id"
+                                               options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                        <field name="percentage"/>
+                                    </group>
+                                    <group>
+                                        <field name="company_id" groups="base.group_multi_company"/>
+                                    </group>
+                                </group>
+                            </form>
+                        </field>
+                        <group name="totals_detraction_group" col="6">
+                            <group class="oe_subtotal_footer oe_right" colspan="2" name="totals_detraction">
+                                <field name="amount_total" string="Monto de la factura"/>
+                                <separator/>
+                                <field name="amount_detraction" class="oe_subtotal_footer_separator"/>
+                                <field name="amount_detraction_pen"
+                                       options="{'currency_field': 'currency_pe_id'}"
+                                       attrs="{'invisible':[('currency_symbol','=','S/')]}"/>
+                            </group>
+                            <div class="oe_clear"/>
+                        </group>
+
+                    </page>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="detraction_view_account_invoice_filter" model="ir.ui.view">
+            <field name="name">DETRACTION: account.invoice.select</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//filter[@name='myinvoices']" position="after">
+                    <separator/>
+                    <filter
+                            domain="[('is_affect_detraction', '=', True)]"
+                            name="detraction" help="Afectos a detracción"/>
+
+                </xpath>
+
+            </field>
+        </record>
+
+
+        <!--        vista lista-->
+        <record id="detraction_view_move_tree" model="ir.ui.view">
+            <field name="name">DETRACTION_account.move.tree</field>
+            <field name="model">account.move</field>
+            <field name="priority">16</field>
+            <field name="inherit_id" ref="account.view_move_tree"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="name_supplier_invoice"/>
+                </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>

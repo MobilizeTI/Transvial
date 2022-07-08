@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <template id="l10n_pe_edi.report_invoice_document" inherit_id="account.report_invoice_document"
+                  active="False" customize_show="True">
+            <!-- Global variables -->
+            <xpath expr="//h2[1]" position="before">
+                <t t-set="extra_edi_vals" t-value="o._l10n_pe_edi_get_extra_report_values()"/>
+                <t t-set="l10n_pe_edi_amount_to_text" t-value="o.l10n_pe_edi_amount_to_text()"/>
+                <t t-set="spot" t-value="o._l10n_pe_edi_get_spot()"/>
+            </xpath>
+
+            <xpath expr="//p[@t-if='o.narration']" position="before">
+                <p>
+                    <!--                    <span><b>SON:</b> <t t-esc="extra_edi_vals.get('amount_to_text')"/></span>-->
+                    <span><b>SON:</b> <t t-esc="l10n_pe_edi_amount_to_text.get('amount_to_text')"/></span>
+                </p>
+            </xpath>
+
+            <xpath expr="//h2/span[contains(@t-if, 'out_invoice')]" position="replace">
+                <span t-if="o.move_type == 'out_invoice' and o.state == 'posted'"
+                      t-esc="o.l10n_latam_document_type_id.report_name"/>
+            </xpath>
+
+            <xpath expr="//h2/span[contains(@t-if, 'out_refund')]" position="replace">
+                <span t-if="o.move_type == 'out_refund' and o.state == 'posted'"
+                      t-esc="o.l10n_latam_document_type_id.report_name"/>
+            </xpath>
+
+            <xpath expr="//h2/span[@t-field='o.name']" position="replace">
+                <span t-if="o.name != '/'" t-esc="o.name.replace(' ', '')"/>
+            </xpath>
+            <!-- QR-code -->
+            <xpath expr="//div[@id='qrcode']" position="after">
+                <p t-if="spot" t-esc="spot['spot_message']"/>
+                <p>
+                    <img t-if="extra_edi_vals" class="border border-dark rounded"
+                         t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('QR', extra_edi_vals['qr_str'], 100, 100)"/>
+                </p>
+            </xpath>
+
+            <!-- DETRACCIÓN-->
+            <xpath expr="//t[@t-foreach='o.amount_by_group']" position="after">
+                <t t-if="o.is_affect_detraction">
+                    <tr class="o_subtotal">
+                        <td><strong>Total detracción</strong></td>
+                        <td class="text-right">
+                            <span t-field="o.amount_detraction"
+                                  t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                        </td>
+                    </tr>
+                    <t t-if="o.currency_symbol != 'S/'">
+                        <tr>
+                            <td><strong>Total detracción (soles)</strong></td>
+                            <td class="text-right">
+                                <span t-field="o.amount_detraction_pen"
+                                      t-options='{"widget": "monetary", "display_currency": o.currency_pe_id}'/>
+                            </td>
+                        </tr>
+                    </t>
+                </t>
+            </xpath>
+
+        </template>
+    </data>
+</odoo>
