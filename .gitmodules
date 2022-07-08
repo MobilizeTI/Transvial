@@ -54,3 +54,7 @@
 	path = mblz_multi_level_approval
 	url = git@github.com:MobilizeDevTeam/mblz_multi_level_approval.git
 	branch = 14.0
+[submodule "purchase_subscription_mblz"]
+	path = purchase_subscription_mblz
+	url = git@github.com:MobilizeDevTeam/purchase_subscription_mblz.git
+	branch = 14.0
