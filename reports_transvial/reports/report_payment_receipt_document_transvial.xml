@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <template id="report_payment_receipt_document_transvial">
+            <t t-call="web.external_layout">
+                <style>
+                    table { page-break-after:auto }
+                    tr { page-break-inside:avoid; page-break-after:auto }
+                    td { page-break-inside:avoid; page-break-after:auto }
+                    thead { display: table-row-group; }
+                    <!--                    tfoot { display:table-footer-group }-->
+                </style>
+                <t t-set="o" t-value="o.with_context(lang=lang)"/>
+                <tr class="page" style="font-size: 10px !important;">
+                    <br/><br/>
+                    <h3><strong>Recibo de pago: <span t-field="o.name"/></strong></h3>
+                    <div class="row mt64">
+                        <div class="col-6" t-if="o.date">
+                            <strong>Fecha de pago: </strong> <span t-field="o.date"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6" t-if="o.partner_type">
+                            <t t-if="o.partner_type == 'customer'">
+                                <strong>Cliente: </strong>
+                            </t>
+                            <t t-if="o.partner_type == 'supplier'">
+                                <strong>Proveedor: </strong>
+                            </t><span t-field="o.partner_id"/>
+                        </div>
+                        <div class="col-6" t-if="o.payment_method_id">
+                            <strong>Forma de pago: </strong><span t-field="o.payment_method_id.name"/>
+                        </div>
+                    </div>
+                    <div class="row mb64">
+                        <div class="col-6" t-if="o.amount">
+                            <strong>Monto del pago: </strong><span t-field="o.amount"
+                                                                   t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                        </div>
+                        <div class="col-6" t-if="o.ref">
+                            <strong>Memo: </strong><span t-field="o.ref"/>
+                        </div>
+                    </div>
+                    <table class="table table-sm table-bordered" style="border-collapse: collapse !important;">
+                        <tbody>
+                            <tr t-foreach="o.move_id._get_reconciled_invoices_partials()" t-as="rec">
+                                <t t-set="amount" t-value="rec[1]"/>
+                                <t t-set="inv" t-value="rec[2].move_id"/>
+                                <t t-if="inv.move_type != 'entry'">
+
+                                    <tr class="bg-info text-white">
+                                        <th><span>Fecha de la factura</span></th>
+                                        <th><span>Número de factura</span></th>
+                                        <th><span>Referencia</span></th>
+                                        <th class="text-right"><span>Monto original</span></th>
+                                        <th class="text-right"><span>Cantidad pagada</span></th>
+                                        <th class="text-right"><span>Balance</span></th>
+                                    </tr>
+
+                                    <tr class="text-active">
+                                        <td><span t-field="inv.invoice_date"/></td>
+                                        <td><span t-field="inv.name"/></td>
+                                        <td><span t-field="inv.ref"/></td>
+                                        <td class="text-right"><span t-field="inv.amount_total"/></td>
+                                        <td class="text-right"><span t-esc="amount"
+                                                                     t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></td>
+                                        <td class="text-right"><span t-field="inv.amount_residual"/></td>
+                                    </tr>
+
+                                    <!-- tipo de cambio -->
+                                    <t t-if="inv.currency_id.name != 'PEN'">
+                                        <tr class="table-active">
+                                            <th class="text-left"><span>Tipo de cambio</span></th>
+                                            <th class="text-left"><span>-</span></th>
+                                            <th class="text-left"><span>Compra</span></th>
+                                            <th class="text-left"><span>-</span></th>
+                                            <th class="text-left"><span>Venta</span></th>
+                                            <th class="text-left"><span>-</span></th>
+                                        </tr>
+                                    </t>
+
+                                    <!-- inicio del apuntes-->
+                                    <tr class="table-active">
+                                        <th class="text-center" colspan="6">Apuntes Contables</th>
+                                    </tr>
+
+                                    <tr class="table-active">
+                                        <th class="text-left" colspan="2"><span>Cuenta</span></th>
+                                        <th class="text-left"><span>Etiqueta</span></th>
+                                        <th class="text-left"><span>Etiquetas analíticas</span></th>
+                                        <th class="text-right"><span>Debe</span></th>
+                                        <th class="text-right"><span>Haber</span></th>
+                                    </tr>
+                                    <t t-set="total_debe" t-value="0"/>
+                                    <t t-set="total_haber" t-value="0"/>
+                                    <t t-set="lines"
+                                       t-value="inv.line_ids.sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)"/>
+
+                                    <t t-foreach="lines" t-as="line">
+                                        <t t-set="total_debe" t-value="total_debe + line.debit"/>
+                                        <t t-set="total_haber" t-value="total_haber + line.credit"/>
+
+                                        <tr>
+                                            <td colspan="2"><span t-field="line.account_id"/></td>
+                                            <td><span t-field="line.name"
+                                                      t-options="{'widget': 'text'}"/></td>
+                                            <td>
+                                                <span t-esc="', '.join(map(str,line.analytic_tag_ids.mapped('name')))"
+                                                />
+                                            </td>
+                                            <td class="text-right o_price_total"><span
+                                                    t-field="line.debit"/></td>
+                                            <td class="text-right o_price_total"><span
+                                                    t-field="line.credit"/></td>
+                                        </tr>
+
+                                    </t>
+
+                                    <tr class="o_total text-right">
+                                        <td class="text-right o_price_total" colspan="5">
+                                            <strong><span t-esc="total_debe"
+                                                          t-options='{"widget": "monetary", "display_currency": inv.currency_id}'
+                                            /></strong>
+                                        </td>
+
+                                        <td class="text-right o_price_total">
+                                            <strong><span t-esc="total_haber"
+                                                          t-options='{"widget": "monetary", "display_currency": inv.currency_id}'
+                                            /></strong>
+                                        </td>
+                                    </tr>
+
+                                </t>
+
+                                <!-- imprime tipo de cambio si es diferente de sol-->
+
+                                <!-- imprime los apuntes contables relacionados al pago-->
+
+                            </tr>
+
+
+                        </tbody>
+                    </table>
+                </tr>
+            </t>
+        </template>
+
+        <template id="report_payment_receipt_transvial">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-set="lang" t-value="o.partner_id.lang or o.company_id.partner_id.lang"/>
+                    <t t-call="reports_transvial.report_payment_receipt_document_transvial" t-lang="lang"/>
+                </t>
+            </t>
+        </template>
+
+
+        <record id="report_payment_receipt_transvial_a4_paperformat" model="report.paperformat">
+            <field name="name">Asientos contables pagos: A4</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">35</field>
+            <field name="margin_bottom">25</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">35</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <report
+                id="action_report_payment_receipt_transvial"
+                model="account.payment"
+                string="Recibo de pago (v2)"
+                name="reports_transvial.report_payment_receipt_transvial"
+                file="reports_transvial.report_payment_receipt_transvial"
+                report_type="qweb-pdf"
+                paperformat="reports_transvial.report_payment_receipt_transvial_a4_paperformat"
+        />
+
+    </data>
+</odoo>

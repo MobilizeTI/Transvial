@@ -149,8 +149,8 @@ class AccountMove(models.Model):
             if not max_percent or self.amount_total_signed < 700 or \
                     not self.l10n_pe_edi_operation_type in ['1001', '1002', '1003', '1004']:
                 return {}
-            # line = self.invoice_line_ids.filtered(lambda r: r.product_id.l10n_pe_withhold_percentage == max_percent)[0]
-            line = self.detraction_lines.sorted(lambda l: l.percentage, reverse=True)[0].move_line_id
+            line_detraction_list = self.detraction_lines.sorted(lambda l: l.percentage, reverse=True)[0]
+            line = line_detraction_list.move_line_id
             national_bank = self.env.ref('l10n_pe_edi.peruvian_national_bank', raise_if_not_found=False)
             national_bank_account_number = False
             if national_bank:
@@ -182,7 +182,7 @@ class AccountMove(models.Model):
                 'PaymentPercent': max_percent,
                 'spot_message': "Operacion sujeta al sistema de Pago de Obligaciones Tributarias-SPOT, Banco de la Nacion"
                                 " %% %s Cod Serv. %s" % (
-                                    line.product_id.l10n_pe_withhold_percentage,
+                                    line_detraction_list.percentage,
                                     line.product_id.l10n_pe_withhold_code) if self.amount_total_signed >= 700.0 else False
             }
         elif self.move_type == 'in_invoice':
