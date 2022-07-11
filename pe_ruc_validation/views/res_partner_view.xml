@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="res_partner_form__view_inherit" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form//sheet" position="before">
+                <header>
+                    <button name="button_update_data"
+                            type="object"
+                            string="Actualizar datos"/>
+                </header>
+                <field name="sunat_condition" invisible="1"/>
+                <field name="sunat_active" invisible="1"/>
+
+                <field name="alert_warning_vat" invisible="1"/>
+                <div class="alert alert-warning" role="alert"
+                     attrs="{'invisible': [('alert_warning_vat', '=', False)]}">
+                    <span><strong>NO HAY CONEXION O LOS DATOS NO EXISTEN, POR FAVOR REGISTRE LOS "DATOS
+                        MANUALMENTE".</strong></span>
+                </div>
+            </xpath>
+            <xpath expr="//h1[1]" position="after">
+                <div class="o_row">
+                    <field name="commercial_name" placeholder="Commercial Name"
+                           attrs="{'invisible': [('is_company','=',False)]}"/>
+                </div>
+                <br/>
+                <span class="badge badge-success" attrs="{'invisible': [('sunat_condition', '!=', 'habido')]}">
+                    Condición: Habido</span>
+                <span class="badge badge-danger" attrs="{'invisible': [('sunat_condition', '!=', 'nhabido')]}">
+                    Condición: No habido</span>
+                <span class="badge badge-primary"
+                      attrs="{'invisible': [('sunat_active', '!=', 'active')]}">Estado: Activo</span>
+                <span class="badge badge-danger"
+                      attrs="{'invisible': [('sunat_active', '!=', 'not_active')]}">Estado: No activo</span>
+            </xpath>
+        </field>
+    </record>
+</odoo>

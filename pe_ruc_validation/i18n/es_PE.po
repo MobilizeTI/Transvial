@@ -1,0 +1,229 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* pe_ruc_validation
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0+e-20210201\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-05-16 07:05+0000\n"
+"PO-Revision-Date: 2021-05-16 02:11-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: es_PE\n"
+"X-Generator: Poedit 2.3\n"
+
+#. module: pe_ruc_validation
+#: model_terms:ir.ui.view,arch_db:pe_ruc_validation.res_config_settings_view_form
+msgid ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" groups=\"base.group_multi_company\"/>"
+msgstr ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Los valores establecidos "
+"aquí son específicos de la empresa.\" groups=\"base.group_multi_company\"/>"
+
+#. module: pe_ruc_validation
+#: model_terms:ir.ui.view,arch_db:pe_ruc_validation.res_partner_form__view_inherit
+msgid ""
+"<span><strong>NO CONNECTION OR THE DATA DOES NOT EXIST, PLEASE REGISTER THE "
+"DATA MANUALLY.</strong></span>"
+msgstr ""
+"<span><strong>NO HAY CONEXION O LOS DATOS NO EXISTE, POR FAVOR REGISTRE LOS "
+"DATOS MANUALMENTE.<span><strong>"
+
+#. module: pe_ruc_validation
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_partner__alert_warning_vat
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_users__alert_warning_vat
+msgid "Alert warning vat"
+msgstr "Advertencia de alerta para Vat"
+
+#. module: pe_ruc_validation
+#: model:ir.model.fields.selection,name:pe_ruc_validation.selection__res_company__l10n_pe_api_dni_connection__altabpo
+#: model:ir.model.fields.selection,name:pe_ruc_validation.selection__res_company__l10n_pe_api_ruc_connection__altabpo
+msgid "AltaBPO"
+msgstr ""
+
+#. module: pe_ruc_validation
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_company__l10n_pe_api_dni_connection
+msgid "Api DNI Connection"
+msgstr "Conexión Api DNI"
+
+#. module: pe_ruc_validation
+#: model:ir.model.fields.selection,name:pe_ruc_validation.selection__res_company__l10n_pe_api_dni_connection__api_net
+#: model:ir.model.fields.selection,name:pe_ruc_validation.selection__res_company__l10n_pe_api_ruc_connection__api_net
+msgid "Api Net"
+msgstr ""
+
+#. module: pe_ruc_validation
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_company__l10n_pe_api_ruc_connection
+msgid "Api RUC Connection"
+msgstr "Conexión Api RUC"
+
+#. module: pe_ruc_validation
+#: model:ir.model,name:pe_ruc_validation.model_res_city
+msgid "City"
+msgstr "Ciudad"
+
+#. module: pe_ruc_validation
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_partner__commercial_name
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_users__commercial_name
+#: model_terms:ir.ui.view,arch_db:pe_ruc_validation.res_partner_form__view_inherit
+msgid "Commercial Name"
+msgstr "Nombre comercial"
+
+#. module: pe_ruc_validation
+#: model:ir.model,name:pe_ruc_validation.model_res_company
+msgid "Companies"
+msgstr "Compañias"
+
+#. module: pe_ruc_validation
+#: model:ir.model,name:pe_ruc_validation.model_res_config_settings
+msgid "Config Settings"
+msgstr "Opciones de configuración"
+
+#. module: pe_ruc_validation
+#: model:ir.model,name:pe_ruc_validation.model_res_partner
+msgid "Contact"
+msgstr "Contacto"
+
+#. module: pe_ruc_validation
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_partner__country_id
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_users__country_id
+msgid "Country"
+msgstr "País"
+
+#. module: pe_ruc_validation
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_company__l10n_pe_dni_validation
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_config_settings__l10n_pe_dni_validation
+msgid "DNI Validation"
+msgstr "Validación del DNI"
+
+#. module: pe_ruc_validation
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_l10n_pe_res_city_district__display_name
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_city__display_name
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_company__display_name
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_config_settings__display_name
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_partner__display_name
+msgid "Display Name"
+msgstr "Nombre mostrado"
+
+#. module: pe_ruc_validation
+#: model:ir.model,name:pe_ruc_validation.model_l10n_pe_res_city_district
+msgid "District"
+msgstr "Distrito"
+
+#. module: pe_ruc_validation
+#: model_terms:ir.ui.view,arch_db:pe_ruc_validation.view_form_company_inherited
+msgid "Dni validation"
+msgstr ""
+
+#. module: pe_ruc_validation
+#: model_terms:ir.ui.view,arch_db:pe_ruc_validation.res_config_settings_view_form
+msgid "Extract your client's data from SUNAT"
+msgstr "Extraiga los datos de su cliente de la SUNAT"
+
+#. module: pe_ruc_validation
+#: model:ir.model.fields.selection,name:pe_ruc_validation.selection__res_company__l10n_pe_api_dni_connection__facturacion_electronica
+msgid "Facturación Electrónica DNI"
+msgstr ""
+
+#. module: pe_ruc_validation
+#: model:ir.model.fields.selection,name:pe_ruc_validation.selection__res_company__l10n_pe_api_dni_connection__free_api
+msgid "Free Api"
+msgstr ""
+
+#. module: pe_ruc_validation
+#: model:ir.model.fields.selection,name:pe_ruc_validation.selection__res_partner__state__habido
+msgid "Habido"
+msgstr ""
+
+#. module: pe_ruc_validation
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_l10n_pe_res_city_district__id
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_city__id
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_company__id
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_config_settings__id
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_partner__id
+msgid "ID"
+msgstr ""
+
+#. module: pe_ruc_validation
+#: model:ir.model.fields.selection,name:pe_ruc_validation.selection__res_company__l10n_pe_api_dni_connection__jne
+msgid "JNE"
+msgstr ""
+
+#. module: pe_ruc_validation
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_l10n_pe_res_city_district____last_update
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_city____last_update
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_company____last_update
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_config_settings____last_update
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_partner____last_update
+msgid "Last Modified on"
+msgstr "Última modificación el"
+
+#. module: pe_ruc_validation
+#: model:ir.model.fields.selection,name:pe_ruc_validation.selection__res_partner__state__nhabido
+msgid "No Habido"
+msgstr ""
+
+#. module: pe_ruc_validation
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_company__l10n_pe_ruc_validation
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_config_settings__l10n_pe_ruc_validation
+msgid "RUC Validation"
+msgstr "Validación del RUC"
+
+#. module: pe_ruc_validation
+#: model_terms:ir.ui.view,arch_db:pe_ruc_validation.res_config_settings_view_form
+msgid "RUC validation"
+msgstr "Validación RUC"
+
+#. module: pe_ruc_validation
+#: model_terms:ir.ui.view,arch_db:pe_ruc_validation.res_config_settings_view_form
+msgid "RUC/DNI Validation"
+msgstr "Validación RUC/DNI"
+
+#. module: pe_ruc_validation
+#: model_terms:ir.ui.view,arch_db:pe_ruc_validation.view_form_company_inherited
+msgid "RUC/DNI Validation(PE)"
+msgstr "Validación RUC / DNI (PE)"
+
+#. module: pe_ruc_validation
+#: model_terms:ir.ui.view,arch_db:pe_ruc_validation.view_form_company_inherited
+msgid "Ruc validation"
+msgstr "Validación de RUC"
+
+#. module: pe_ruc_validation
+#: model:ir.model.fields,field_description:pe_ruc_validation.field_res_partner__state
+msgid "State"
+msgstr "Estado"
+
+#. module: pe_ruc_validation
+#: model:ir.model.fields.selection,name:pe_ruc_validation.selection__res_company__l10n_pe_api_ruc_connection__sunat
+msgid "Sunat"
+msgstr ""
+
+#. module: pe_ruc_validation
+#: code:addons/pe_ruc_validation/models/res_partner.py:0
+#, python-format
+msgid "The Dni must be 8 characters long."
+msgstr "El Dni debe tener 8 caracteres."
+
+#. module: pe_ruc_validation
+#: code:addons/pe_ruc_validation/models/res_partner.py:0
+#, python-format
+msgid "The Ruc must be 11 characters long and start with 10,20,15 or 17."
+msgstr "El Ruc debe tener 11 caracteres y empezar comenzar con 10,20,15 o 17."
+
+#. module: pe_ruc_validation
+#: model_terms:ir.ui.view,arch_db:pe_ruc_validation.res_config_settings_view_form
+msgid "Validate the names and surnames of your contacts with DNI"
+msgstr "Valida los nombres y apellidos de tus contactos con DNI"
+
+#. module: pe_ruc_validation
+#: code:addons/pe_ruc_validation/models/res_partner.py:0
+#, python-format
+msgid "Warning"
+msgstr "Advertencia"

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Inherit Form View to Modify it -->
+        <record id="detraction_product_template_form_inherit_l10n_pe_edi" model="ir.ui.view">
+            <field name="name">DETRACTION: product.template.form.inherit.l10n_pe_edi</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="l10n_pe_edi.product_template_form_inherit_l10n_pe_edi"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='l10n_pe_withhold_code']" position="before">
+                    <field name="is_affect_detraction"/>
+                    <field name="option_detraction_id"
+                           attrs="{'invisible':[('is_affect_detraction','=',False)],
+                           'required':[('is_affect_detraction','=',True)]}"
+                           options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"/>
+
+                    <label for="amount_min_detraction" string="Aplica mayor a"
+                           attrs="{'invisible':[('is_affect_detraction','=',False)]}"/>
+                    <div attrs="{'invisible':[('is_affect_detraction','=',False)]}">
+                        <field name="amount_min_detraction" class="oe_inline text-secondary"/><span class="ml-2"><b>
+                        Porcentaje
+                        aplicado: </b></span>
+                        <field name="percentage_detraction" class="oe_inline text-primary text-bf"/><span
+                            class="text-primary text-bf">%</span>
+                    </div>
+                </xpath>
+
+                <xpath expr="//field[@name='l10n_pe_withhold_code']" position="attributes">
+                    <attribute name="groups">base.group_no_one</attribute>
+                    <!--                    <attribute name="invisible">1</attribute>-->
+                </xpath>
+
+                <xpath expr="//field[@name='l10n_pe_withhold_percentage']" position="attributes">
+                    <attribute name="groups">base.group_no_one</attribute>
+                    <!--                    <attribute name="invisible">1</attribute>-->
+                </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>
