@@ -308,6 +308,13 @@ class AccountMove(models.Model):
             self.load_lines_detraction()
         return rep_write
 
+    @api.returns('self', lambda value: value.id)
+    def copy(self, default=None):
+        default = dict(default or {})
+        ids = self.line_ids.filtered_domain([('is_detraction', '=', False)]).ids
+        default['line_ids'] = [(6, 0, ids)]
+        return super().copy(default)
+
 
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
