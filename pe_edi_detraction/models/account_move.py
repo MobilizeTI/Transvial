@@ -8,7 +8,7 @@ from num2words import num2words
 
 from odoo import api, fields, models, _
 from odoo.tools.float_utils import float_repr, float_round
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 
 class AMDetraction(models.Model):
@@ -215,6 +215,7 @@ class AccountMove(models.Model):
 
     def _create_entries_detraction(self):
         """Crear apuntes contables de detracción"""
+        self._valid_account_detraction()
         line_detraction_ids = self.line_ids.filtered_domain([('is_detraction', '=', True)])
         if not line_detraction_ids:
             if self.move_type == 'in_invoice':
@@ -266,6 +267,11 @@ class AccountMove(models.Model):
     def _clear_entries_detraction(self):
         line_detraction_ids = self.line_ids.filtered_domain([('is_detraction', '=', True)])
         line_detraction_ids.unlink()
+
+    def _valid_account_detraction(self):
+        if not self.company_id.detraction_account_id:
+            raise ValidationError(
+                _(f'No existe la cuenta de detracción configurada para la compañía {self.company_id.name}'))
 
     def action_post(self):
         # se añade el apunte contable de la detracción (solo a facturas de proveedor)

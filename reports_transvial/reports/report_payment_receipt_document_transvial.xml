@@ -5,6 +5,14 @@
         <template id="report_payment_receipt_document_transvial">
             <t t-call="web.external_layout">
                 <style>
+                    table, th, td {
+                    border: 1px solid black;
+                    border-collapse: collapse;
+                    }
+                    .f-size {
+                    font-size: 14px !important;
+                    }
+
                     table { page-break-after:auto }
                     tr { page-break-inside:avoid; page-break-after:auto }
                     td { page-break-inside:avoid; page-break-after:auto }
@@ -12,7 +20,7 @@
                     <!--                    tfoot { display:table-footer-group }-->
                 </style>
                 <t t-set="o" t-value="o.with_context(lang=lang)"/>
-                <tr class="page" style="font-size: 10px !important;">
+                <tr class="page">
                     <br/><br/>
                     <h3><strong>Recibo de pago: <span t-field="o.name"/></strong></h3>
                     <div class="row mt64">
@@ -42,14 +50,16 @@
                             <strong>Memo: </strong><span t-field="o.ref"/>
                         </div>
                     </div>
-                    <table class="table table-sm table-bordered" style="border-collapse: collapse !important;">
+                    <br/>
+
+                    <table class="table table-sm">
                         <tbody>
                             <tr t-foreach="o.move_id._get_reconciled_invoices_partials()" t-as="rec">
                                 <t t-set="amount" t-value="rec[1]"/>
                                 <t t-set="inv" t-value="rec[2].move_id"/>
                                 <t t-if="inv.move_type != 'entry'">
 
-                                    <tr class="bg-info text-white">
+                                    <tr class="bg-info text-white border-black">
                                         <th><span>Fecha de la factura</span></th>
                                         <th><span>Número de factura</span></th>
                                         <th><span>Referencia</span></th>
@@ -70,22 +80,32 @@
 
                                     <!-- tipo de cambio -->
                                     <t t-if="inv.currency_id.name != 'PEN'">
-                                        <tr class="table-active">
-                                            <th class="text-left"><span>Tipo de cambio</span></th>
-                                            <th class="text-left"><span>-</span></th>
-                                            <th class="text-left"><span>Compra</span></th>
-                                            <th class="text-left"><span>-</span></th>
-                                            <th class="text-left"><span>Venta</span></th>
-                                            <th class="text-left"><span>-</span></th>
+                                        <tr>
+                                            <th class="text-left"><span>Origen TRM</span></th>
+                                            <td class="text-left text-uppercase">
+                                                <span t-field="inv.ref_origin_trm"/>
+                                            </td>
+                                            <th class="text-right"><span>Compra</span></th>
+                                            <td class="text-right">
+                                                <span t-field="inv.rate_trm_purchase"
+                                                      t-options='{"widget": "monetary",
+                                                                  "display_currency": inv.currency_id}'/>
+                                            </td>
+                                            <th class="text-right"><span>Venta</span></th>
+                                            <td class="text-right">
+                                                <span t-field="inv.rate_trm_sale"
+                                                      t-options='{"widget": "monetary",
+                                                                  "display_currency": inv.currency_id}'/>
+                                            </td>
                                         </tr>
                                     </t>
 
                                     <!-- inicio del apuntes-->
-                                    <tr class="table-active">
+                                    <tr class="table-active f-size">
                                         <th class="text-center" colspan="6">Apuntes Contables</th>
                                     </tr>
 
-                                    <tr class="table-active">
+                                    <tr class="table-active f-size">
                                         <th class="text-left" colspan="2"><span>Cuenta</span></th>
                                         <th class="text-left"><span>Etiqueta</span></th>
                                         <th class="text-left"><span>Etiquetas analíticas</span></th>
@@ -101,7 +121,7 @@
                                         <t t-set="total_debe" t-value="total_debe + line.debit"/>
                                         <t t-set="total_haber" t-value="total_haber + line.credit"/>
 
-                                        <tr>
+                                        <tr class="f-size">
                                             <td colspan="2"><span t-field="line.account_id"/></td>
                                             <td><span t-field="line.name"
                                                       t-options="{'widget': 'text'}"/></td>
@@ -117,25 +137,21 @@
 
                                     </t>
 
-                                    <tr class="o_total text-right">
+                                    <tr class="o_total text-right f-size">
                                         <td class="text-right o_price_total" colspan="5">
                                             <strong><span t-esc="total_debe"
-                                                          t-options='{"widget": "monetary", "display_currency": inv.currency_id}'
+                                                          t-options='{"widget": "monetary", "display_currency": inv.currency_pe_id}'
                                             /></strong>
                                         </td>
 
                                         <td class="text-right o_price_total">
                                             <strong><span t-esc="total_haber"
-                                                          t-options='{"widget": "monetary", "display_currency": inv.currency_id}'
+                                                          t-options='{"widget": "monetary", "display_currency": inv.currency_pe_id}'
                                             /></strong>
                                         </td>
                                     </tr>
 
                                 </t>
-
-                                <!-- imprime tipo de cambio si es diferente de sol-->
-
-                                <!-- imprime los apuntes contables relacionados al pago-->
 
                             </tr>
 
@@ -180,6 +196,7 @@
                 file="reports_transvial.report_payment_receipt_transvial"
                 report_type="qweb-pdf"
                 paperformat="reports_transvial.report_payment_receipt_transvial_a4_paperformat"
+                print_report_name="'Recibo de pago %s' % (object.name)"
         />
 
     </data>
