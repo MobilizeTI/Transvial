@@ -301,6 +301,15 @@ class AccountMove(models.Model):
             move_new.load_lines_detraction()
         return move_new
 
+    # @api.onchange('invoice_line_ids')
+    # def _onchange_invoice_line_ids(self):
+    #     # Add code here
+    #     rep = super(AccountMove, self)._onchange_invoice_line_ids()
+    #     if not self.is_affect_detraction:
+    #         self._clear_entries_detraction()
+    #         self.detraction_lines = [(6, 0, [])]
+    #     return rep
+
     def write(self, values):
         # Add code here
         rep_write = super(AccountMove, self).write(values)

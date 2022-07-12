@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_payment_multi,account.payment_multi,model_account_payment_multi,account.group_account_user,1,0,0,0
+access_account_payment_multi_account_manager,account.payment_multi.manager,model_account_payment_multi,account.group_account_manager,1,1,1,1
+
+access_account_payment_multi_line,account.payment_multi_line,model_account_payment_multi_line,account.group_account_user,1,0,0,0
+access_account_payment_multi_line_account_manager,account.payment_multi_line.manager,model_account_payment_multi_line,account.group_account_manager,1,1,1,1

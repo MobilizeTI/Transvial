@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="account_payment_multi_form_view" model="ir.ui.view">
+            <field name="name">account.payment_multi.form</field>
+            <field name="model">account.payment_multi</field>
+            <field name="arch" type="xml">
+                <form string="Pagos multiples">
+                    <header>
+                        <button name="action_confirm" string="Confirm" type="object" class="oe_highlight"
+                                attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                        <button name="action_draft" string="Reset To Draft" type="object" class="btn btn-secondary"
+                                attrs="{'invisible': [('state', 'not in', ('confirm', 'cancel'))]}"
+                                groups="account.group_account_invoice"/>
+                        <button name="action_cancel" string="Cancel" type="object"
+                                attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirm,payment,cancel"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <field name="partner_ids" widget="many2many_tags"
+                                   options="{'no_create':True,'no_create_edit': True}"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="expiration_date"/>
+                                <field name="user_id" widget="many2one_avatar_user"/>
+                            </group>
+                            <group>
+                                <field name="generation_type"/>
+                                <field name="journal_id"/>
+                                <field name="currency_id"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page name="page_lines" string="Facturas">
+                                <field
+                                        name="line_ids"
+                                        widget="section_and_note_one2many"
+                                        context="{'default_payment_multi_id': id}"
+                                        mode="tree,form">
+
+                                    <tree editable="bottom" delete="1" create="0">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="move_line_id"
+                                               domain="['&amp;','&amp;','&amp;','&amp;',
+                                                       ('partner_id','in', parent.partner_ids),
+                                                       ('parent_state','=','posted'),
+                                                       ('account_internal_type','in',('receivable','payable')),('reconciled','=',False)]"/>
+                                        <field name="date_issue" readonly="1" force_save="1"/>
+                                        <field name="expiration_date" readonly="1" force_save="1"/>
+                                        <!--                                        <field name="fecha_constancia"/>-->
+                                        <!--                                        <field name="numero_constancia"/>-->
+                                        <!--                                        <field name="amount_retention" invisible="1"/>-->
+                                        <!--                                        <field name="moneda" readonly="1" force_save="1"/>-->
+                                        <field name="currency_id" invisible="1"/>
+                                        <!--                                        <field name="amount" readonly="1" force_save="1" widget="monetary"-->
+                                        <!--                                               options="{'currency_field': 'moneda_id'}"/>-->
+                                        <field name="balance_payable" readonly="1" force_save="1" widget="monetary"
+                                               options="{'currency_field': 'moneda_id'}"/>
+                                        <!--                                        <field name="importe_oculto" widget="monetary"-->
+                                        <!--                                               options="{'currency_field': 'moneda_id'}"/>-->
+                                        <field name="amount" widget="monetary"
+                                               options="{'currency_field': 'currency_id', 'bg_color': '#bff6dc'}"/>
+                                    </tree>
+                                </field>
+                            </page>
+
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="account_payment_multi_tree_view" model="ir.ui.view">
+            <field name="name">account.payment_multi.tree</field>
+            <field name="model">account.payment_multi</field>
+            <field name="arch" type="xml">
+                <tree string="Pagos multiples">
+                    <field name="date"/>
+                    <field name="name"/>
+                    <field name="journal_id"/>
+                    <field name="partner_ids" widget="many2many_tags_avatar"/>
+                    <field name="state" widget="badge" decoration-info="state == 'draft'"
+                           decoration-success="state == 'confirm'"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+
+                </tree>
+            </field>
+        </record>
+
+        <record id="account_payment_multi_search_view" model="ir.ui.view">
+            <field name="name">account.payment_multi.search</field>
+            <field name="model">account.payment_multi</field>
+            <field name="arch" type="xml">
+                <search string="Pagos multiples">
+                    <group expand="1" string="Group By">
+                        <filter string="Diario" name="group_journal_id" domain="[]"
+                                context="{'group_by':'journal_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="account_payment_multi_act_window" model="ir.actions.act_window">
+            <field name="name">Pagos multiples</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.payment_multi</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{
+                'default_payment_type': 'outbound',
+                'default_partner_type': 'supplier',
+            }</field>
+            <!--            <field name="view_id" ref="view_account_supplier_payment_tree"/>-->
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    ¡Cree su primer pago multiple!
+                </p>
+            </field>
+        </record>
+
+        <menuitem name="Pagos multiples"
+                  id="account_payment_multi_menu"
+                  parent="account.menu_finance_payables"
+                  action="account_payment_multi_act_window"
+                  sequence="20"
+        />
+
+    </data>
+</odoo>
