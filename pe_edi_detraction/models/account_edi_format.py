@@ -50,7 +50,7 @@ class AccountEdiFormat(models.Model):
                 lambda l: l.account_internal_type == 'receivable' and not l.is_detraction):
             amount = rec_line.amount_currency
             if spot and first_time:
-                amount -= spot['spot_amount']
+                amount -= spot['spot_amount']  # se resta la detracción
             first_time = False
             invoice_date_due_vals_list.append({'amount': rec_line.move_id.currency_id.round(amount),
                                                'currency_name': rec_line.move_id.currency_id.name,
