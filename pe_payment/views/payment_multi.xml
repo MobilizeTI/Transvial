@@ -42,7 +42,22 @@
                         </group>
 
                         <notebook>
-                            <page name="page_lines" string="Facturas">
+                            <page name="page_lines" string="Facturas" attrs="{'invisible': [('id', '=', False)]}">
+                                <header>
+                                    <button name="action_load_invoices"
+                                            string="CARGAR COMPROBANTES"
+                                            class="btn btn-sm btn-primary text-white"
+                                            icon="fa-hand-o-right"
+                                            type="object" attrs="{'invisible': [('state','!=','draft')]}"
+                                            help="Seleccione todos los comprobantes a pagar"/>
+                                    <button name="clear_invoices"
+                                            string="LIMPIAR" class="btn btn-sm btn-warning"
+                                            icon="fa-magic"
+                                            type="object"
+                                            confirm="Esta seguro(a) quitar los comprobantes seleccionados ?"
+                                            attrs="{'invisible': ['|',('state','!=','draft'), ('line_ids', '=', [])]}"
+                                            help="Quitará todos los items seleccionados en la lista"/>
+                                </header>
                                 <field
                                         name="line_ids"
                                         widget="section_and_note_one2many"

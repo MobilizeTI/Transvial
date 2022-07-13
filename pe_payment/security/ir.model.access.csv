@@ -4,3 +4,5 @@ access_account_payment_multi_account_manager,account.payment_multi.manager,model
 
 access_account_payment_multi_line,account.payment_multi_line,model_account_payment_multi_line,account.group_account_user,1,0,0,0
 access_account_payment_multi_line_account_manager,account.payment_multi_line.manager,model_account_payment_multi_line,account.group_account_manager,1,1,1,1
+
+access_load_invoice_wizard_account_manager,account.payment_multi_line.manager,model_load_invoice_wizard,,1,1,1,1

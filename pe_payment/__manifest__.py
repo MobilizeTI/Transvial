@@ -24,6 +24,8 @@
         'security/ir.model.access.csv',
 
         'views/payment_multi.xml',
+        'wizard/load_invoices_wizard.xml',
+
         'data/functions.xml'
 
     ],

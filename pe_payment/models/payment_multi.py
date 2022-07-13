@@ -2,9 +2,9 @@
 
 from odoo import models, fields, api, _
 
-
 # class AP(models.Model):
 #     _inherit = 'account.payment'
+from odoo.exceptions import UserError, ValidationError
 
 
 class PaymentMulti(models.Model):
@@ -81,6 +81,7 @@ class PaymentMulti(models.Model):
                                  string='Journal',
                                  required=True,
                                  readonly=False,
+                                 domain="[('company_id', '=', company_id), ('type', 'in', ('bank', 'cash'))]",
                                  check_company=True,
                                  default=_get_default_journal)
 
@@ -114,6 +115,21 @@ class PaymentMulti(models.Model):
         self.state = 'cancel'
 
     #  ----------------- Cambios de estados -----------------
+
+    def action_load_invoices(self):
+        self.ensure_one()
+        action = self.env.ref('pe_payment.action_load_invoice_wizard').read()[0]
+        context = dict(self._context, create=True)
+        context.update({
+            'default_payment_multi_id': self.id,
+            'default_partner_ids': self.partner_ids.ids
+        })
+        action['context'] = context
+        return action
+
+    def clear_invoices(self):
+        self.ensure_one()
+        self.line_ids = [(6, False, [])]
 
 
 class PaymentMultiLines(models.Model):
