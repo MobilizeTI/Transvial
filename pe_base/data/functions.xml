@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
-        <function model="res.company" name="create_supplier_invoice_sequences"/>
+        <function model="res.company" name="create_seq_customer_supplier_invoices"/>
     </data>
 </odoo>

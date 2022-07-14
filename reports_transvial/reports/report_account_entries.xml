@@ -7,12 +7,36 @@
                 <t t-foreach="docs" t-as="o">
                     <t t-call="web.external_layout">
                         <div class="page">
+                            <style>
+                                .vertical {
+                                border-left: 1px solid black;
+                                height: 100px;
+                                position:absolute;
+                                left: 50%;
+                                }
+
+                                .line-top{
+                                border-top: 0.1em solid #000 !important;
+                                }
+                                .line-bottom{
+                                border-bottom: 0.1em solid #000 !important;
+                                }
+
+                                .fond-black{
+                                font-weight: 900 !important;
+                                }
+
+                                table { page-break-after:auto }
+                                tr { page-break-inside:avoid; page-break-after:auto }
+                                td { page-break-inside:avoid; page-break-after:auto }
+                                thead { display: table-row-group; }
+                            </style>
 
                             <t t-set="o" t-value="o.with_context(lang=lang)"/>
                             <div class="page">
-                                <br/>
-                                <br/>
-                                <h2>
+                                <!--                                <br/>-->
+                                <!--                                <br/>-->
+                                <h4>
                                     <span t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Factura</span>
                                     <span t-if="o.move_type == 'out_invoice' and o.state == 'draft'">Factura
                                         Borrador</span>
@@ -22,22 +46,29 @@
                                     <span t-if="o.move_type == 'in_refund'">Nota de Crédito de Proveedor</span>
                                     <span t-if="o.move_type == 'in_invoice'">Factura de Proveedor</span>
                                     <span t-if="o.name != '/'" t-field="o.name"/>
-                                </h2>
+                                </h4>
                                 <div id="informations" class="row mt32 mb32">
+                                    <div class="col-auto col-3 mw-100 mb-2" t-if="o.name_seq_system != '/'"
+                                         name="name_seq_system">
+                                        <strong>Correlativo:</strong>
+                                        <p class="m-0" t-field="o.name_seq_system"/>
+                                    </div>
                                     <div class="col-auto col-3 mw-100 mb-2" t-if="o.partner_id" name="invoice_date">
                                         <t t-if="o.move_type == 'in_invoice'">
                                             <strong>Proveedor:</strong>
                                         </t>
                                         <t t-else=""><strong>Cliente:</strong></t>
-                                        <p class="m-0" t-field="o.partner_id"
-                                           t-options='{"widget": "contact", "fields": ["address", "name" ,"phone"], "no_marker": False}'/>
+                                        <p class="m-0" t-field="o.partner_id"/>
+
+                                        <!--                                           t-options='{"widget": "contact", "fields": ["address", "name" ,"phone"], "no_marker": False}'-->
                                     </div>
+
                                     <div class="col-auto col-3 mw-100 mb-2" t-if="o.invoice_date" name="invoice_date">
                                         <strong>Fecha factura:</strong>
                                         <p class="m-0" t-field="o.invoice_date"/>
                                     </div>
                                     <div class="col-auto col-3 mw-100 mb-2"
-                                         t-if="o.invoice_date_due and o.move_type == 'out_invoice' and o.state == 'posted'"
+                                         t-if="o.invoice_date_due"
                                          name="due_date">
                                         <strong>Fecha de vcto:</strong>
                                         <p class="m-0" t-field="o.invoice_date_due"/>
@@ -51,22 +82,28 @@
                                         <strong>Código del cliente:</strong>
                                         <p class="m-0" t-field="o.partner_id.ref"/>
                                     </div>
+                                    <!--                                    <div class="col-auto col-3 mw-100 mb-2" t-if="o.l10n_latam_document_number" name="reference">-->
+                                    <!--                                        <strong>Número de Doc:</strong>-->
+                                    <!--                                        <p class="m-0" t-field="o.l10n_latam_document_number"/>-->
+                                    <!--                                    </div>-->
                                     <div class="col-auto col-3 mw-100 mb-2" t-if="o.ref" name="reference">
-                                        <strong>Número de Documento :</strong>
-                                        <p class="m-0" t-field="o.l10n_latam_document_number"/>
+                                        <strong>Referencía:</strong>
+                                        <p class="m-0" t-field="o.ref"/>
                                     </div>
                                 </div>
-
+                                <span class="float-right text-small"
+                                      t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"/>
 
                                 <table class="table table-sm o_main_table table-bordered" name="line_ids_table">
                                     <thead>
                                         <tr class="table-active">
-                                            <th class="text-center" colspan="5"><h5>Apuntes Contables</h5></th>
+                                            <th class="text-center" colspan="6"><h5>Apuntes Contables</h5></th>
                                         </tr>
                                         <tr>
                                             <th class="text-left"><span>Cuenta</span></th>
                                             <th class="text-left"><span>Etiqueta</span></th>
                                             <th class="text-left"><span>Etiquetas analíticas</span></th>
+                                            <th class="text-left"><span>T/C</span></th>
                                             <th class="text-right"><span>Debe</span></th>
                                             <th class="text-right"><span>Haber</span></th>
                                         </tr>
@@ -88,22 +125,31 @@
                                                     <span t-esc="', '.join(map(str,line.analytic_tag_ids.mapped('name')))"
                                                     />
                                                 </td>
+                                                <td><span t-field="line.trm"/></td>
                                                 <td class="text-right o_price_total"><span t-field="line.debit"/></td>
                                                 <td class="text-right o_price_total"><span t-field="line.credit"/></td>
                                             </tr>
 
                                         </t>
 
-                                        <tr class="border-black o_total text-right">
-                                            <td class="text-right o_price_total" colspan="4">
+                                        <tr class="border-black text-left text-small">
+                                            <td colspan="4">
+                                                <strong>SON: <span
+                                                        t-esc="o.amount_to_text(total_debe, o.currency_pe_id)"
+                                                /></strong><br/>
+                                                <!--                                                <strong>SON (Ingreso)<span-->
+                                                <!--                                                        t-esc="o.amount_to_text(total_haber, o.currency_pe_id)"-->
+                                                <!--                                                /></strong>-->
+                                            </td>
+                                            <td class="text-right o_price_total">
                                                 <strong><span t-esc="total_debe"
-                                                              t-options='{"widget": "monetary", "display_currency": line.currency_id}'
+                                                              t-options='{"widget": "monetary", "display_currency": o.currency_pe_id}'
                                                 /></strong>
                                             </td>
 
                                             <td class="text-right o_price_total">
                                                 <strong><span t-esc="total_haber"
-                                                              t-options='{"widget": "monetary", "display_currency": line.currency_id}'
+                                                              t-options='{"widget": "monetary", "display_currency": o.currency_pe_id}'
                                                 /></strong>
                                             </td>
                                         </tr>
@@ -111,7 +157,40 @@
                                     </tbody>
                                 </table>
 
-
+                                <br/><br/><br/><br/>
+                                <div id="firms" class="row">
+                                    <div class="col-3">
+                                        <ul style="list-style-type: none;">
+                                            <li class="text-center fond-black line-top">
+                                                Procesado por</li>
+                                        </ul>
+                                        <!--                                        <div class="vertical"></div>-->
+                                    </div>
+                                    <div class="col-3">
+                                        <ul style="list-style-type: none; ">
+                                            <li class="text-center fond-black line-top">
+                                                Autorizado por</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-3">
+                                        <ul style="list-style-type: none; ">
+                                            <li class="text-center fond-black line-top">
+                                                Revisado por</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-3">
+                                        <ul style="list-style-type: none; ">
+                                            <li class="text-center fond-black line-top">
+                                                Recibi conforme</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <br/>
+                            <div id="footer_demo" class="row mt32 mb32 float-right">
+                                <div class="col-auto col-3 mw-100 mb-2">
+                                    <strong>Usuario: </strong><span class="m-0" t-field="o.user_id"/>
+                                </div>
                             </div>
 
                         </div>
@@ -121,7 +200,7 @@
         </template>
 
 
-        <record id="mueve_entries_a4_paperformat" model="report.paperformat">
+        <record id="transvial_entries_a4_paperformat" model="report.paperformat">
             <field name="name">Asientos contables: A4</field>
             <field name="default" eval="True"/>
             <field name="format">A4</field>
@@ -141,10 +220,10 @@
                 id="action_report_account_entries"
                 model="account.move"
                 string="Apuntes contables"
-                name="pe_edi_detraction.report_account_entries_view"
+                name="reports_transvial.report_account_entries_view"
                 file="pe_edi_detraction.report_account_entries"
                 report_type="qweb-pdf"
-                paperformat="pe_edi_detraction.mueve_entries_a4_paperformat"
+                paperformat="reports_transvial.transvial_entries_a4_paperformat"
         />
 
     </data>
