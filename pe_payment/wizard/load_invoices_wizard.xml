@@ -7,17 +7,34 @@
             <field name="arch" type="xml">
                 <form>
                     <group>
-                        <field name="partner_ids" widget="many2many_tags"/>
+                        <field name="select_all" invisible="1"/>
+                        <field name="partner_ids" widget="many2many_tags" groups="base.group_no_one"/>
                         <field name="domain_invoice_ids" widget="many2many_tags" invisible="1"/>
-                        <field name="invoices_ids" widget="many2many_tags"
-                               domain="[('id', 'in', domain_invoice_ids)]"
-                               options="{'no_open': False, 'no_create': True, 'no_create_edit': True}"
-                        />
+
+                        <label for="invoices_ids"/>
+                        <div class="o_row">
+                            <field name="invoices_ids" widget="many2many_tags"
+                                   domain="[('id', 'in', domain_invoice_ids)]"
+                                   options="{'no_open': False, 'no_create': True, 'no_create_edit': True}"
+                            />
+
+                            <button name="action_add_all"
+                                    type="object" string="Añadir todo" class="btn btn-primary"
+                                    attrs="{'invisible': ['|',('domain_invoice_ids', '=', []), ('select_all', '=', True)]}"
+                                    icon="fa-plus-circle"/>
+                            <button name="action_clear_invoices_ids"
+                                    type="object" string="Limpiar" class="btn btn-warning"
+                                    help="!Elimina todos los comprobantes seleccionados¡"
+                                    attrs="{'invisible': [('invoices_ids', '=', [])]}"
+                                    icon="fa-paint-brush"/>
+                        </div>
+
                     </group>
                     <footer>
                         <button name="action_load_invoices"
                                 type="object"
                                 string="Confirmar"
+                                attrs="{'invisible': [('invoices_ids', '=', [])]}"
                                 class="oe_highlight"/>
 
                         <button string="Cancelar"

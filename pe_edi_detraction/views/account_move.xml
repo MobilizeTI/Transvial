@@ -28,13 +28,13 @@
             <field name="inherit_id" ref="account.view_move_form"/>
             <field name="arch" type="xml">
 
-<!--                <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='move_name']" position="before">-->
-<!--                    <field name="is_detraction" invisible="1"/>-->
-<!--                </xpath>-->
+                <!--                <xpath expr="//field[@name='invoice_line_ids']/tree//field[@name='move_name']" position="before">-->
+                <!--                    <field name="is_detraction" invisible="1"/>-->
+                <!--                </xpath>-->
 
-<!--                 <xpath expr="//field[@name='line_ids']/tree//field[@name='account_id']" position="before">-->
-<!--                    <field name="is_detraction" invisible="1"/>-->
-<!--                </xpath>-->
+                <!--                 <xpath expr="//field[@name='line_ids']/tree//field[@name='account_id']" position="before">-->
+                <!--                    <field name="is_detraction" invisible="1"/>-->
+                <!--                </xpath>-->
 
                 <xpath expr="//group[@id='header_left_group']/*" position="before">
                     <field name="name_supplier_invoice" attrs="{'invisible': [
@@ -46,10 +46,10 @@
                     <field name="currency_pe_id" invisible="1"/>
                     <field name="currency_symbol" invisible="1"/>
                     <field name="amount_detraction" style="color: #37b1b8"
-                           attrs="{'invisible': [('move_type', 'not in', ('in_invoice', 'out_invoice'))]}"/>
+                           attrs="{'invisible': ['|',('move_type', 'not in', ('in_invoice', 'out_invoice')), ('is_affect_detraction', '=', False)]}"/>
                     <field name="amount_detraction_pen" style="color: #37b1b8"
                            widget='monetary' options="{'currency_field': 'currency_pe_id'}"
-                           attrs="{'invisible':['|',('currency_symbol','=','S/'), ('move_type', 'not in', ('in_invoice', 'out_invoice'))]}"/>
+                           attrs="{'invisible':['|', '|',('currency_symbol','=','S/'), ('move_type', 'not in', ('in_invoice', 'out_invoice')), ('is_affect_detraction', '=', False)]}"/>
                 </field>
 
                 <xpath expr="//page[@name='other_info']" position="after">

@@ -8,18 +8,19 @@
             <field name="arch" type="xml">
                 <form string="Pagos multiples">
                     <header>
-                        <button name="action_confirm" string="Confirm" type="object" class="oe_highlight"
+                        <button name="action_confirm" string="Confirmar" type="object" class="oe_highlight"
                                 attrs="{'invisible': [('state', '!=', 'draft')]}"/>
-                        <button name="action_draft" string="Reset To Draft" type="object" class="btn btn-secondary"
+                        <button name="action_draft" string="Restablecer a borrador" type="object"
+                                class="btn btn-secondary"
                                 attrs="{'invisible': [('state', 'not in', ('confirm', 'cancel'))]}"
                                 groups="account.group_account_invoice"/>
-                        <button name="action_cancel" string="Cancel" type="object"
+                        <button name="action_cancel" string="Cancelar" type="object"
                                 attrs="{'invisible': [('state', '!=', 'draft')]}"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirm,payment,cancel"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
-                            <label for="name"/>
+                            <!--                            <label for="name"/>-->
                             <h1>
                                 <field name="name"/>
                             </h1>
@@ -47,12 +48,12 @@
                                     <button name="action_load_invoices"
                                             string="CARGAR COMPROBANTES"
                                             class="btn btn-sm btn-primary text-white"
-                                            icon="fa-hand-o-right"
+                                            icon="fa-hand-o-right" style="color:green;"
                                             type="object" attrs="{'invisible': [('state','!=','draft')]}"
                                             help="Seleccione todos los comprobantes a pagar"/>
                                     <button name="clear_invoices"
                                             string="LIMPIAR" class="btn btn-sm btn-warning"
-                                            icon="fa-magic"
+                                            icon="fa-paint-brush"
                                             type="object"
                                             confirm="Esta seguro(a) quitar los comprobantes seleccionados ?"
                                             attrs="{'invisible': ['|',('state','!=','draft'), ('line_ids', '=', [])]}"
@@ -71,7 +72,7 @@
                                                        ('partner_id','in', parent.partner_ids),
                                                        ('parent_state','=','posted'),
                                                        ('account_internal_type','in',('receivable','payable')),('reconciled','=',False)]"/>
-                                        <field name="date_issue" readonly="1" force_save="1"/>
+                                        <field name="invoice_date" readonly="1" force_save="1"/>
                                         <field name="expiration_date" readonly="1" force_save="1"/>
                                         <!--                                        <field name="fecha_constancia"/>-->
                                         <!--                                        <field name="numero_constancia"/>-->
@@ -104,7 +105,7 @@
                     <field name="date"/>
                     <field name="name"/>
                     <field name="journal_id"/>
-                    <field name="partner_ids" widget="many2many_tags_avatar"/>
+                    <field name="partner_ids" widget="many2many_tags"/>
                     <field name="state" widget="badge" decoration-info="state == 'draft'"
                            decoration-success="state == 'confirm'"/>
                     <field name="currency_id" invisible="1"/>

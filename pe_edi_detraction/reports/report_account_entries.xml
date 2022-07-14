@@ -97,13 +97,13 @@
                                         <tr class="border-black o_total text-right">
                                             <td class="text-right o_price_total" colspan="4">
                                                 <strong><span t-esc="total_debe"
-                                                              t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+                                                              t-options='{"widget": "monetary", "display_currency": line.currency_id}'
                                                 /></strong>
                                             </td>
 
                                             <td class="text-right o_price_total">
                                                 <strong><span t-esc="total_haber"
-                                                              t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+                                                              t-options='{"widget": "monetary", "display_currency": line.currency_id}'
                                                 /></strong>
                                             </td>
                                         </tr>

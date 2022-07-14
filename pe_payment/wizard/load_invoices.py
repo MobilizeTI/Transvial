@@ -16,11 +16,13 @@ class LoadInvoicesWizard(models.TransientModel):
         'res.company', required=True, default=lambda self: self.env.company, readonly=True
     )
     partner_ids = fields.Many2many('res.partner', string='Clientes/Proveedores', readonly=True)
-    invoices_ids = fields.Many2many('account.move.line', string='Comprobante(s)', required=True)
+    invoices_ids = fields.Many2many('account.move.line', string='Comprobante(s)', required=False)
 
-    payment_multi_id = fields.Many2one('account.payment', required=True)
+    payment_multi_id = fields.Many2one('account.payment_multi', required=True)
     # aml_exclude_ids = fields.Many2many('account.move.line', 'rel_load_invoice_wizard_aml_exclude')
     domain_invoice_ids = fields.One2many('account.move.line', compute='_compute_domain_invoice_ids')
+
+    select_all = fields.Boolean(string='select_all', required=True)
 
     @api.depends('partner_ids')
     def _compute_domain_invoice_ids(self):
@@ -31,7 +33,7 @@ class LoadInvoicesWizard(models.TransientModel):
         domain = [
             ('parent_state', '=', 'posted'),
             ('reconciled', '=', False),
-            ('account_internal_type', 'in', ('receivable', 'payable')),
+            ('account_internal_type', '=', 'payable'),
             ('partner_id', 'in', self.partner_ids.ids),
             ('company_id', '=', self.env.company.id)
         ]
@@ -74,5 +76,46 @@ class LoadInvoicesWizard(models.TransientModel):
     def _onchange_partner_ids(self):
         self._compute_domain_invoice_ids()
 
+    def _return_this(self, select_all=True):
+        context = dict(self._context, create=True)
+        context.update({'select_all': select_all})
+        return {
+            'name': 'Carga de comprobantes varios',
+            "type": "ir.actions.act_window",
+            "res_model": "load.invoice.wizard",
+            "view_mode": "form",
+            "res_id": self.id,
+            "views": [(False, "form")],
+            "target": "new",
+            'context': context
+        }
+
+    def action_add_all(self):
+        self.ensure_one()
+        # self.select_all = False
+        self.invoices_ids = [(6, 0, self.domain_invoice_ids.ids)]
+        return self._return_this(select_all=False)
+
+    def action_clear_invoices_ids(self):
+        self.ensure_one()
+        self.invoices_ids = [(6, 0, [])]
+        # self.select_all = True
+        return self._return_this(select_all=True)
+
     def action_load_invoices(self):
-        pass
+        data_lines = []
+        for item in self.invoices_ids:
+            data_lines.append((0, 0,
+                               {
+                                   'payment_multi_id': self.payment_multi_id.id,
+                                   'move_line_id': item.id,
+                                   # 'currency_id': self.payment_multi_id.currency_id.id,
+                                   'invoice_date': item.move_id.invoice_date,
+                                   'expiration_date': item.move_id.invoice_date_due,
+                                   'balance_payable': item.move_id.amount_total,
+                                   'amount': item.move_id.amount_total,
+                               }))
+        if data_lines:
+            self.payment_multi_id.sudo().write({
+                'line_ids': data_lines
+            })

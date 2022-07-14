@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
-
-# class AP(models.Model):
-#     _inherit = 'account.payment'
 from odoo.exceptions import UserError, ValidationError
 
 
@@ -16,7 +13,7 @@ class PaymentMulti(models.Model):
 
     name = fields.Char(string='SEQ', required=True, copy=False,
                        readonly=True,
-                       index=True, default=lambda self: _('New'))
+                       index=True, default=lambda self: _('/'))
 
     date = fields.Date(
         string='Fecha',
@@ -78,7 +75,7 @@ class PaymentMulti(models.Model):
                                        required=True, default='individual')
 
     journal_id = fields.Many2one('account.journal',
-                                 string='Journal',
+                                 string='Diario',
                                  required=True,
                                  readonly=False,
                                  domain="[('company_id', '=', company_id), ('type', 'in', ('bank', 'cash'))]",
@@ -131,6 +128,21 @@ class PaymentMulti(models.Model):
         self.ensure_one()
         self.line_ids = [(6, False, [])]
 
+    @api.model
+    def create(self, values):
+        new_payment_multi = super(PaymentMulti, self).create(values)
+        if new_payment_multi.name == '/':
+            new_payment_multi.name = self.env['ir.sequence'].next_by_code('seq.payment_multi.in') or _('/')
+
+        return new_payment_multi
+
+    # Pagos relacionados
+    payment_ids = fields.One2many(
+        comodel_name='account.payment',
+        inverse_name='payment_multi_id',
+        string='Pagos',
+        required=False, help='Pagos realizados para cuando la generación es individual')
+
 
 class PaymentMultiLines(models.Model):
     _name = 'account.payment_multi.line'
@@ -146,8 +158,8 @@ class PaymentMultiLines(models.Model):
     move_line_id = fields.Many2one('account.move.line', string='Comprobante', index=True,
                                    domain=[('account_internal_type', 'in', ('receivable', 'payable'))])
 
-    currency_id = fields.Char(string='Moneda')
-    date_issue = fields.Date(string='Fecha emisión')
+    currency_id = fields.Many2one(comodel_name='res.currency', string='Moneda', related='payment_multi_id.currency_id')
+    invoice_date = fields.Date(string='Fecha emisión')
     expiration_date = fields.Date(string='Fecha vencimiento')
     # amount = fields.Monetary(string='Total')
     balance = fields.Monetary(string='Saldo real')
