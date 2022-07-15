@@ -9,6 +9,8 @@ class CancelEntries(models.TransientModel):
     _name = 'cancel.closing.entries'
     _description = "Cancel Closing Entries"
 
+    company_id = fields.Many2one('res.company', required=True, default=lambda self: self.env.company)
+
     fiscal_year_id = fields.Many2one('sh.fiscal.year', string="Fiscal Year")
 
     def cancel_entry(self):
@@ -31,6 +33,8 @@ class CancelEntries(models.TransientModel):
 class CloseFiscalYear(models.TransientModel):
     _name = 'close.fiscal.year'
     _description = "Close Fiscal Year"
+
+    company_id = fields.Many2one('res.company', required=True, default=lambda self: self.env.company)
 
     fiscal_year_id = fields.Many2one(
         'sh.fiscal.year', string="Fiscal Year to Close")

@@ -62,7 +62,7 @@ class Move(models.Model):
                 rec.period_id = False
                 if rec.date:
                     period = self.env['sh.account.period'].sudo().search(
-                        [('date_start', '<=', rec.date), ('date_end', '>=', rec.date)], limit=1)
+                        [('date_start', '<=', rec.date), ('date_end', '>=', rec.date),('company_id','=',rec.company_id.id)], limit=1)
                     if period:
                         rec.period_id = period.id
 
@@ -73,7 +73,7 @@ class Move(models.Model):
         for vals in vals_list:
             if 'date' in vals:
                 period = self.env['sh.account.period'].sudo().search(
-                    [('date_start', '<=', vals['date']), ('date_end', '>=', vals['date'])], limit=1)
+                    [('date_start', '<=', vals['date']), ('date_end', '>=', vals['date']),('company_id','=',vals['company_id'])], limit=1)
 
                 if self.env.company.sh_restrict_for_close_period and period.state in ['done','reopen']:
                     raise UserError(_(
@@ -92,6 +92,7 @@ class Move(models.Model):
 
 class ShFiscalYear(models.Model):
     _name = 'sh.fiscal.year'
+    _check_company_auto = True
     _description = "Fiscal Year"
 
     name = fields.Char("Fiscal Year", required="1", copy=False,
@@ -109,6 +110,8 @@ class ShFiscalYear(models.Model):
          ('reopen', 'Waiting for Re-Open Approval')], string="State", default="draft")
     move_id = fields.Many2one('account.move', string="End of Year Entries Journal",
                               readonly=True, states={'draft': [('readonly', False)]})
+
+    company_id = fields.Many2one('res.company', required=True, default=lambda self: self.env.company)
 
     def create_period3(self):
         return self.create_period(3)
@@ -174,6 +177,7 @@ class ShFiscalYear(models.Model):
 
 class ShAccountPeriod(models.Model):
     _name = 'sh.account.period'
+    _check_company_auto = True
     _description = "Fiscal Period"
 
     name = fields.Char("Period Name", required="1", copy=False,
@@ -191,6 +195,8 @@ class ShAccountPeriod(models.Model):
     state = fields.Selection(
         [('draft', 'Open'), ('waiting', 'Waiting for Approval'), ('done', 'Closed'),
          ('reopen', 'Waiting for Re-Open Approval')], string="State", default="draft")
+
+    company_id = fields.Many2one('res.company', required=True, default=lambda self: self.env.company)
 
     def close_period(self):
         for rec in self:

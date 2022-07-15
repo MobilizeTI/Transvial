@@ -20,6 +20,8 @@ class GenerateOpeningEntries(models.TransientModel):
     period_id = fields.Many2one(
         'sh.account.period', string="Opening Entries Period", required=True)
 
+    company_id = fields.Many2one('res.company', required=True, default=lambda self: self.env.company)
+
     def data_save(self):
         """
         This function close account fiscalyear and create entries in new fiscalyear
