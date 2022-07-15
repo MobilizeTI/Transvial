@@ -9,6 +9,7 @@
                 This wizard will remove the end of year journal entries of selected fiscal year. Note that you can run this wizard many times for the same fiscal year.
                 <group>
                     <field name="fiscal_year_id" required="1" />
+                    <field name="company_id" groups="base.group_multi_company"/>
                 </group>
                 <footer>
                     <button string="Cancel Closing Entries" name="cancel_entry" type="object" class="oe_highlight" />
@@ -36,6 +37,7 @@
             <form string="Close a Fiscal Year">
                 <group>
                     <field name="fiscal_year_id" required="1" />
+                    <field name="company_id" groups="base.group_multi_company"/>
                 </group>
                 <footer>
                     <button string="Close Fiscal Year" name="close_fiscal_year" type="object" class="oe_highlight" />
