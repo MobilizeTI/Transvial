@@ -2,6 +2,9 @@
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class PaymentMulti(models.Model):
@@ -64,7 +67,7 @@ class PaymentMulti(models.Model):
 
     partner_ids = fields.Many2many(
         comodel_name='res.partner',
-        string="Clientes/Proveedores",
+        string="Proveedores",
         store=True, readonly=False, ondelete='restrict', required=True,
         domain="['|', ('parent_id','=', False), ('is_company','=', True)]",
         check_company=True)
@@ -105,6 +108,26 @@ class PaymentMulti(models.Model):
 
     def action_confirm(self):
         self.ensure_one()
+        if self.generation_type == 'individual':
+            for record in self.line_ids:
+                labels = set([
+                    record.move_line_id.move_id.name or record.move_line_id.move_id.ref or record.move_line_id.move_id.name])
+                ref = ' '.join(sorted(labels))
+                vals_payment = {
+                    'date': fields.Date.context_today(self),
+                    'partner_id': record.move_line_id.partner_id.id,
+                    'amount': record.amount,
+                    'payment_type': 'outbound',
+                    'partner_type': 'supplier',
+                    'journal_id': self.journal_id.id,
+                    'payment_multi_id': self.id,
+                    'ref': ref,
+                    'company_id': self.company_id.id
+                }
+                new_payment = self.env['account.payment'].sudo().create(vals_payment)
+                new_payment.action_post()
+                record.payment_id = new_payment.id
+                _logger.info(f'>>> new payment: {new_payment.name}')
         self.state = 'confirm'
 
     def action_cancel(self):
@@ -152,20 +175,18 @@ class PaymentMultiLines(models.Model):
 
     payment_multi_id = fields.Many2one(comodel_name='account.payment_multi',
                                        string='Pago multiple', index=True, ondelete='cascade', required=True)
+    currency_id = fields.Many2one(comodel_name='res.currency', string='Moneda', related='payment_multi_id.currency_id')
 
     company_id = fields.Many2one(comodel_name='res.company', string='Compañía', related='payment_multi_id.company_id')
     sequence = fields.Integer(default=10)
     move_line_id = fields.Many2one('account.move.line', string='Comprobante', index=True,
-                                   domain=[('account_internal_type', 'in', ('receivable', 'payable'))])
+                                   domain=[('account_internal_type', 'in', ('receivable', 'payable'))], readonly=True)
+    partner_id = fields.Many2one('res.partner', string='Empresa', ondelete='restrict', readonly=True)
+    invoice_date = fields.Date(string='Fecha factura/Recibo', readonly=True)
+    invoice_origin = fields.Char(string='Origen', readonly=True)
+    invoice_user_id = fields.Many2one('res.users', string='Comercial', readonly=True)
+    expiration_date = fields.Date(string='Fecha vencimiento', readonly=True)
 
-    currency_id = fields.Many2one(comodel_name='res.currency', string='Moneda', related='payment_multi_id.currency_id')
-    invoice_date = fields.Date(string='Fecha emisión')
-    expiration_date = fields.Date(string='Fecha vencimiento')
-    # amount = fields.Monetary(string='Total')
-    balance = fields.Monetary(string='Saldo real')
-
-    amount = fields.Monetary(string='Importe ', help="Importe a pagar en la moneda de diario")
-    balance_payable = fields.Monetary(string='Saldo a pagar', help="Importe a pagar en la moneda de diario")
-
-    # date_constance = fields.Date(string="Fecha constancia")
-    # consistency_number = fields.Char(string="N° constancia")
+    amount = fields.Monetary(string='Importe adeudado', help="Importe a pagar en la moneda de diario", readonly=True)
+    amount_payable = fields.Monetary(string='Importe', help="Importe a pagar en la moneda de diario")
+    payment_id = fields.Many2one("account.payment", 'Pago', readonly=True)

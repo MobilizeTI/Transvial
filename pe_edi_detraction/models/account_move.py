@@ -311,14 +311,16 @@ class AccountMove(models.Model):
                 record.load_lines_detraction()
         return rep_write
 
-    @api.returns('self', lambda value: value.id)
-    def copy(self, default=None):
-        default = dict(default or {})
-        ids = self.line_ids.filtered_domain([('is_detraction', '=', False)]).ids
-        default['line_ids'] = [(6, 0, ids)]
-        copy_new = super().copy(default)
-        print(len(copy_new.invoice_line_ids))
-        return copy_new
+    # @api.returns('self', lambda value: value.id)
+    # def copy(self, default=None):
+    #     default = dict(default or {})
+    #     if self.is_affect_detraction:
+    #         ids = self.line_ids.filtered_domain([('is_detraction', '=', False)]).ids
+    #         default['line_ids'] = [(6, 0, ids)]
+    #         default['invoice_line_ids'] = [(6, 0, self.invoice_line_ids.ids)]
+    #     copy_new = super().copy(default)
+    #     print(len(copy_new.invoice_line_ids))
+    #     return copy_new
 
 
 class AccountMoveLine(models.Model):

@@ -15,7 +15,7 @@ class LoadInvoicesWizard(models.TransientModel):
     company_id = fields.Many2one(
         'res.company', required=True, default=lambda self: self.env.company, readonly=True
     )
-    partner_ids = fields.Many2many('res.partner', string='Clientes/Proveedores', readonly=True)
+    partner_ids = fields.Many2many('res.partner', string='Proveedores', readonly=True)
     invoices_ids = fields.Many2many('account.move.line', string='Comprobante(s)', required=False)
 
     payment_multi_id = fields.Many2one('account.payment_multi', required=True)
@@ -109,11 +109,13 @@ class LoadInvoicesWizard(models.TransientModel):
                                {
                                    'payment_multi_id': self.payment_multi_id.id,
                                    'move_line_id': item.id,
-                                   # 'currency_id': self.payment_multi_id.currency_id.id,
+                                   'partner_id': item.partner_id.id,
                                    'invoice_date': item.move_id.invoice_date,
+                                   'invoice_origin': item.move_id.invoice_origin,
+                                   'invoice_user_id': item.move_id.invoice_user_id.id or False,
                                    'expiration_date': item.move_id.invoice_date_due,
-                                   'balance_payable': item.move_id.amount_total,
                                    'amount': item.move_id.amount_total,
+                                   'amount_payable': item.move_id.amount_total,
                                }))
         if data_lines:
             self.payment_multi_id.sudo().write({

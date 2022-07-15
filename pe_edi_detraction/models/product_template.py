@@ -56,3 +56,24 @@ class ProductTemplate(models.Model):
         else:
             self.l10n_pe_withhold_code = False
             self.l10n_pe_withhold_percentage = 0.0
+
+
+class ProductProduct(models.Model):
+    _inherit = 'product.product'
+
+    @api.onchange('is_affect_detraction')
+    def onchange_is_affect_detraction(self):
+        if not self.is_affect_detraction:
+            self.option_detraction_id = False
+            self.l10n_pe_withhold_code = False
+            self.l10n_pe_withhold_percentage = 0.0
+
+    @api.onchange('option_detraction_id')
+    def onchange_option_detraction_id(self):
+        if self.option_detraction_id:
+            self.l10n_pe_withhold_code = self.option_detraction_id.code
+            self.l10n_pe_withhold_percentage = self.option_detraction_id.percentage
+        else:
+            self.l10n_pe_withhold_code = False
+            self.l10n_pe_withhold_percentage = 0.0
+
