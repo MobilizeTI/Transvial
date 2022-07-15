@@ -1,14 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import re
 from odoo import fields, api, models
 from odoo.exceptions import ValidationError
-
-
-# CPE_01_REGEX = re.compile('^(F|E)[A-Z0-9]{3}$')
-# CPE_20_REGEX = re.compile('^(R)[A-Z0-9]{3}$')
-# CPE_40_REGEX = re.compile('^(P)[A-Z0-9]{3}$')
-# CPE_03_REGEX = re.compile('^(B|E|N)[A-Z0-9]{3}$')
 
 
 class InvoiceSeries(models.Model):

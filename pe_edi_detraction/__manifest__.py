@@ -30,13 +30,6 @@
         # 'wizard/account_payment_register_views.xml',
 
         'reports/report_invoice.xml',
-
-        # reporte de apuntes contables
-        'reports/report_account_entries.xml',
-
-        # función para crear las secuencias relacionas al correlativo de sistema para facturas de proveedor
-        'data/functions.xml'
     ],
-    'uninstall_hook': 'clear_seq_supplier_invoice_hook'
 
 }

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="load_invoice_wizard_form" model="ir.ui.view">
+            <field name="name">load.invoice.wizard.form</field>
+            <field name="model">load.invoice.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="select_all" invisible="1"/>
+                        <field name="partner_ids" widget="many2many_tags" groups="base.group_no_one"/>
+                        <field name="domain_invoice_ids" widget="many2many_tags" invisible="1"/>
+
+                        <label for="invoices_ids"/>
+                        <div class="o_row">
+                            <field name="invoices_ids" widget="many2many_tags"
+                                   domain="[('id', 'in', domain_invoice_ids)]"
+                                   options="{'no_open': False, 'no_create': True, 'no_create_edit': True}"
+                            />
+
+                            <button name="action_add_all"
+                                    type="object" string="Añadir todo" class="btn btn-primary"
+                                    attrs="{'invisible': ['|',('domain_invoice_ids', '=', []), ('select_all', '=', True)]}"
+                                    icon="fa-plus-circle"/>
+                            <button name="action_clear_invoices_ids"
+                                    type="object" string="Limpiar" class="btn btn-warning"
+                                    help="!Elimina todos los comprobantes seleccionados¡"
+                                    attrs="{'invisible': [('invoices_ids', '=', [])]}"
+                                    icon="fa-paint-brush"/>
+                        </div>
+
+                    </group>
+                    <footer>
+                        <button name="action_load_invoices"
+                                type="object"
+                                string="Confirmar"
+                                attrs="{'invisible': [('invoices_ids', '=', [])]}"
+                                class="oe_highlight"/>
+
+                        <button string="Cancelar"
+                                class="btn-default"
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_load_invoice_wizard" model="ir.actions.act_window">
+            <field name="name">Carga de comprobantes varios</field>
+            <field name="res_model">load.invoice.wizard</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+
+
+</odoo>

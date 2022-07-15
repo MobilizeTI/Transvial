@@ -80,10 +80,6 @@ class AccountMove(models.Model):
     #     help='Pago relacionado a la detracción'
     # )
 
-    name_supplier_invoice = fields.Char(
-        'Correlativo', copy=False, readonly=True, default=lambda x: _('/'),
-        help='Correlativo del sistema para facturas de proveedor')
-
     @api.depends('detraction_lines')
     def _compute_reload_is_affect_detraction(self):
         for record in self:
@@ -293,12 +289,9 @@ class AccountMove(models.Model):
     @api.model
     def create(self, values):
         move_new = super(AccountMove, self).create(values)
-        if move_new.move_type == 'in_invoice':
-            if move_new.name_supplier_invoice == '/':
-                move_new.name_supplier_invoice = self.env['ir.sequence'].next_by_code('seq.supplier.invoice') or _('/')
-
-        if self.move_type in ('in_invoice', 'out_invoice'):
-            move_new.load_lines_detraction()
+        for record in self:
+            if record.move_type in ('in_invoice', 'out_invoice'):
+                move_new.load_lines_detraction()
         return move_new
 
     # @api.onchange('invoice_line_ids')
@@ -313,8 +306,9 @@ class AccountMove(models.Model):
     def write(self, values):
         # Add code here
         rep_write = super(AccountMove, self).write(values)
-        if self.move_type in ('in_invoice', 'out_invoice') and self.is_affect_detraction:
-            self.load_lines_detraction()
+        for record in self:
+            if record.move_type in ('in_invoice', 'out_invoice') and record.is_affect_detraction:
+                record.load_lines_detraction()
         return rep_write
 
     @api.returns('self', lambda value: value.id)
@@ -322,7 +316,9 @@ class AccountMove(models.Model):
         default = dict(default or {})
         ids = self.line_ids.filtered_domain([('is_detraction', '=', False)]).ids
         default['line_ids'] = [(6, 0, ids)]
-        return super().copy(default)
+        copy_new = super().copy(default)
+        print(len(copy_new.invoice_line_ids))
+        return copy_new
 
 
 class AccountMoveLine(models.Model):
