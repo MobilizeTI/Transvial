@@ -73,7 +73,7 @@ class Move(models.Model):
         for vals in vals_list:
             if 'date' in vals:
                 period = self.env['sh.account.period'].sudo().search(
-                    [('date_start', '<=', vals['date']), ('date_end', '>=', vals['date']),('company_id','=',vals['company_id'])], limit=1)
+                    [('date_start', '<=', vals['date']), ('date_end', '>=', vals['date']),('company_id','=',vals['company_id'] if 'company_id' in vals else self.company_id.id)], limit=1)
 
                 if self.env.company.sh_restrict_for_close_period and period.state in ['done','reopen']:
                     raise UserError(_(
