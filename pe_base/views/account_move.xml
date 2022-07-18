@@ -17,10 +17,26 @@
             </field>
         </record>
 
+
         <record id="base_pe_view_in_invoice_tree" model="ir.ui.view">
             <field name="name">PE_BASE:account.invoice.tree</field>
             <field name="model">account.move</field>
             <field name="inherit_id" ref="account.view_in_invoice_tree"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='company_id']" position="after">
+                    <field name="invoice_serie_id"
+                           string="Serie"
+                           options="{'no_create': True, 'no_create_edit': True, 'no_open': False}"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="base_pe_view_out_invoice_tree" model="ir.ui.view">
+            <field name="name">PE_BASE:account.invoice.out.tree</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_out_invoice_tree"/>
             <field name="arch" type="xml">
 
                 <xpath expr="//field[@name='company_id']" position="after">

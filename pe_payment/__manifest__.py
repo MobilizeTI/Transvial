@@ -22,9 +22,12 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'security/security.xml',
 
         'views/payment_multi.xml',
         'wizard/load_invoices_wizard.xml',
+
+        'menu/menus.xml',
 
         'data/functions.xml'
 

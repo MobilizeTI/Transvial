@@ -274,7 +274,7 @@ class MaintenanceRequest(models.Model):
             result = count_ot_created < value
             if opc and not result:
                 raise ValidationError(
-                    f'El odometro actual {odometer_actual} no cumple con lo establecido en la pauta {guideline.name} para poder ejecutarse!\n\n'
+                    f'El odómetro actual {odometer_actual} no cumple con lo establecido en la pauta {guideline.name} para poder ejecutarse!\n\n'
                     f'Equipo: {equipment.name} ---- Pauta: {guideline.name}\n'
                     f'Cantidad de OT creadas: {count_ot_created}\n'
                     f'Cantidad de OT permitidas promedio: {round(value, 2)}')

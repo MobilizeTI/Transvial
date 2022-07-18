@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Payment-multi Records -->
+        <record model="ir.rule" id="record_account_payment_multi_company_rule">
+            <field name="name">Registros de pagos multiples: multi-company</field>
+            <field name="model_id" ref="model_account_payment_multi"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">
+                ['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]
+            </field>
+        </record>
+
+        <!-- Company-restricted Records -->
+        <record model="ir.rule" id="record_account_payment_multi_restricted_company_rule">
+            <field name="name">Restricted Payment-multi Record: multi-company</field>
+            <field name="model_id" ref="model_account_payment_multi"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">
+                [('company_id', 'in', company_ids)]
+            </field>
+        </record>
+    </data>
+</odoo>
