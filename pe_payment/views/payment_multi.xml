@@ -22,6 +22,17 @@
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirm,payment,cancel"/>
                     </header>
                     <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button"
+                                    type="object"
+                                    name="action_view_payment"
+                                    icon="fa-list-ul"
+                                    attrs="{'invisible': [('payment_ids', '=', [])]}"
+                            >
+                                <field name="payment_count" widget="statinfo" string="Pagos"
+                                       options="{'reload_on_button': true}"/>
+                            </button>
+                        </div>
                         <div class="oe_title">
                             <!--                            <label for="name"/>-->
                             <h1>
@@ -29,19 +40,37 @@
                             </h1>
                         </div>
                         <group>
-                            <field name="partner_ids" widget="many2many_tags"
-                                   options="{'no_create':True,'no_create_edit': True}"/>
+                            <div class="row o_td_label ml-1">
+                                <label for="partner_ids" string="Proveedores" style="font-weight:bold;"
+                                       attrs="{'invisible': [('partner_type', '=', 'customer')]}"/>
+                                <label for="partner_ids" string="Clientes" style="font-weight:bold;"
+                                       attrs="{'invisible': [('partner_type', '=', 'supplier')]}"/>
+
+                                <field name="partner_ids" widget="many2many_tags"
+                                       options="{'no_create':True,'no_create_edit': True}"/>
+                            </div>
                         </group>
                         <group>
                             <group>
+                                <field name="partner_type" invisible="1"/>
+                                <field name="payment_ids" widget="many2many_tags" invisible="1"/>
                                 <field name="expiration_date"/>
                                 <field name="user_id" widget="many2one_avatar_user"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+
                             </group>
                             <group>
-                                <field name="generation_type"/>
+                                <!--                                <field name="partner_type" widget="radio" options="{'horizontal': True}"/>-->
+                                <field name="generation_type" widget="radio" options="{'horizontal': True}"/>
                                 <field name="journal_id"/>
-                                <field name="currency_id"/>
-                                <field name="company_id" groups="base.group_multi_company"/>
+                                <field name="payment_move_id"
+                                       attrs="{'invisible': [
+                                       '|', ('generation_type', '=', 'individual'),
+                                            ('payment_move_id', '=', False)
+                                       ]}"
+                                />
+                                <field name="currency_id" options="{'no_create':True,'no_create_edit': True}"/>
+
                             </group>
                         </group>
 
@@ -82,10 +111,14 @@
                                         <field name="expiration_date"/>
                                         <field name="currency_id" invisible="1"/>
                                         <field name="amount" widget="monetary"
+                                               sum="amount"
                                                options="{'currency_field': 'currency_id'}"/>
                                         <field name="amount_payable" widget="monetary"
+                                               sum="amount_payable"
                                                options="{'currency_field': 'moneda_id', 'bg_color': '#bff6dc'}"/>
-                                        <field name="payment_id" optional="show"/>
+                                        <field name="payment_id"
+                                               attrs="{'column_invisible': [('parent.generation_type', '=', 'massive')]}"
+                                               optional="show"/>
                                     </tree>
                                 </field>
                             </page>
@@ -100,9 +133,9 @@
             <field name="name">account.payment_multi.tree</field>
             <field name="model">account.payment_multi</field>
             <field name="arch" type="xml">
-                <tree string="Pagos multiples">
-                    <field name="date"/>
+                <tree string="Pagos multiples" default_order="date desc">
                     <field name="name"/>
+                    <field name="date"/>
                     <field name="journal_id"/>
                     <field name="partner_ids" widget="many2many_tags"/>
                     <field name="state" widget="badge" decoration-info="state == 'draft'"
@@ -128,10 +161,11 @@
         </record>
 
         <record id="account_payment_multi_act_window" model="ir.actions.act_window">
-            <field name="name">Pagos multiples</field>
+            <field name="name">Pagos multiples proveedores</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">account.payment_multi</field>
             <field name="view_mode">tree,form</field>
+            <field name="domain">[('partner_type', '=', 'supplier')]</field>
             <field name="context">{
                 'default_payment_type': 'outbound',
                 'default_partner_type': 'supplier',
@@ -139,17 +173,29 @@
             <!--            <field name="view_id" ref="view_account_supplier_payment_tree"/>-->
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    ¡Cree su primer pago multiple!
+                    ¡Cree su primer pago multiple para proveedores!
                 </p>
             </field>
         </record>
 
-        <menuitem name="Pagos multiples"
-                  id="account_payment_multi_menu"
-                  parent="account.menu_finance_payables"
-                  action="account_payment_multi_act_window"
-                  sequence="20"
-        />
+        <record id="account_payment_multi_customer_act_window" model="ir.actions.act_window">
+            <field name="name">Pagos multiples clientes</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.payment_multi</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('partner_type', '=', 'customer')]</field>
+            <field name="context">{
+                'default_payment_type': 'inbound',
+                'default_partner_type': 'customer',
+            }</field>
+            <!--            <field name="view_id" ref="view_account_supplier_payment_tree"/>-->
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    ¡Cree su primer pago multiple para clientes!
+                </p>
+            </field>
+        </record>
+
 
     </data>
 </odoo>

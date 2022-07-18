@@ -19,12 +19,15 @@ class LoadInvoicesWizard(models.TransientModel):
     invoices_ids = fields.Many2many('account.move.line', string='Comprobante(s)', required=False)
 
     payment_multi_id = fields.Many2one('account.payment_multi', required=True)
-    # aml_exclude_ids = fields.Many2many('account.move.line', 'rel_load_invoice_wizard_aml_exclude')
+    partner_type = fields.Selection([
+        ('customer', 'Cliente'),
+        ('supplier', 'Proveedor'),
+    ], default='customer', tracking=True, required=True)
     domain_invoice_ids = fields.One2many('account.move.line', compute='_compute_domain_invoice_ids')
 
     select_all = fields.Boolean(string='select_all', required=True)
 
-    @api.depends('partner_ids')
+    @api.depends('partner_ids', 'partner_type')
     def _compute_domain_invoice_ids(self):
         for rec in self:
             rec.domain_invoice_ids = [(6, 0, rec.get_domain_invoice_ids())]
@@ -33,11 +36,18 @@ class LoadInvoicesWizard(models.TransientModel):
         domain = [
             ('parent_state', '=', 'posted'),
             ('reconciled', '=', False),
-            ('account_internal_type', '=', 'payable'),
+            ('currency_id', '=', self.payment_multi_id.currency_id.id),
             ('partner_id', 'in', self.partner_ids.ids),
             ('company_id', '=', self.env.company.id)
         ]
-
+        # proveedor
+        if self.partner_type == 'supplier':
+            domain += [('account_internal_type', '=', 'payable'),
+                       ('journal_id.type', '=', 'purchase')]
+        else:
+            # cliente
+            domain += [('account_internal_type', '=', 'receivable'),
+                       ('journal_id.type', '=', 'sale')]
         invoices = self.env['account.move.line'].sudo().search(domain)
 
         return self._clear_domain_invoices(lines=invoices)

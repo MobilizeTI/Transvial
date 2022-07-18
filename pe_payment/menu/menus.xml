@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Pagos multiples proveedores-->
+        <menuitem name="Pagos multiples"
+                  id="account_payment_multi_menu"
+                  parent="account.menu_finance_payables"
+                  action="account_payment_multi_act_window"
+                  sequence="20"
+        />
+
+        <!-- Pagos multiples clientes-->
+        <menuitem name="Pagos multiples"
+                  id="account_payment_multi_customer_act_window"
+                  parent="account.menu_finance_receivables"
+                  action="account_payment_multi_customer_act_window"
+                  sequence="15"
+        />
+
+    </data>
+</odoo>

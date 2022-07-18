@@ -60,14 +60,16 @@ class PaymentMulti(models.Model):
     def _get_default_journal(self):
         return self.env['account.move']._search_default_journal(('bank', 'cash'))
 
-    move_ids = fields.Many2many(
+    payment_move_id = fields.Many2one(
         comodel_name='account.move',
-        string='Asientos contables', required=True, readonly=True, ondelete='cascade',
-        check_company=True)
+        string='Asientos contables', required=False, readonly=True, ondelete='cascade',
+        check_company=True,
+        help='Asiento contable para un pago de tipo de generación masiva'
+    )
 
     partner_ids = fields.Many2many(
         comodel_name='res.partner',
-        string="Proveedores",
+        string="Clientes/Proveedores",
         store=True, readonly=False, ondelete='restrict', required=True,
         domain="['|', ('parent_id','=', False), ('is_company','=', True)]",
         check_company=True)
@@ -85,14 +87,20 @@ class PaymentMulti(models.Model):
                                  check_company=True,
                                  default=_get_default_journal)
 
-    currency_id = fields.Many2one('res.currency', string='Moneda', store=True,
-                                  compute='_compute_currency_id',
-                                  help="The payment's currency.")
+    # def _default_currency_id(self):
+    #     currency_id = self.journal_id.currency_id or self.journal_id.company_id.currency_id
+    #     return currency_id
 
-    @api.depends('journal_id')
-    def _compute_currency_id(self):
-        for pay in self:
-            pay.currency_id = pay.journal_id.currency_id or pay.journal_id.company_id.currency_id
+    @api.onchange('journal_id')
+    def onchange_journal_id(self):
+        self.currency_id = self.journal_id.currency_id or self.journal_id.company_id.currency_id
+
+    currency_id = fields.Many2one('res.currency', string='Moneda', required=True, help="Moneda para pagos multiples")
+
+    # @api.depends('journal_id')
+    # def _compute_currency_id(self):
+    #     for pay in self:
+    #         pay.currency_id = pay.journal_id.currency_id or pay.journal_id.company_id.currency_id
 
     # Lineas
     line_ids = fields.One2many(
@@ -106,6 +114,68 @@ class PaymentMulti(models.Model):
         self.ensure_one()
         self.state = 'draft'
 
+    def _create_move_massive(self):
+        line_ids = []
+        for record in self.line_ids:
+            labels = set([
+                record.move_line_id.move_id.name or record.move_line_id.move_id.ref or record.move_line_id.move_id.name])
+            name = ' '.join(sorted(labels))
+            if self.partner_type == 'supplier':
+                line_ids += [
+                    (0, 0, {
+                        'name': name,
+                        'partner_id': record.partner_id.id,
+                        'account_id': record.partner_id.property_account_payable_id.id,
+                        'currency_id': record.currency_id.id,
+                        'debit': record.amount_payable,
+                        'credit': 0.0,
+                        'exclude_from_invoice_tab': True,
+                    }),
+                    (0, 0, {
+                        'name': name,
+                        'partner_id': record.partner_id.id,
+                        'account_id': self.journal_id.payment_credit_account_id.id,
+                        'currency_id': self.currency_id.id,
+                        'debit': 0.0,
+                        'credit': record.amount_payable,
+                        'exclude_from_invoice_tab': True,
+                    })
+                ]
+            else:
+                line_ids += [
+                    (0, 0, {
+                        'name': name,
+                        'partner_id': record.partner_id.id,
+                        'account_id': record.partner_id.property_account_receivable_id.id,
+                        'currency_id': record.currency_id.id,
+                        'debit': 0.0,
+                        'credit': record.amount_payable,
+                        'exclude_from_invoice_tab': True,
+                    }),
+                    (0, 0, {
+                        'name': name,
+                        'partner_id': record.partner_id.id,
+                        'account_id': self.journal_id.payment_credit_account_id.id,
+                        'currency_id': self.currency_id.id,
+                        'debit': record.amount_payable,
+                        'credit': 0.0,
+                        'exclude_from_invoice_tab': True,
+                    })
+                ]
+
+        move_vals = {
+            'ref': f'PAGO MASIVO {self.name}',
+            'date': fields.Date.context_today(self),
+            'journal_id': self.journal_id.id,
+            'line_ids': line_ids,
+            'move_type': 'entry',
+            'company_id': self.company_id.id,
+        }
+
+        move_entry_new = self.env['account.move'].sudo().create(move_vals)
+        move_entry_new.action_post()
+        self.payment_move_id = move_entry_new.id
+
     def action_confirm(self):
         self.ensure_one()
         if self.generation_type == 'individual':
@@ -116,9 +186,9 @@ class PaymentMulti(models.Model):
                 vals_payment = {
                     'date': fields.Date.context_today(self),
                     'partner_id': record.move_line_id.partner_id.id,
-                    'amount': record.amount,
-                    'payment_type': 'outbound',
-                    'partner_type': 'supplier',
+                    'amount': record.amount_payable,
+                    'payment_type': self.payment_type,
+                    'partner_type': self.partner_type,
                     'journal_id': self.journal_id.id,
                     'payment_multi_id': self.id,
                     'ref': ref,
@@ -128,6 +198,8 @@ class PaymentMulti(models.Model):
                 new_payment.action_post()
                 record.payment_id = new_payment.id
                 _logger.info(f'>>> new payment: {new_payment.name}')
+        else:
+            self._create_move_massive()
         self.state = 'confirm'
 
     def action_cancel(self):
@@ -151,11 +223,36 @@ class PaymentMulti(models.Model):
         self.ensure_one()
         self.line_ids = [(6, False, [])]
 
+    payment_count = fields.Integer('Cantidad de pagos', compute='compute_payment_counts')
+
+    def compute_payment_counts(self):
+        for record in self:
+            record.payment_count = len(record.payment_ids)
+
+    def action_view_payment(self):
+        self.ensure_one()
+        if self.partner_type == 'supplier':
+            action = self.env.ref('account.action_account_payments_payable').sudo().read()[0]
+        else:
+            action = self.env.ref('account.action_account_payments').sudo().read()[0]
+        action['domain'] = [('id', '=', self.payment_ids.ids)]
+        if self.payment_ids:
+            if len(self.payment_ids) == 1:
+                temp_id = self.payment_ids[:1]
+                res = self.env.ref('account.view_account_payment_form', False)
+                form_view = [(res and res.id or False, 'form')]
+                action['views'] = form_view
+                action['res_id'] = temp_id.id
+        else:
+            action['views'] = action['views'][1:]
+        return action
+
     @api.model
     def create(self, values):
         new_payment_multi = super(PaymentMulti, self).create(values)
         if new_payment_multi.name == '/':
-            new_payment_multi.name = self.env['ir.sequence'].next_by_code('seq.payment_multi.in') or _('/')
+            new_payment_multi.name = self.env['ir.sequence'].next_by_code(
+                f'seq.payment_multi.{"in" if new_payment_multi.partner_type == "supplier" else "out"}') or _('/')
 
         return new_payment_multi
 
@@ -164,7 +261,17 @@ class PaymentMulti(models.Model):
         comodel_name='account.payment',
         inverse_name='payment_multi_id',
         string='Pagos',
-        required=False, help='Pagos realizados para cuando la generación es individual')
+        required=False, help='Pagos realizados para cuando la generación es individual', copy=False)
+
+    # @api.model
+    # def default_get(self, fields):
+    #     res = super().default_get(fields)
+    #     journal_id = None
+    #     if 'journal_id' not in res and res.get('journal_id'):
+    #         journal_id = self.env['account.journal'].search([('id', '=', res['journal_id'])], limit=1)
+    #     if journal_id:
+    #         res['currency_id'] = journal_id.currency_id.id or journal_id.company_id.currency_id.id
+    #     return res
 
 
 class PaymentMultiLines(models.Model):
