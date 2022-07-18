@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <data noupdate="0">
+        <record id="lb_01" model="sunat.electronic_book">
+            <field name="name">LIBRO CAJA Y BANCOS - DETALLE DE LOS MOVIMIENTOS DEL EFECTIVO</field>
+            <field name="description">1.1 LIBRO CAJA Y BANCOS - DETALLE DE LOS MOVIMIENTOS DEL EFECTIVO</field>
+            <field name="code_le">010100</field>
+            <field name="nro_order">1.1</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_02" model="sunat.electronic_book">
+            <field name="name">LIBRO CAJA Y BANCOS - DETALLE DE LOS MOVIMIENTOS DE LA CUENTA CORRIENTE</field>
+            <field name="description">1.2 LIBRO CAJA Y BANCOS - DETALLE DE LOS MOVIMIENTOS DE LA CUENTA CORRIENTE
+            </field>
+            <field name="code_le">010200</field>
+            <field name="nro_order">1.2</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_03" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - ESTADO DE SITUACIÓN FINANCIERA</field>
+            <field name="description">3.1 LIBRO DE INVENTARIOS Y BALANCES - ESTADO DE SITUACIÓN FINANCIERA</field>
+            <field name="code_le">030100</field>
+            <field name="nro_order">3.1</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_04" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 10 CAJA Y BANCOS</field>
+            <field name="description">3.2 LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 10 CAJA Y
+                BANCOS
+            </field>
+            <field name="code_le">030200</field>
+            <field name="nro_order">3.2</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_05" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 12 - CLIENTES</field>
+            <field name="description">3.3 LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 12 -
+                CLIENTES
+            </field>
+            <field name="code_le">030300</field>
+            <field name="nro_order">3.3</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_06" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 14 - CUENTAS POR COBRAR
+                A ACCIONISTAS (O SOCIOS) Y PERSONAL
+            </field>
+            <field name="description">3.4 LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 14 - CUENTAS
+                POR COBRAR A ACCIONISTAS (O SOCIOS) Y PERSONAL
+            </field>
+            <field name="code_le">030400</field>
+            <field name="nro_order">3.4</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_07" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 16 - CUENTAS POR COBRAR
+                DIVERSAS
+            </field>
+            <field name="description">3.5 LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 16 - CUENTAS
+                POR COBRAR DIVERSAS
+            </field>
+            <field name="code_le">030500</field>
+            <field name="nro_order">3.5</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_08" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 19 - PROVISIÓN PARA
+                CUENTAS DE COBRANZA DUDOSA
+            </field>
+            <field name="description">3.6 LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 19 -
+                PROVISIÓN PARA CUENTAS DE COBRANZA DUDOSA
+            </field>
+            <field name="code_le">030600</field>
+            <field name="nro_order">3.6</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_09" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 20 - MERCADERÍAS Y LA
+                CUENTA 21 - PRODUCTOS TERMINADOS
+            </field>
+            <field name="description">3.7 LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 20 -
+                MERCADERÍAS Y LA CUENTA 21 - PRODUCTOS TERMINADOS
+            </field>
+            <field name="code_le">030700</field>
+            <field name="nro_order">3.7</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_10" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 31 - VALORES</field>
+            <field name="description">3.8 LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 31 -
+                VALORES
+            </field>
+            <field name="code_le">030800</field>
+            <field name="nro_order">3.8</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_11" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 34 - INTANGIBLES</field>
+            <field name="description">3.9 LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 34 -
+                INTANGIBLES
+            </field>
+            <field name="code_le">030900</field>
+            <field name="nro_order">3.9</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_12" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 40 - TRIBUTOS POR
+                PAGAR
+            </field>
+            <field name="description">3.10 LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 40 -
+                TRIBUTOS POR PAGAR
+            </field>
+            <field name="code_le">031000</field>
+            <field name="nro_order">3.10</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_13" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 41 - REMUNERACIONES POR
+                PAGAR
+            </field>
+            <field name="description">3.11 LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 41 -
+                REMUNERACIONES POR PAGAR
+            </field>
+            <field name="code_le">031100</field>
+            <field name="nro_order">3.11</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_14" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 42 - PROVEEDORES</field>
+            <field name="description">3.12 LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 42 -
+                PROVEEDORES
+            </field>
+            <field name="code_le">031200</field>
+            <field name="nro_order">3.12</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_15" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 46 - CUENTAS POR PAGAR
+                DIVERSAS
+            </field>
+            <field name="description">3.13 LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 46 - CUENTAS
+                POR PAGAR DIVERSAS
+            </field>
+            <field name="code_le">031300</field>
+            <field name="nro_order">3.13</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_16" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 47 - BENEFICIOS SOCIALES
+                DE LOS TRABAJADORES
+            </field>
+            <field name="description">3.14 LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 47 -
+                BENEFICIOS SOCIALES DE LOS TRABAJADORES
+            </field>
+            <field name="code_le">031400</field>
+            <field name="nro_order">3.14</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_17" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 49 - GANANCIAS
+                DIFERIDAS
+            </field>
+            <field name="description">3.15 LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 49 -
+                GANANCIAS DIFERIDAS
+            </field>
+            <field name="code_le">031500</field>
+            <field name="nro_order">3.15</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_18" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 50 - CAPITAL</field>
+            <field name="description">3.16 LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 50 -
+                CAPITAL
+            </field>
+            <field name="code_le">031600</field>
+            <field name="nro_order">3.16</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_17" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 50 - CAPITAL</field>
+            <field name="description">3.16.1 LIBRO DE INVENTARIOS Y BALANCES -DETALLE DEL SALDO DE LA CUENTA 50 -
+                CAPITAL
+            </field>
+            <field name="code_le">031610</field>
+            <field name="nro_order">3.16.1</field>
+            <field name="state">disable</field>
+        </record>
+
+        <record id="lb_18_2" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - ESTRUCTURA DE LA PARTICIPACIÓN ACCIONARIA O DE
+                PARTICIPACIONES SOCIALES
+            </field>
+            <field name="description">3.16.2 LIBRO DE INVENTARIOS Y BALANCES - ESTRUCTURA DE LA PARTICIPACIÓN ACCIONARIA
+                O DE PARTICIPACIONES SOCIALES
+            </field>
+            <field name="code_le">031620</field>
+            <field name="nro_order">3.16.2</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_19" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - BALANCE DE COMPROBACIÓN</field>
+            <field name="description">3.17 LIBRO DE INVENTARIOS Y BALANCES - BALANCE DE COMPROBACIÓN</field>
+            <field name="code_le">031700</field>
+            <field name="nro_order">3.17</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_20" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - ESTADO DE FLUJOS DE EFECTIVO - MÉTODO DIRECTO</field>
+            <field name="description">3.18 LIBRO DE INVENTARIOS Y BALANCES - ESTADO DE FLUJOS DE EFECTIVO - MÉTODO
+                DIRECTO
+            </field>
+            <field name="code_le">031800</field>
+            <field name="nro_order">3.18</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_21" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - ESTADO DE CAMBIOS EN EL PATRIMONIO NETO</field>
+            <field name="description">3.19 LIBRO DE INVENTARIOS Y BALANCES - ESTADO DE CAMBIOS EN EL PATRIMONIO NETO
+            </field>
+            <field name="code_le">031900</field>
+            <field name="nro_order">3.19</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_22" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - ESTADO DE RESULTADOS</field>
+            <field name="description">3.20 LIBRO DE INVENTARIOS Y BALANCES - ESTADO DE RESULTADOS</field>
+            <field name="code_le">032000</field>
+            <field name="nro_order">3.20</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_23" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - NOTAS A LOS ESTADOS FINANCIEROS</field>
+            <field name="description">3.23 LIBRO DE INVENTARIOS Y BALANCES - NOTAS A LOS ESTADOS FINANCIEROS</field>
+            <field name="code_le">032300</field>
+            <field name="nro_order">3.23</field>
+            <field name="state">disable</field>
+        </record>
+
+        <record id="lb_24" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - ESTADO DE RESULTADOS INTEGRALES</field>
+            <field name="description">3.24 LIBRO DE INVENTARIOS Y BALANCES - ESTADO DE RESULTADOS INTEGRALES</field>
+            <field name="code_le">032400</field>
+            <field name="nro_order">3.24</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_25" model="sunat.electronic_book">
+            <field name="name">LIBRO DE INVENTARIOS Y BALANCES - ESTADO DE FLUJOS DE EFECTIVO - MÉTODO INDIRECTO</field>
+            <field name="description">3.25 LIBRO DE INVENTARIOS Y BALANCES - ESTADO DE FLUJOS DE EFECTIVO - MÉTODO
+                INDIRECTO
+            </field>
+            <field name="code_le">032500</field>
+            <field name="nro_order">3.25</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_26" model="sunat.electronic_book">
+            <field name="name">LIBRO DE RETENCIONES INCISO E) Y F) DEL ART. 34° DE LA LEY DEL IMPUESTO A LA RENTA
+            </field>
+            <field name="description">4.1 LIBRO DE RETENCIONES INCISO E) Y F) DEL ART. 34° DE LA LEY DEL IMPUESTO A LA
+                RENTA
+            </field>
+            <field name="code_le">040100</field>
+            <field name="nro_order">4.1</field>
+            <field name="state">disable</field>
+        </record>
+
+        <record id="lb_27" model="sunat.electronic_book">
+            <field name="name">LIBRO DIARIO</field>
+            <field name="description">5.1 LIBRO DIARIO</field>
+            <field name="code_le">050100</field>
+            <field name="nro_order">5.1</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_28" model="sunat.electronic_book">
+            <field name="name">LIBRO DIARIO - DETALLE DEL PLAN CONTABLE UTILIZADO</field>
+            <field name="description">5.3 LIBRO DIARIO - DETALLE DEL PLAN CONTABLE UTILIZADO</field>
+            <field name="code_le">050300</field>
+            <field name="nro_order">5.3</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_29" model="sunat.electronic_book">
+            <field name="name">LIBRO DIARIO DE FORMATO SIMPLIFICADO</field>
+            <field name="description">5.2 LIBRO DIARIO DE FORMATO SIMPLIFICADO</field>
+            <field name="code_le">050200</field>
+            <field name="nro_order">5.2</field>
+            <field name="state">disable</field>
+
+        </record>
+        <record id="lb_30" model="sunat.electronic_book">
+            <field name="name">LIBRO DIARIO DE FORMATO SIMPLIFICADO - DETALLE DEL PLAN CONTABLE UTILIZADO</field>
+            <field name="description">5.4 LIBRO DIARIO DE FORMATO SIMPLIFICADO - DETALLE DEL PLAN CONTABLE UTILIZAD
+            </field>
+            <field name="code_le">050400</field>
+            <field name="nro_order">5.4</field>
+            <field name="state">disable</field>
+
+        </record>
+        <record id="lb_31" model="sunat.electronic_book">
+            <field name="name">LIBRO MAYOR</field>
+            <field name="description">6.1 LIBRO MAYOR</field>
+            <field name="code_le">060100</field>
+            <field name="nro_order">6.1</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_32" model="sunat.electronic_book">
+            <field name="name">REGISTRO DE ACTIVOS FIJOS - DETALLE DE LOS ACTIVOS FIJOS REVALUADOS Y NO REVALUADOS
+            </field>
+            <field name="description">7.1 REGISTRO DE ACTIVOS FIJOS - DETALLE DE LOS ACTIVOS FIJOS REVALUADOS Y NO
+                REVALUADOS
+            </field>
+            <field name="code_le">070100</field>
+            <field name="nro_order">7.1</field>
+            <field name="state">enable</field>
+        </record>
+
+        <record id="lb_33" model="sunat.electronic_book">
+            <field name="name">REGISTRO DE ACTIVOS FIJOS - DETALLE DE LA DIFERENCIA DE CAMBIO</field>
+            <field name="description">7.3 REGISTRO DE ACTIVOS FIJOS - DETALLE DE LA DIFERENCIA DE CAMBIO</field>
+            <field name="code_le">070300</field>
+            <field name="nro_order">7.3</field>
+            <field name="state">disable</field>
+
+        </record>
+        <record id="lb_34" model="sunat.electronic_book">
+            <field name="name">REGISTRO DE ACTIVOS FIJOS - DETALLE DE LOS ACTIVOS FIJOS BAJO LA MODALIDAD DE
+                ARRENDAMIENTO FINANCIERO AL 31.12
+            </field>
+            <field name="description">7.4 REGISTRO DE ACTIVOS FIJOS - DETALLE DE LOS ACTIVOS FIJOS BAJO LA MODALIDAD DE
+                ARRENDAMIENTO FINANCIERO AL 31.12
+            </field>
+            <field name="code_le">070400</field>
+            <field name="nro_order">7.4</field>
+            <field name="state">disable</field>
+
+        </record>
+        <record id="lb_35" model="sunat.electronic_book">
+            <field name="name">REGISTRO DE COMPRAS</field>
+            <field name="description">8.1 REGISTRO DE COMPRAS</field>
+            <field name="code_le">080100</field>
+            <field name="nro_order">8.1</field>
+            <field name="state">enable</field>
+
+        </record>
+        <record id="lb_36" model="sunat.electronic_book">
+            <field name="name">REGISTRO DE COMPRAS - INFORMACIÓN DE OPERACIONES CON SUJETOS NO DOMICILIADOS</field>
+            <field name="description">8.2 REGISTRO DE COMPRAS - INFORMACIÓN DE OPERACIONES CON SUJETOS NO DOMICILIADOS
+            </field>
+            <field name="code_le">080200</field>
+            <field name="nro_order">8.2</field>
+            <field name="state">enable</field>
+
+        </record>
+        <record id="lb_37" model="sunat.electronic_book">
+            <field name="name">REGISTRO DE COMPRAS SIMPLIFICADO</field>
+            <field name="description">8.3 REGISTRO DE COMPRAS SIMPLIFICADO</field>
+            <field name="code_le">080300</field>
+            <field name="nro_order">8.3</field>
+            <field name="state">enable</field>
+
+        </record>
+        <record id="lb_38" model="sunat.electronic_book">
+            <field name="name">REGISTRO DE CONSIGNACIONES - PARA EL CONSIGNADOR - CONTROL DE BIENES ENTREGADOS EN
+                CONSIGNACIÓN
+            </field>
+            <field name="description">9.1 REGISTRO DE CONSIGNACIONES - PARA EL CONSIGNADOR - CONTROL DE BIENES
+                ENTREGADOS EN CONSIGNACIÓN
+            </field>
+            <field name="code_le">090100</field>
+            <field name="nro_order">9.1</field>
+            <field name="state">disable</field>
+        </record>
+        <record id="lb_39" model="sunat.electronic_book">
+            <field name="name">REGISTRO DE CONSIGNACIONES - PARA EL CONSIGNATARIO - CONTROL DE BIENES RECIBIDOS EN
+                CONSIGNACIÓN
+            </field>
+            <field name="description">9.2 REGISTRO DE CONSIGNACIONES - PARA EL CONSIGNATARIO - CONTROL DE BIENES
+                RECIBIDOS EN CONSIGNACIÓN
+            </field>
+            <field name="code_le">090200</field>
+            <field name="nro_order">9.2</field>
+            <field name="state">disable</field>
+        </record>
+        <record id="lb_40" model="sunat.electronic_book">
+            <field name="name">REGISTRO DE COSTOS - ESTADO DE COSTO DE VENTAS ANUAL</field>
+            <field name="description">10.1 REGISTRO DE COSTOS - ESTADO DE COSTO DE VENTAS ANUAL</field>
+            <field name="code_le">100100</field>
+            <field name="nro_order">10.1</field>
+            <field name="state">disable</field>
+
+        </record>
+        <record id="lb_41" model="sunat.electronic_book">
+            <field name="name">REGISTRO DE COSTOS - ELEMENTOS DEL COSTO MENSUAL</field>
+            <field name="description">10.2 REGISTRO DE COSTOS - ELEMENTOS DEL COSTO MENSUAL</field>
+            <field name="code_le">100200</field>
+            <field name="nro_order">10.2</field>
+            <field name="state">disable</field>
+
+        </record>
+        <record id="lb_42" model="sunat.electronic_book">
+            <field name="name">REGISTRO DE COSTOS - ESTADO DE COSTO DE PRODUCCION VALORIZADO ANUAL</field>
+            <field name="description">10.3 REGISTRO DE COSTOS - ESTADO DE COSTO DE PRODUCCION VALORIZADO ANUAL</field>
+            <field name="code_le">100300</field>
+            <field name="nro_order">10.3</field>
+            <field name="state">disable</field>
+
+        </record>
+        <record id="lb_43" model="sunat.electronic_book">
+            <field name="name">REGISTRO DE COSTOS - CENTRO DE COSTOS</field>
+            <field name="description">10.4 REGISTRO DE COSTOS - CENTRO DE COSTOS</field>
+            <field name="code_le">100400</field>
+            <field name="nro_order">10.4</field>
+            <field name="state">disable</field>
+
+        </record>
+        <record id="lb_44" model="sunat.electronic_book">
+            <field name="name">REGISTRO DEL INVENTARIO PERMANENTE EN UNIDADES FÍSICAS - DETALLE DEL INVENTARIO
+                PERMANENTE EN UNIDADES FÍSICAS
+            </field>
+            <field name="description">12.1 REGISTRO DEL INVENTARIO PERMANENTE EN UNIDADES FÍSICAS - DETALLE DEL
+                INVENTARIO PERMANENTE EN UNIDADES FÍSICAS
+            </field>
+            <field name="code_le">120100</field>
+            <field name="nro_order">12.1</field>
+            <field name="state">disable</field>
+
+        </record>
+        <record id="lb_45" model="sunat.electronic_book">
+            <field name="name">REGISTRO DEL INVENTARIO PERMANENTE VALORIZADO - DETALLE DEL INVENTARIO VALORIZADO</field>
+            <field name="description">13.1 REGISTRO DEL INVENTARIO PERMANENTE VALORIZADO - DETALLE DEL INVENTARIO
+                VALORIZADO
+            </field>
+            <field name="code_le">130100</field>
+            <field name="nro_order">13.1</field>
+            <field name="state">disable</field>
+        </record>
+        <record id="lb_46" model="sunat.electronic_book">
+            <field name="name">REGISTRO DE VENTAS E INGRESOS</field>
+            <field name="description">14.1 REGISTRO DE VENTAS E INGRESOS</field>
+            <field name="code_le">140100</field>
+            <field name="nro_order">14.1</field>
+            <field name="state">enable</field>
+
+        </record>
+        <record id="lb_47" model="sunat.electronic_book">
+            <field name="name">REGISTRO DE VENTAS E INGRESOS SIMPLIFICADO</field>
+            <field name="description">14.2 REGISTRO DE VENTAS E INGRESOS SIMPLIFICADO</field>
+            <field name="code_le">140200</field>
+            <field name="nro_order">14.2</field>
+            <field name="state">disable</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <menuitem id="menu_pe_base_root"
+                  name="PE"
+                  parent="account.account_account_menu"
+                  groups="account.group_account_manager"
+                  sequence="500"/>
+    </data>
+</odoo>

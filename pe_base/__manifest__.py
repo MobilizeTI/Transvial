@@ -5,6 +5,7 @@
     'summary': """
         1.- Asignar series a los documentos
         2.- Asignar secuencias de sistema a facturas de cliente y proveedor
+        3.- Agregar campos (Código de libro, Voucher, T/Documento, Serie y Documento) a Asientos Contables
         """,
 
     'description': """
@@ -24,13 +25,19 @@
         'security/security.xml',
         'security/ir.model.access.csv',
 
-        'views/invoice_series.xml',
+        'menu/pe.xml',
 
+        'base/sunat_electronic_book.xml',
+
+        'views/invoice_series.xml',
         'views/account_journal.xml',
         'views/account_move.xml',
 
         # función para crear las secuencias relacionas al correlativo de sistema para facturas de cliente y proveedor
-        'data/functions.xml'
+        'data/functions.xml',
+
+        # libros electrónicos sunat
+        'data/electronic_book.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

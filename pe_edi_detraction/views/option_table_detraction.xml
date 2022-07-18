@@ -84,8 +84,8 @@
 
     <menuitem action="table_option_detraction_view_act_window"
               id="menu_table_option_detraction_view_form"
-              parent="account.account_account_menu"
+              parent="pe_base.menu_pe_base_root"
               groups="account.group_account_manager"
-              sequence="500"/>
+              sequence="10"/>
 
 </odoo>

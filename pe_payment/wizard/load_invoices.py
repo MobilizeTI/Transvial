@@ -35,6 +35,7 @@ class LoadInvoicesWizard(models.TransientModel):
     def get_domain_invoice_ids(self):
         domain = [
             ('parent_state', '=', 'posted'),
+            ('parent_payment_state', '=', 'not_paid'),
             ('reconciled', '=', False),
             ('currency_id', '=', self.payment_multi_id.currency_id.id),
             ('partner_id', 'in', self.partner_ids.ids),
@@ -125,7 +126,8 @@ class LoadInvoicesWizard(models.TransientModel):
                                    'invoice_user_id': item.move_id.invoice_user_id.id or False,
                                    'expiration_date': item.move_id.invoice_date_due,
                                    'amount': item.move_id.amount_total,
-                                   'amount_payable': item.move_id.amount_total,
+                                   'amount_residual': item.move_id.amount_residual,
+                                   'amount_payable': item.move_id.amount_residual,
                                }))
         if data_lines:
             self.payment_multi_id.sudo().write({

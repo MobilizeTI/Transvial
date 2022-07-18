@@ -14,7 +14,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'l10n_pe_edi', 'l10n_latam_invoice_document', 'mblz_utils'],
+    'depends': ['base', 'l10n_pe_edi', 'l10n_latam_invoice_document', 'mblz_utils', 'pe_base'],
 
     # always loaded
     'data': [

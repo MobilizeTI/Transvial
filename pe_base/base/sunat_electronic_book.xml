@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="electronic_book_view_form" model="ir.ui.view">
+            <field name="name">electronic_book_view_form</field>
+            <field name="model">sunat.electronic_book</field>
+            <field name="arch" type="xml">
+                <form string="electronic_book_form">
+                    <sheet>
+                        <group>
+                            <group class="col-8">
+                                <field name="name"/>
+                                <field name="nro_order"/>
+                            </group>
+                            <group class="col-4">
+                                <field name="code_le"/>
+                                <field name="state"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="description"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="electronic_book_view_tree" model="ir.ui.view">
+            <field name="name">PE_BASE: electronic_book_view_tree</field>
+            <field name="model">sunat.electronic_book</field>
+            <field name="arch" type="xml">
+                <tree string="electronic_book_tree">
+                    <!--                <field name="name"/>-->
+                    <field name="description"/>
+                    <field name="nro_order"/>
+                    <field name="code_le"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_electronic_book" model="ir.actions.act_window">
+            <field name="name">Libros electrónicos</field>
+            <field name="res_model">sunat.electronic_book</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="pe_base.electronic_book_view_tree"/>
+            <!--            <field name="target">new</field>-->
+        </record>
+
+        <menuitem id="menu_electronic_book"
+                  name="Libros electrónicos"
+                  action="action_electronic_book"
+                  parent="pe_base.menu_pe_base_root"
+                  sequence="20"/>
+    </data>
+</odoo>

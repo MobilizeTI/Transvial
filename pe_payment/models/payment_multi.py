@@ -62,7 +62,7 @@ class PaymentMulti(models.Model):
 
     payment_move_id = fields.Many2one(
         comodel_name='account.move',
-        string='Asientos contables', required=False, readonly=True, ondelete='cascade',
+        string='Asiento contable', required=False, readonly=True, ondelete='cascade',
         check_company=True,
         help='Asiento contable para un pago de tipo de generación masiva'
     )
@@ -155,7 +155,7 @@ class PaymentMulti(models.Model):
                     (0, 0, {
                         'name': name,
                         'partner_id': record.partner_id.id,
-                        'account_id': self.journal_id.payment_credit_account_id.id,
+                        'account_id': self.journal_id.payment_debit_account_id.id,
                         'currency_id': self.currency_id.id,
                         'debit': record.amount_payable,
                         'credit': 0.0,
@@ -295,5 +295,6 @@ class PaymentMultiLines(models.Model):
     expiration_date = fields.Date(string='Fecha vencimiento', readonly=True)
 
     amount = fields.Monetary(string='Importe adeudado', help="Importe a pagar en la moneda de diario", readonly=True)
+    amount_residual = fields.Monetary(string='Cantidad a pagar', readonly=True)
     amount_payable = fields.Monetary(string='Importe', help="Importe a pagar en la moneda de diario")
     payment_id = fields.Many2one("account.payment", 'Pago', readonly=True)

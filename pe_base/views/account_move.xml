@@ -106,6 +106,18 @@
                            }"
                     />
                 </xpath>
+
+<!--                <xpath expr="//field[@name='line_ids']" position="before">-->
+<!--                    <group name="group_entry_options">-->
+<!--                        <field name="code_book_sunat"/>-->
+<!--                        <field name="voucher_entry"/>-->
+<!--                        <field name="type_document_entry"/>-->
+<!--                        <field name="serie_entry"/>-->
+<!--                        <field name="document_entry"/>-->
+<!--                    </group>-->
+
+<!--                </xpath>-->
+
             </field>
         </record>
     </data>
