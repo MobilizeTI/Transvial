@@ -12,9 +12,9 @@
 
         <!-- Pagos multiples clientes-->
         <menuitem name="Pagos multiples"
-                  id="account_payment_multi_customer_act_window"
+                  id="menu_account_payment_multi_customer"
                   parent="account.menu_finance_receivables"
-                  action="account_payment_multi_customer_act_window"
+                  action="customer_account_payment_multi_act_window"
                   sequence="15"
         />
 

@@ -64,7 +64,7 @@ class PaymentMulti(models.Model):
         comodel_name='account.move',
         string='Asiento contable', required=False, readonly=True, ondelete='cascade',
         check_company=True,
-        help='Asiento contable para un pago de tipo de generación masiva'
+        help='Asiento contable para un pago de tipo de generación masiva', copy=False
     )
 
     partner_ids = fields.Many2many(
@@ -91,16 +91,19 @@ class PaymentMulti(models.Model):
     #     currency_id = self.journal_id.currency_id or self.journal_id.company_id.currency_id
     #     return currency_id
 
-    @api.onchange('journal_id')
-    def onchange_journal_id(self):
-        self.currency_id = self.journal_id.currency_id or self.journal_id.company_id.currency_id
+    # @api.onchange('journal_id')
+    # def onchange_journal_id(self):
+    #     self.currency_id = self.journal_id.currency_id or self.journal_id.company_id.currency_id
 
-    currency_id = fields.Many2one('res.currency', string='Moneda', required=True, help="Moneda para pagos multiples")
+    currency_id = fields.Many2one('res.currency', string='Moneda',
+                                  required=True,
+                                  compute='_compute_currency_id',
+                                  help="Moneda para pagos multiples")
 
-    # @api.depends('journal_id')
-    # def _compute_currency_id(self):
-    #     for pay in self:
-    #         pay.currency_id = pay.journal_id.currency_id or pay.journal_id.company_id.currency_id
+    @api.depends('journal_id')
+    def _compute_currency_id(self):
+        for pay in self:
+            pay.currency_id = pay.journal_id.currency_id or pay.journal_id.company_id.currency_id
 
     # Lineas
     line_ids = fields.One2many(
@@ -112,7 +115,13 @@ class PaymentMulti(models.Model):
     #  ----------------- Cambios de estados -----------------
     def action_draft(self):
         self.ensure_one()
-        self.state = 'draft'
+        # self.state = 'draft'
+
+    def action_payment(self):
+        self.ensure_one()
+        # se añade los pagos a los comprobantes
+        self._js_assign_outstanding_lines()
+        self.state = 'payment'
 
     def _create_move_massive(self):
         line_ids = []
@@ -130,6 +139,7 @@ class PaymentMulti(models.Model):
                         'debit': record.amount_payable,
                         'credit': 0.0,
                         'exclude_from_invoice_tab': True,
+                        'id_invoice_payment': record.move_line_id.move_id.id
                     }),
                     (0, 0, {
                         'name': name,
@@ -151,6 +161,7 @@ class PaymentMulti(models.Model):
                         'debit': 0.0,
                         'credit': record.amount_payable,
                         'exclude_from_invoice_tab': True,
+                        'id_invoice_payment': record.move_line_id.move_id.id
                     }),
                     (0, 0, {
                         'name': name,
@@ -197,10 +208,28 @@ class PaymentMulti(models.Model):
                 new_payment = self.env['account.payment'].sudo().create(vals_payment)
                 new_payment.action_post()
                 record.payment_id = new_payment.id
+                record.move_line_id.move_id.payment_id = new_payment.id
                 _logger.info(f'>>> new payment: {new_payment.name}')
         else:
             self._create_move_massive()
         self.state = 'confirm'
+
+    def _js_assign_outstanding_lines(self):
+        for item in self.line_ids:
+            domain_line = [('partner_id', '=', item.partner_id.id)]
+            if self.partner_type == 'customer':
+                domain_line += [('credit', '>', 0)]
+            else:
+                domain_line += [('debit', '>', 0)]
+
+            if self.generation_type == 'individual':
+                domain_line += [('payment_id', '=', item.payment_id.id)]
+                aml_payment = item.payment_id.move_id.line_ids.filtered_domain(domain_line)
+            else:
+                domain_line += [('id_invoice_payment', '=', item.move_line_id.move_id.id)]
+                aml_payment = self.payment_move_id.line_ids.filtered_domain(domain_line)
+            print(aml_payment.account_id.code, aml_payment.account_id.name)
+            item.move_line_id.move_id.js_assign_outstanding_line(aml_payment.id)
 
     def action_cancel(self):
         self.ensure_one()
@@ -224,10 +253,33 @@ class PaymentMulti(models.Model):
         self.line_ids = [(6, False, [])]
 
     payment_count = fields.Integer('Cantidad de pagos', compute='compute_payment_counts')
+    invoices_count = fields.Integer('Cantidad de facturas', compute='compute_invoices_counts')
 
     def compute_payment_counts(self):
         for record in self:
             record.payment_count = len(record.payment_ids)
+
+    def compute_invoices_counts(self):
+        for record in self:
+            record.invoices_count = len(record.line_ids.mapped('move_line_id.move_id'))
+
+    def action_view_invoices(self):
+        self.ensure_one()
+        if self.partner_type == 'supplier':
+            action = self.env.ref('account.action_move_in_invoice_type').sudo().read()[0]
+        else:
+            action = self.env.ref('account.action_move_out_invoice_type').sudo().read()[0]
+        action['domain'] = [('id', '=', self.line_ids.mapped('move_line_id.move_id.id'))]
+        if self.line_ids:
+            if len(self.line_ids) == 1:
+                temp_id = self.line_ids[:1].move_line_id.move_id.id
+                res = self.env.ref('account.view_move_form', False)
+                form_view = [(res and res.id or False, 'form')]
+                action['views'] = form_view
+                action['res_id'] = temp_id.id
+        else:
+            action['views'] = action['views'][1:]
+        return action
 
     def action_view_payment(self):
         self.ensure_one()
@@ -294,7 +346,8 @@ class PaymentMultiLines(models.Model):
     invoice_user_id = fields.Many2one('res.users', string='Comercial', readonly=True)
     expiration_date = fields.Date(string='Fecha vencimiento', readonly=True)
 
-    amount = fields.Monetary(string='Importe adeudado', help="Importe a pagar en la moneda de diario", readonly=True)
-    amount_residual = fields.Monetary(string='Cantidad a pagar', readonly=True)
-    amount_payable = fields.Monetary(string='Importe', help="Importe a pagar en la moneda de diario")
+    amount = fields.Monetary(string='Total', readonly=True)
+    amount_residual = fields.Monetary(string='Importe adeudado', readonly=True)
+    amount_payable = fields.Monetary(string='Importe a pagar', help="Importe a pagar en la moneda de diario")
     payment_id = fields.Many2one("account.payment", 'Pago', readonly=True)
+    parent_payment_state = fields.Selection(related='move_line_id.parent_payment_state')

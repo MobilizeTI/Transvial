@@ -13,20 +13,36 @@
                                         ('state', '!=', 'draft'),
                                         ('line_ids', '==', []),
                                 ]}"/>
-                        <button name="action_draft" string="Restablecer a borrador" type="object"
+
+                        <button name="action_payment" string="A pagado" type="object"
+                                class="btn btn-primary"
+                                attrs="{'invisible': [('state', 'not in', ('confirm'))]}"
+                                groups="account.group_account_invoice"/>
+
+                        <button name="action_draft" string="A borrador" type="object"
                                 class="btn btn-secondary"
                                 attrs="{'invisible': [('state', 'not in', ('confirm', 'cancel'))]}"
                                 groups="account.group_account_invoice"/>
                         <button name="action_cancel" string="Cancelar" type="object"
-                                attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                                attrs="{'invisible': [('state', '=', 'draft')]}"/>
+
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirm,payment,cancel"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
                             <button class="oe_stat_button"
                                     type="object"
+                                    name="action_view_invoices"
+                                    icon="fa-pencil-square-o"
+                                    attrs="{'invisible': [('line_ids', '=', [])]}"
+                            >
+                                <field name="invoices_count" widget="statinfo" string="Facturas"
+                                       options="{'reload_on_button': true}"/>
+                            </button>
+                            <button class="oe_stat_button"
+                                    type="object"
                                     name="action_view_payment"
-                                    icon="fa-list-ul"
+                                    icon="fa-indent"
                                     attrs="{'invisible': [('payment_ids', '=', [])]}"
                             >
                                 <field name="payment_count" widget="statinfo" string="Pagos"
@@ -104,6 +120,14 @@
                                                        ('partner_id','in', parent.partner_ids),
                                                        ('parent_state','=','posted'),
                                                        ('account_internal_type','in',('receivable','payable')),('reconciled','=',False)]"/>
+                                        <field name="parent_payment_state" widget="badge"
+                                               string="Estado del pago"
+                                               decoration-danger="parent_payment_state == 'not_paid'"
+                                               decoration-warning="parent_payment_state in ('partial', 'in_payment')"
+                                               decoration-success="parent_payment_state in ('paid', 'reversed')"
+                                               attrs="{'invisible': [('parent_payment_state', 'in', ('invoicing_legacy'))]}"
+                                               optional="hide"
+                                        />
                                         <field name="partner_id" widget="many2one_avatar"/>
                                         <field name="invoice_date"/>
                                         <field name="invoice_origin"/>
@@ -118,10 +142,12 @@
                                                options="{'currency_field': 'currency_id'}"/>
                                         <field name="amount_payable" widget="monetary"
                                                sum="amount_payable"
-                                               options="{'currency_field': 'moneda_id', 'bg_color': '#bff6dc'}"/>
+                                               options="{'currency_field': 'currency_id', 'bg_color': '#bff6dc'}"/>
                                         <field name="payment_id"
                                                attrs="{'column_invisible': [('parent.generation_type', '=', 'massive')]}"
                                                optional="show"/>
+
+
                                     </tree>
                                 </field>
                             </page>
@@ -136,13 +162,15 @@
             <field name="name">account.payment_multi.tree</field>
             <field name="model">account.payment_multi</field>
             <field name="arch" type="xml">
-                <tree string="Pagos multiples" default_order="date desc">
+                <tree string="Pagos multiples" default_order="name desc">
                     <field name="name"/>
                     <field name="date"/>
                     <field name="journal_id"/>
                     <field name="partner_ids" widget="many2many_tags"/>
-                    <field name="state" widget="badge" decoration-info="state == 'draft'"
-                           decoration-success="state == 'confirm'"/>
+                    <field name="state" widget="badge"
+                           decoration-info="state == 'draft'"
+                           decoration-primary="state == 'confirm'"
+                           decoration-success="state == 'payment'"/>
                     <field name="currency_id" invisible="1"/>
                     <field name="company_id" groups="base.group_multi_company"/>
 
@@ -181,7 +209,7 @@
             </field>
         </record>
 
-        <record id="account_payment_multi_customer_act_window" model="ir.actions.act_window">
+        <record id="customer_account_payment_multi_act_window" model="ir.actions.act_window">
             <field name="name">Pagos multiples clientes</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">account.payment_multi</field>

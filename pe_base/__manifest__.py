@@ -37,7 +37,7 @@
         'data/functions.xml',
 
         # libros electrónicos sunat
-        'data/electronic_book.xml'
+        # 'data/electronic_book.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
