@@ -32,6 +32,16 @@ class LoadInvoicesWizard(models.TransientModel):
         for rec in self:
             rec.domain_invoice_ids = [(6, 0, rec.get_domain_invoice_ids())]
 
+    def _date_maturity_domain(self):
+        domain = []
+        if self.payment_multi_id.range == 'date':
+            domain.append(('date_maturity', '<=', self.payment_multi_id.date_def))
+        elif self.payment_multi_id.range in ('month', 'dates'):
+            self.payment_multi_id.onchange_range()
+            domain += [('date_maturity', '>=', self.payment_multi_id.date_start),
+                       ('date_maturity', '<=', self.payment_multi_id.date_end)]
+        return domain
+
     def get_domain_invoice_ids(self):
         domain = [
             ('parent_state', '=', 'posted'),
@@ -41,6 +51,7 @@ class LoadInvoicesWizard(models.TransientModel):
             ('partner_id', 'in', self.partner_ids.ids),
             ('company_id', '=', self.env.company.id)
         ]
+        domain += self._date_maturity_domain()
         # proveedor
         if self.partner_type == 'supplier':
             domain += [('account_internal_type', '=', 'payable'),

@@ -70,10 +70,8 @@
                             <group>
                                 <field name="partner_type" invisible="1"/>
                                 <field name="payment_ids" widget="many2many_tags" invisible="1"/>
-                                <field name="expiration_date"/>
                                 <field name="user_id" widget="many2one_avatar_user"/>
                                 <field name="company_id" groups="base.group_multi_company"/>
-
                             </group>
                             <group>
                                 <!--                                <field name="partner_type" widget="radio" options="{'horizontal': True}"/>-->
@@ -90,6 +88,44 @@
                             </group>
                         </group>
 
+                        <!--filtro por fechas-->
+                        <group class="border pl-1 pt-1">
+                            <group>
+                                <field name="range" widget="radio" options="{'horizontal': True}"/>
+                            </group>
+                            <group attrs="{'invisible': [('range', '=', 'all')]}">
+                                <label for="date_start"
+                                       string="Desde / Hasta"
+                                       attrs="{'invisible': [('range', '!=', 'dates')]}"/>
+                                <div attrs="{'invisible': [('range', '!=', 'dates')]}">
+                                    <field name="date_start"
+                                           class="oe_inline"
+                                           options="{'datepicker': {'warn_future': false}}"
+                                           attrs="{'required': [('range', '=', 'dates')]}"/>
+                                    <span></span>
+                                    <field name="date_end"
+                                           class="oe_inline"
+                                           options="{'datepicker': {'warn_future': false}}"
+                                           attrs="{'required': [('range', '=', 'dates')]}"/>
+                                </div>
+                                <!-- options="{'datepicker':{'maxDate': 'now'}}"-->
+                                <field name="date_def"
+                                       attrs="{'invisible': [('range', '!=', 'date')]}"/>
+
+                                <label for="month"
+                                       string="Mes / año"
+                                       attrs="{'invisible': [('range', '!=', 'month')]}"/>
+                                <div attrs="{'invisible': [('range', '!=', 'month')]}">
+                                    <field name="month"
+                                           class="oe_inline"
+                                           attrs="{'required': [('range', '=', 'month')]}"/>
+                                    <span>/</span>
+                                    <field name="year"
+                                           class="oe_inline"
+                                           attrs="{'required': [('range', '=', 'month')]}"/>
+                                </div>
+                            </group>
+                        </group>
                         <notebook>
                             <page name="page_lines" string="Facturas" attrs="{'invisible': [('id', '=', False)]}">
                                 <header>

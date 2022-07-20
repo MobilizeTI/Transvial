@@ -1,8 +1,36 @@
 # -*- coding: utf-8 -*-
+import io
 
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
+from odoo import fields, api, models, _, tools
+from datetime import datetime
+import pytz
+import calendar
+import re
+
+from datetime import date, datetime, time, timedelta
+from dateutil.relativedelta import relativedelta
+from odoo.exceptions import ValidationError
+from odoo.tools.misc import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, format_date
+
+from pprint import pprint
+from io import BytesIO
+
+import base64
+import json
 import logging
+from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError, Warning, CacheMiss
+from odoo.tools.misc import formatLang
+
+import xlsxwriter
+
+YEAR_REGEX = re.compile("^[0-9]{4}$")
+DATE_FORMAT = '%Y-%m-%d'
+fmt = '%Y-%m-%d %H:%M:%S'
+
+MONTH_SELECTION = [('1', 'Enero'), ('2', 'Febrero'), ('3', 'Marzo'), ('4', 'Abril'), ('5', 'Mayo'),
+                   ('6', 'Junio'), ('7', 'Julio'), ('8', 'Agosto'), ('9', 'Setiembre'), ('10', 'Octubre'),
+                   ('11', 'Noviembre'), ('12', 'Diciembre')]
 
 _logger = logging.getLogger(__name__)
 
@@ -47,8 +75,78 @@ class PaymentMulti(models.Model):
         ('supplier', 'Proveedor'),
     ], default='customer', tracking=True, required=True)
 
-    expiration_date = fields.Date(string='Fecha de vencimiento', copy=False)
+    # expiration_date = fields.Date(string='Fecha de vencimiento', copy=False)
 
+    # filtro de fechas
+    # ------------------------------------------------------------------------------- inicio
+    def _default_month(self):
+        user_tz = self.env.user.tz or 'America/Lima'
+        timezone = pytz.timezone(user_tz)
+        current = datetime.now(timezone)
+        return str(current.month)
+
+    def _default_year(self):
+        user_tz = self.env.user.tz or 'America/Lima'
+        timezone = pytz.timezone(user_tz)
+        current = datetime.now(timezone)
+        return str(current.year)
+
+    range = fields.Selection([
+        ('month', 'Por mes'),
+        ('dates', 'Fechas'),
+        ('date', 'Por día'),
+        ('all', 'Todos'),
+    ], 'Seleccionar el filtro', default='all', required=True,
+        help="Filtro para fecha de vencimiento de las facturas:\n"
+             " - Por mes: Filtra los comprobantes pendientes de pago del mes seleccionado\n"
+             " - Fechas: Filtra los comprobantes pendientes de pago para las fechas ingresadas\n"
+             " - Por día: Filtra los comprobantes pendientes de pago fecha menor o igual al día ingresado\n"
+             " - Todos: Filtra los comprobantes pendientes de pago")
+
+    company_id = fields.Many2one('res.company', string='Compañía', default=lambda self: self.env.company.id)
+
+    month = fields.Selection(MONTH_SELECTION, string='Mes', default=_default_month)
+    year = fields.Char('Año', default=_default_year)
+    date_start = fields.Date('Desde')
+    date_end = fields.Date('Hasta')
+
+    def _get_current_date(self):
+        return datetime.now(pytz.timezone(self.env.user.tz or 'America/Lima'))
+
+    date_def = fields.Date('Día', default=lambda self: self._get_current_date())
+
+    @api.onchange('year')
+    def onchange_year(self):
+        if self.year is False or not bool(YEAR_REGEX.match(self.year)):
+            raise ValidationError('Debe especificar un año correcto')
+
+    @api.constrains('date_start', 'date_end')
+    def check_dates(self):
+        if self.date_start is not False and \
+                self.date_end is not False:
+            if self.date_end < self.date_start:
+                raise ValidationError('La fecha de inicio debe ser menor o igual que la fecha de fin')
+
+    @api.onchange('range', 'month')
+    def onchange_range(self):
+        if self.range == 'month':
+            w, days = calendar.monthrange(int(self.year), int(self.month))
+            self.date_start = datetime.strptime('{}-{}-{}'.format(self.year, self.month, 1), DATE_FORMAT).date()
+            self.date_end = datetime.strptime('{}-{}-{}'.format(self.year, self.month, days), DATE_FORMAT).date()
+        print(self.date_start, self.date_end)
+
+    # ----------------------------------------
+    @api.constrains('date_start', 'date_end')
+    def check_parameters(self):
+        for record in self:
+            if record.date_start and record.date_end:
+                start = record.date_start.strftime(DEFAULT_SERVER_DATE_FORMAT)
+                end = record.date_end.strftime(DEFAULT_SERVER_DATE_FORMAT)
+                if start > end:
+                    raise ValidationError('La fecha de fin debe ser mayor que la de inicio')
+
+    # ----------------------------------------
+    # -------------------------------------------------------------------------------fin
     state = fields.Selection(selection=[
         ('draft', 'Borrador'),
         ('confirm', 'Confirmado'),
