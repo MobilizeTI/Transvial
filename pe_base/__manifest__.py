@@ -2,11 +2,11 @@
 {
     'name': "Base (Perú)",
 
-    'summary': """
-        1.- Asignar series a los documentos
-        2.- Asignar secuencias de sistema a facturas de cliente y proveedor
-        3.- Agregar campos (Código de libro, Voucher, T/Documento, Serie y Documento) a Asientos Contables
-        """,
+    # 'summary': """
+    #     (x) 1.- Asignar series a los documentos
+    #     (x) 2.- Asignar secuencias de sistema a facturas de cliente y proveedor
+    #     (x) 3.- Agregar campos (Código de libro, Voucher, T/Documento, Serie y Documento) a Asientos Contables
+    #     """,
 
     'description': """
         Configuraciones generales para la localización peruana by Mobilize
@@ -22,27 +22,30 @@
 
     # always loaded
     'data': [
-        'security/security.xml',
+        # 'security/security.xml',
         'security/ir.model.access.csv',
 
         'menu/pe.xml',
 
         'base/sunat_electronic_book.xml',
 
-        'views/invoice_series.xml',
-        'views/account_journal.xml',
-        'views/account_move.xml',
+        # tablas
+        'tablas/tabla_ocho_codigo_libro_registro.xml',
+
+        # 'views/invoice_series.xml',
+        # 'views/account_journal.xml',
+        # 'views/account_move.xml',
 
         # función para crear las secuencias relacionas al correlativo de sistema para facturas de cliente y proveedor
-        'data/functions.xml',
+        # 'data/functions.xml',
 
         # libros electrónicos sunat
-        # 'data/electronic_book.xml'
+        'data/electronic_book.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
         # 'demo/demo.xml',
     ],
-    'uninstall_hook': 'clear_seq_customer_supplier_invoice_hook'
+    # 'uninstall_hook': 'clear_seq_customer_supplier_invoice_hook'
 
 }

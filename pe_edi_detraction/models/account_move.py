@@ -279,13 +279,6 @@ class AccountMove(models.Model):
                 self._clear_entries_detraction()
         return resp
 
-    @api.onchange('l10n_latam_document_number')
-    def onchange_l10n_latam_document_number(self):
-        if self.l10n_latam_document_number:
-            self.ref = self.l10n_latam_document_number
-        else:
-            self.ref = False
-
     @api.model
     def create(self, values):
         move_new = super(AccountMove, self).create(values)

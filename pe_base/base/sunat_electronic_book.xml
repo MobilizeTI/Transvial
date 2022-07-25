@@ -48,10 +48,10 @@
             <!--            <field name="target">new</field>-->
         </record>
 
-        <menuitem id="menu_electronic_book"
-                  name="Libros electrónicos"
-                  action="action_electronic_book"
-                  parent="pe_base.menu_pe_base_root"
-                  sequence="20"/>
+<!--        <menuitem id="menu_electronic_book"-->
+<!--                  name="Libros electrónicos"-->
+<!--                  action="action_electronic_book"-->
+<!--                  parent="pe_base.menu_pe_base_root"-->
+<!--                  sequence="20"/>-->
     </data>
 </odoo>

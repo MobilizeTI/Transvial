@@ -1,0 +1,1 @@
+from . import tabla_ocho_codigo_libro_registro
