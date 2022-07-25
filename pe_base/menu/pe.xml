@@ -11,7 +11,7 @@
         <!-- This Menu Item Must have a parent -->
         <menuitem id="menu_pe_base_tables"
                   name="Tablas"
-                  parent="account.account_account_menu"
+                  parent="menu_pe_base_root"
                   sequence="500"/>
     </data>
 </odoo>

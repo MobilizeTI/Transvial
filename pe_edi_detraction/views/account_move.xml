@@ -37,7 +37,6 @@
                 <!--                </xpath>-->
 
 
-
                 <field name="amount_total" position="before">
                     <field name="currency_pe_id" invisible="1"/>
                     <field name="currency_symbol" invisible="1"/>
@@ -131,6 +130,24 @@
             </field>
         </record>
 
+
+        <record id="pe_edi_update_view_account_invoice_filter" model="ir.ui.view">
+            <field name="name">pe_edi_update: account.invoice.select</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="edi_series_id" string="Serie"/>
+                </xpath>
+
+                <xpath expr="//filter[@name='salesperson']" position="before">
+                    <filter string="Serie" name="group_edi_series_id" domain="[]"
+                            context="{'group_by': 'edi_series_id'}"/>
+                </xpath>
+
+            </field>
+        </record>
 
 
     </data>

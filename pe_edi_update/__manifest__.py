@@ -4,6 +4,8 @@
 
     'summary': """
         1.- Asignar series a las facturas de cliente
+        2.- Agregar campos (Código de libro, Voucher, T/Documento, Serie y Documento) a Asientos Contables
+
         """,
 
     'description': """

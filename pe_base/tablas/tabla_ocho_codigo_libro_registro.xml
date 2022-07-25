@@ -16,10 +16,10 @@
                         </div>
                         <group>
                             <group>
-                                <field name="name"/>
+                                <field name="code"/>
                             </group>
                             <group>
-                                <field name="code"/>
+                                <field name="create_date"/>
                             </group>
                         </group>
                     </sheet>
@@ -32,8 +32,8 @@
             <field name="model">pe_code_book_table_08</field>
             <field name="arch" type="xml">
                 <tree string="TABLA 8: CÓDIGO DEL LIBRO O REGISTRO">
-                    <field name="name"/>
                     <field name="code"/>
+                    <field name="name"/>
                 </tree>
             </field>
         </record>

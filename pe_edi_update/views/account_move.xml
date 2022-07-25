@@ -42,11 +42,13 @@
             <field name="arch" type="xml">
 
                 <xpath expr="//field[@name='line_ids']/tree//field[@name='analytic_tag_ids']" position="after">
-                    <field name="code_book_sunat" optional="show"/>
-                    <field name="voucher_entry" optional="show"/>
-                    <field name="code_type_document_entry" optional="show"/>
-                    <field name="serie_entry" optional="show"/>
-                    <field name="document_entry" optional="show"/>
+                    <field name="code_book_sunat_id"
+                           options="{'no_open': False, 'no_create': True, 'no_create_edit': True, 'bg_color': '#ecf0f1'}"
+                           optional="show"/>
+                    <field name="voucher_entry" optional="show" options="{'bg_color': '#ecf0f1'}"/>
+                    <field name="code_type_document_entry" optional="show" options="{'bg_color': '#ecf0f1'}"/>
+                    <field name="serie_entry" optional="show" options="{'bg_color': '#ecf0f1'}"/>
+                    <field name="document_entry" optional="show" options="{'bg_color': '#ecf0f1'}"/>
                 </xpath>
 
             </field>

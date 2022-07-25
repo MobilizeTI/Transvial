@@ -17,7 +17,7 @@ class PECodeBook(models.Model):
     ]
 
     def name_get(self):
-        return [(record.id, f'[{record.code}]{record.name}') for record in self]
+        return [(record.id, f'[{record.code}] {record.name}') for record in self]
 
     @api.model
     def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):

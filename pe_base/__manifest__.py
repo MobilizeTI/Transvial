@@ -3,9 +3,7 @@
     'name': "Base (Perú)",
 
     # 'summary': """
-    #     (x) 1.- Asignar series a los documentos
     #     (x) 2.- Asignar secuencias de sistema a facturas de cliente y proveedor
-    #     (x) 3.- Agregar campos (Código de libro, Voucher, T/Documento, Serie y Documento) a Asientos Contables
     #     """,
 
     'description': """
@@ -22,7 +20,6 @@
 
     # always loaded
     'data': [
-        # 'security/security.xml',
         'security/ir.model.access.csv',
 
         'menu/pe.xml',
@@ -32,20 +29,11 @@
         # tablas
         'tablas/tabla_ocho_codigo_libro_registro.xml',
 
-        # 'views/invoice_series.xml',
-        # 'views/account_journal.xml',
-        # 'views/account_move.xml',
-
-        # función para crear las secuencias relacionas al correlativo de sistema para facturas de cliente y proveedor
-        # 'data/functions.xml',
-
         # libros electrónicos sunat
-        'data/electronic_book.xml'
+        'data/electronic_book.xml',
+        'data/pe_code_book_table_08.csv'
     ],
     # only loaded in demonstration mode
-    'demo': [
-        # 'demo/demo.xml',
-    ],
-    # 'uninstall_hook': 'clear_seq_customer_supplier_invoice_hook'
+    'demo': [],
 
 }
