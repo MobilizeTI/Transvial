@@ -73,6 +73,17 @@ class AccountMove(models.Model):
         string='Total detracción (soles)',
         readonly=True)
 
+    @api.onchange('currency_id')
+    def onchange_currency_id(self):
+        """Validación del tipo de cambio para la fecha"""
+        if self.currency_id and self.currency_id.symbol != 'S/':
+            date = self.date
+            if self.invoice_date:
+                date = self.invoice_date
+            if not date:
+                date = fields.Date.context_today(self)
+            self.currency_id.validate_rate(date)
+
     # payment_detraction_id = fields.Many2one(
     #     comodel_name='account.payment',
     #     string='Pagó detracción',

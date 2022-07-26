@@ -32,14 +32,15 @@ class AM(models.Model):
 
     @api.depends('posted_before', 'state', 'journal_id', 'date')
     def _compute_name(self):
-        if self.state == 'draft':
-            self.name = '/'
-        elif self.state == 'posted':
-            sequence = self._get_sequence()
-            if sequence:
-                self.name = sequence.next_by_id()
-            else:
-                super(AM, self)._compute_name()
+        for record in self:
+            if record.state == 'draft':
+                record.name = '/'
+            elif record.state == 'posted':
+                sequence = record._get_sequence()
+                if sequence:
+                    record.name = sequence.next_by_id()
+                else:
+                    super(AM, record)._compute_name()
 
     def _get_sequence(self):
         sequence = self.edi_series_id.invoice_seq_id

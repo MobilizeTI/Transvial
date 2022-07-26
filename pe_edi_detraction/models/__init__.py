@@ -5,3 +5,5 @@ from . import res_config_settings
 from . import account_move
 from . import res_partner
 from . import account_edi_format
+
+from . import res_currency
