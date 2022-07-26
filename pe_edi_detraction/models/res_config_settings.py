@@ -8,7 +8,7 @@ class ResCompany(models.Model):
         'account.account',
         string="Cuenta de detracción",
         company_dependent=True,
-        domain=lambda self: [('internal_type', 'in', ('payable', 'receivable')), ('deprecated', '=', False)],
+        domain=lambda self: [('deprecated', '=', False)],
         help="Cuenta que será utilizada para registrar la deuda de detracciones.")
 
     currency_rates_autoupdate = fields.Boolean(
@@ -24,7 +24,7 @@ class ResConfigSettings(models.TransientModel):
     detraction_account_id = fields.Many2one(
         'account.account', string='Cuenta de detracción',
         related='company_id.detraction_account_id', readonly=False,
-        domain=lambda self: [('internal_type', 'in', ('payable', 'receivable')), ('deprecated', '=', False)],
+        domain=lambda self: [('deprecated', '=', False)],
         help="Cuenta que será utilizada para registrar la deuda de detracciones.")
 
     currency_rates_autoupdate = fields.Boolean(
