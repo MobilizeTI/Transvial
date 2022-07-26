@@ -26,6 +26,7 @@ class LoadInvoicesWizard(models.TransientModel):
     domain_invoice_ids = fields.One2many('account.move.line', compute='_compute_domain_invoice_ids')
 
     select_all = fields.Boolean(string='select_all', required=True)
+    is_pay_detraction = fields.Boolean(string='Pago detracción', required=False)
 
     @api.depends('partner_ids', 'partner_type')
     def _compute_domain_invoice_ids(self):
@@ -48,9 +49,13 @@ class LoadInvoicesWizard(models.TransientModel):
             ('parent_payment_state', '=', 'not_paid'),
             ('reconciled', '=', False),
             ('currency_id', '=', self.payment_multi_id.currency_id.id),
-            ('partner_id', 'in', self.partner_ids.ids),
             ('company_id', '=', self.env.company.id)
         ]
+        if self.partner_ids:
+            domain += [('partner_id', 'in', self.partner_ids.ids)]
+        if self.is_pay_detraction:
+            domain += [('is_detraction', '=', True)]
+
         domain += self._date_maturity_domain()
         # proveedor
         if self.partner_type == 'supplier':

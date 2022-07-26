@@ -45,6 +45,7 @@ class PaymentMulti(models.Model):
     name = fields.Char(string='SEQ', required=True, copy=False,
                        readonly=True,
                        index=True, default=lambda self: _('/'))
+    is_pay_detraction = fields.Boolean(string='Pago detracción', required=False)
 
     date = fields.Date(
         string='Fecha',
@@ -168,7 +169,7 @@ class PaymentMulti(models.Model):
     partner_ids = fields.Many2many(
         comodel_name='res.partner',
         string="Clientes/Proveedores",
-        store=True, readonly=False, ondelete='restrict', required=True,
+        store=True, readonly=False, ondelete='restrict', required=False,
         domain="['|', ('parent_id','=', False), ('is_company','=', True)]",
         check_company=True)
     user_id = fields.Many2one('res.users', string='Comercial', default=lambda self: self.env.user, required=True)
@@ -341,7 +342,8 @@ class PaymentMulti(models.Model):
         context = dict(self._context, create=True)
         context.update({
             'default_payment_multi_id': self.id,
-            'default_partner_ids': self.partner_ids.ids
+            'default_partner_ids': self.partner_ids.ids if self.payment_ids else False,
+            'default_is_pay_detraction': self.is_pay_detraction
         })
         action['context'] = context
         return action
