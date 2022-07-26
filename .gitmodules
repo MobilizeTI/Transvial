@@ -1,0 +1,4 @@
+[submodule "l10n_pe_mblz"]
+	path = l10n_pe_mblz
+	url = git@github.com:MobilizeDevTeam/l10n_pe_mblz.git
+	branch = 14.0
