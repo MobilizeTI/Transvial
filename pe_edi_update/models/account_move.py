@@ -122,5 +122,5 @@ class AccountMoveLine(models.Model):
     code_type_document_entry = fields.Char(string='T/Documento', required=False)
     serie_entry = fields.Char(string='Serie', required=False)
     document_entry = fields.Char(string='Documento', required=False)
-
+    date_aux = fields.Date(string='Fecha auxiliar')
     # ---------------- Campos a Asientos Contables ------------------- (fin)

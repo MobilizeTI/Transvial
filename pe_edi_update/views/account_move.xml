@@ -49,6 +49,7 @@
                     <field name="code_type_document_entry" optional="show" options="{'bg_color': '#ecf0f1'}"/>
                     <field name="serie_entry" optional="show" options="{'bg_color': '#ecf0f1'}"/>
                     <field name="document_entry" optional="show" options="{'bg_color': '#ecf0f1'}"/>
+                    <field name="date_aux" optional="hide" options="{'bg_color': '#ecf0f1'}"/>
                 </xpath>
 
             </field>

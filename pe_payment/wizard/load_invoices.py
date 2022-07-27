@@ -59,11 +59,11 @@ class LoadInvoicesWizard(models.TransientModel):
         domain += self._date_maturity_domain()
         # proveedor
         if self.partner_type == 'supplier':
-            domain += [('account_internal_type', '=', 'payable'),
+            domain += [('account_internal_type', 'in', ('payable', 'other')),
                        ('journal_id.type', '=', 'purchase')]
         else:
             # cliente
-            domain += [('account_internal_type', '=', 'receivable'),
+            domain += [('account_internal_type', 'in', ('receivable', 'other')),
                        ('journal_id.type', '=', 'sale')]
         invoices = self.env['account.move.line'].sudo().search(domain)
 
