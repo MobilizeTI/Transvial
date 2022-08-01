@@ -58,3 +58,7 @@
 	path = purchase_subscription_mblz
 	url = git@github.com:MobilizeDevTeam/purchase_subscription_mblz.git
 	branch = 14.0
+[submodule "hr_expense_invoice"]
+	path = hr_expense_invoice
+	url = git@github.com:MobilizeDevTeam/hr_expense_invoice.git
+	branch = 14.0
