@@ -53,8 +53,6 @@ class LoadInvoicesWizard(models.TransientModel):
         ]
         if self.partner_ids:
             domain += [('partner_id', 'in', self.partner_ids.ids)]
-        if self.is_pay_detraction:
-            domain += [('is_detraction', '=', True)]
 
         domain += self._date_maturity_domain()
         # proveedor
@@ -65,6 +63,10 @@ class LoadInvoicesWizard(models.TransientModel):
             # cliente
             domain += [('account_internal_type', 'in', ('receivable', 'other')),
                        ('journal_id.type', '=', 'sale')]
+
+        if self.is_pay_detraction:
+            domain += [('is_detraction', '=', True)]
+            return self.env['account.move.line'].sudo().search(domain)
         invoices = self.env['account.move.line'].sudo().search(domain)
 
         return self._clear_domain_invoices(lines=invoices)

@@ -104,7 +104,7 @@ class PaymentMulti(models.Model):
              " - Por día: Filtra los comprobantes pendientes de pago fecha menor o igual al día ingresado\n"
              " - Todos: Filtra los comprobantes pendientes de pago")
 
-    company_id = fields.Many2one('res.company', string='Compañía', default=lambda self: self.env.company.id)
+    # company_id = fields.Many2one('res.company', string='Compañía', default=lambda self: self.env.company.id)
 
     month = fields.Selection(MONTH_SELECTION, string='Mes', default=_default_month)
     year = fields.Char('Año', default=_default_year)
@@ -134,7 +134,7 @@ class PaymentMulti(models.Model):
             w, days = calendar.monthrange(int(self.year), int(self.month))
             self.date_start = datetime.strptime('{}-{}-{}'.format(self.year, self.month, 1), DATE_FORMAT).date()
             self.date_end = datetime.strptime('{}-{}-{}'.format(self.year, self.month, days), DATE_FORMAT).date()
-        print(self.date_start, self.date_end)
+        # print(self.date_start, self.date_end)
 
     # ----------------------------------------
     @api.constrains('date_start', 'date_end')
@@ -146,8 +146,7 @@ class PaymentMulti(models.Model):
                 if start > end:
                     raise ValidationError('La fecha de fin debe ser mayor que la de inicio')
 
-    # ----------------------------------------
-    # -------------------------------------------------------------------------------fin
+    # -----------------------------------------------------> (fin)
     state = fields.Selection(selection=[
         ('draft', 'Borrador'),
         ('confirm', 'Confirmado'),

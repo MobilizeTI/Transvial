@@ -48,10 +48,10 @@
                                     <span t-if="o.name != '/'" t-field="o.name"/>
                                 </h4>
                                 <div id="informations" class="row mt32 mb32">
-                                    <div class="col-auto col-3 mw-100 mb-2" t-if="o.name_seq_system != '/'"
+                                    <div class="col-auto col-3 mw-100 mb-2" t-if="o.name != '/'"
                                          name="name_seq_system">
                                         <strong>Correlativo:</strong>
-                                        <p class="m-0" t-field="o.name_seq_system"/>
+                                        <p class="m-0" t-field="o.name"/>
                                     </div>
                                     <div class="col-auto col-3 mw-100 mb-2" t-if="o.partner_id" name="invoice_date">
                                         <t t-if="o.move_type == 'in_invoice'">
