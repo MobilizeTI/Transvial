@@ -26,6 +26,7 @@
 
         'views/payment_multi.xml',
         'wizard/load_invoices_wizard.xml',
+        # 'wizard/account_payment_register.xml',
 
         'menu/menus.xml',
 

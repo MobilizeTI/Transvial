@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+    <data>
+        <record id="detraction_extra_account_journal_peru_mblz" model="ir.ui.view">
+            <field name="name">Extra account.journal.form detracción PE mblz</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.view_account_journal_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='bank_account']//group" position="inside">
+                    <group name="group_name_detraction"
+                           attrs="{'invisible': [('type', '!=', 'general')]}"
+                           string="Información de detracción">
+                        <field name="is_detraction_journal" widget="boolean_toggle" string="Es Diario de Detracción"/>
+                        <field name="default_detraction_account"
+                               attrs="{'invisible': [('is_detraction_journal', '=', False)],
+                                       'required': [('is_detraction_journal', '=', True)]}"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -23,7 +23,8 @@
 
         'views/option_table_detraction.xml',
         'views/product_template.xml',
-        'views/res_config_settings.xml',
+        'views/account_journal.xml',
+        # 'views/res_config_settings.xml',
         'views/res_partner.xml',
         'views/account_move.xml',
 

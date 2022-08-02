@@ -210,6 +210,10 @@ class PaymentMulti(models.Model):
         string='Facturas',
         required=False)
 
+    # archivo txt
+    txt_filename = fields.Char(string='Nombre de archivo TXT', copy=False)
+    txt_binary = fields.Binary(string='File TXT', copy=False)
+
     #  ----------------- Cambios de estados -----------------
     def action_draft(self):
         self.ensure_one()
@@ -335,13 +339,30 @@ class PaymentMulti(models.Model):
 
     #  ----------------- Cambios de estados -----------------
 
+    def action_generate_txt(self):
+        self.ensure_one()
+        txt_lines = ''
+        for line in self.line_ids:
+            txt_lines += f"{'0220131371617'}\t{line.move_line_id.move_id.name}\t{'202205270100000000009292019900101'}\t{'01800000000028177801C0220131371617'}\t{line.partner_id.name}\n"
+
+        f1 = io.BytesIO()
+        f1.write(txt_lines.encode('utf-8'))
+        content = f1.getvalue()
+        txt_binary = base64.b64encode(content)
+        # period = f'{self.year}{self.month}00'
+
+        self.write({
+            'txt_filename': 'PAGO{}.txt'.format(self.company_id.vat),
+            'txt_binary': txt_binary
+        })
+
     def action_load_invoices(self):
         self.ensure_one()
         action = self.env.ref('pe_payment.action_load_invoice_wizard').read()[0]
         context = dict(self._context, create=True)
         context.update({
             'default_payment_multi_id': self.id,
-            'default_partner_ids': self.partner_ids.ids if self.payment_ids else False,
+            'default_partner_ids': self.partner_ids.ids if self.partner_ids else False,
             'default_is_pay_detraction': self.is_pay_detraction
         })
         action['context'] = context

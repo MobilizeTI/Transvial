@@ -15,7 +15,7 @@ class LoadInvoicesWizard(models.TransientModel):
     company_id = fields.Many2one(
         'res.company', required=True, default=lambda self: self.env.company, readonly=True
     )
-    partner_ids = fields.Many2many('res.partner', string='Proveedores', readonly=True)
+    partner_ids = fields.Many2many('res.partner', string='Clientes/Proveedores', readonly=True)
     invoices_ids = fields.Many2many('account.move.line', string='Comprobante(s)', required=False)
 
     payment_multi_id = fields.Many2one('account.payment_multi', required=True)
@@ -26,7 +26,7 @@ class LoadInvoicesWizard(models.TransientModel):
     domain_invoice_ids = fields.One2many('account.move.line', compute='_compute_domain_invoice_ids')
 
     select_all = fields.Boolean(string='select_all', required=True)
-    is_pay_detraction = fields.Boolean(string='Pago detracción', required=False)
+    is_pay_detraction = fields.Boolean(string='Masivo detracción', required=False)
 
     @api.depends('partner_ids', 'partner_type')
     def _compute_domain_invoice_ids(self):
@@ -46,29 +46,35 @@ class LoadInvoicesWizard(models.TransientModel):
     def get_domain_invoice_ids(self):
         domain = [
             ('parent_state', '=', 'posted'),
-            ('parent_payment_state', '=', 'not_paid'),
+            # ('parent_payment_state', '=', 'not_paid'),
+            ('account_internal_type', 'in', ('payable', 'receivable')),
             ('reconciled', '=', False),
             ('currency_id', '=', self.payment_multi_id.currency_id.id),
             ('company_id', '=', self.env.company.id)
         ]
         if self.partner_ids:
             domain += [('partner_id', 'in', self.partner_ids.ids)]
-
-        domain += self._date_maturity_domain()
+        if self.payment_multi_id.range != 'all':
+            domain += self._date_maturity_domain()
         # proveedor
         if self.partner_type == 'supplier':
-            domain += [('account_internal_type', 'in', ('payable', 'other')),
-                       ('journal_id.type', '=', 'purchase')]
+            domain += [('journal_id.type', '=', 'purchase')]
         else:
             # cliente
-            domain += [('account_internal_type', 'in', ('receivable', 'other')),
-                       ('journal_id.type', '=', 'sale')]
+            domain += [('journal_id.type', '=', 'sale')]
 
         if self.is_pay_detraction:
             domain += [('is_detraction', '=', True)]
-            return self.env['account.move.line'].sudo().search(domain)
+            print(domain)
+            # invoices = self.env['account.move.line'].sudo().search(domain)
+            # if invoices:
+            #     return invoices.ids
+            # else:
+            #     raise ValidationError('No existe comprobantes de detracción pendientes de pago')
+        else:
+            domain += [('is_detraction', '=', False)]
         invoices = self.env['account.move.line'].sudo().search(domain)
-
+        print(invoices.mapped('name'))
         return self._clear_domain_invoices(lines=invoices)
 
     def _clear_domain_invoices(self, lines):
@@ -138,14 +144,16 @@ class LoadInvoicesWizard(models.TransientModel):
                                {
                                    'payment_multi_id': self.payment_multi_id.id,
                                    'move_line_id': item.id,
-                                   'partner_id': item.partner_id.id,
+                                   'partner_id': item.partner_id.id if not item.is_detraction else item.move_id.partner_id.id,
                                    'invoice_date': item.move_id.invoice_date,
                                    'invoice_origin': item.move_id.invoice_origin,
                                    'invoice_user_id': item.move_id.invoice_user_id.id or False,
                                    'expiration_date': item.move_id.invoice_date_due,
                                    'amount': item.move_id.amount_total,
-                                   'amount_residual': item.move_id.amount_residual,
-                                   'amount_payable': item.move_id.amount_residual,
+                                   'amount_residual': item.move_id.amount_residual if not item.is_detraction else abs(
+                                       item.amount_residual_currency),
+                                   'amount_payable': item.move_id.amount_residual if not item.is_detraction else abs(
+                                       item.amount_residual_currency),
                                }))
         if data_lines:
             self.payment_multi_id.sudo().write({

@@ -52,6 +52,8 @@ class AccountMove(models.Model):
                                           required=False)
     #  -- Fin
 
+    detraction_move_id = fields.Many2one('account.move', string="Asiento de detracción")
+
     detraction_lines = fields.One2many('account.move.detraction', 'move_id',
                                        string='Lineas de detracción', readonly=False, copy=False)
 
@@ -208,87 +210,142 @@ class AccountMove(models.Model):
                 self.date or fields.Date.today(),
             )
 
-    # def _create_account_payments(self):
-    #     if not self.payment_detraction_id:
-    #         new_payment = self.env['account.payment'].sudo().create({
-    #             'partner_id': self.partner_id.id,
-    #             'amount': self.amount_detraction,
-    #             'payment_type': 'outbound',
-    #             'partner_type': 'supplier',
-    #             'journal_id': self.journal_id.id
-    #         })
-    #         # new_payment.action_post()
-    #         self.payment_detraction_id = new_payment.id
-
-    def _create_entries_detraction(self):
+    def create_entry_detraction(self):
         """Crear apuntes contables de detracción"""
-        self._valid_account_detraction()
-        line_detraction_ids = self.line_ids.filtered_domain([('is_detraction', '=', True)])
-        if not line_detraction_ids:
-            if self.move_type == 'in_invoice':
-                line_ids = [
-                    (0, 0, {
-                        'name': 'Detracción',
-                        'account_id': self.partner_id.property_account_payable_id.id,
-                        'currency_id': self.currency_id.id,
-                        'debit': self.amount_detraction_pen,
-                        'credit': 0.0,
-                        'exclude_from_invoice_tab': True,
-                        'is_detraction': True,
-                    }),
-                    (0, 0, {
-                        'name': 'Detracción',
-                        'account_id': self.company_id.detraction_account_id.id,
-                        'currency_id': self.currency_id.id,
-                        'debit': 0.0,
-                        'credit': self.amount_detraction_pen,
-                        'exclude_from_invoice_tab': True,
-                        'is_detraction': True,
-                    })
-                ]
-            else:
-                line_ids = [
-                    (0, 0, {
-                        'name': 'Detracción',
-                        'account_id': self.partner_id.property_account_receivable_id.id,
-                        'currency_id': self.currency_id.id,
-                        'debit': 0.0,
-                        'credit': self.amount_detraction_pen,
-                        'exclude_from_invoice_tab': True,
-                        'is_detraction': True,
-                    }),
-                    (0, 0, {
-                        'name': 'Detracción',
-                        'account_id': self.company_id.detraction_account_id.id,
-                        'currency_id': self.currency_id.id,
-                        'debit': self.amount_detraction_pen,
-                        'credit': 0.0,
-                        'exclude_from_invoice_tab': True,
-                        'is_detraction': True,
-                    })
-                ]
-            pprint(line_ids)
-            self.sudo().write({'line_ids': line_ids})
-            self.sudo().line_ids.filtered_domain([('is_detraction', '=', True)]).write({'name': 'Detracción'})
+        detraction_journal_id = self._valid_account_detraction()
+        line_data = {
+            'name': _('Detracción'),
+            'ref': self.name,
+            'partner_id': self.partner_id and self.partner_id.id or False,
+            'currency_id': self.currency_id and self.currency_id.id or False,
+            'is_detraction': True,
+        }
 
-    def _clear_entries_detraction(self):
-        line_detraction_ids = self.line_ids.filtered_domain([('is_detraction', '=', True)])
-        line_detraction_ids.unlink()
+        debit_data = dict(line_data)
+        credit_data = dict(line_data)
+        # src_account_id = False
+
+        if self.move_type in ('in_invoice', 'in_refund', 'in_receipt'):
+            debit_account_id = self.partner_id.property_account_payable_id.id
+            credit_account_id = detraction_journal_id.default_detraction_account.id
+            src_account_id = debit_account_id
+        # if self.move_type in ('out_invoice', 'out_refund', 'out_receipt'):
+        else:
+            debit_account_id = detraction_journal_id.default_detraction_account.id
+            credit_account_id = self.partner_id.property_account_receivable_id.id
+            src_account_id = credit_account_id
+        debit_data.update(
+            account_id=debit_account_id,
+            debit=self.amount_detraction_pen,
+            credit=False,
+        )
+        credit_data.update(
+            account_id=credit_account_id,
+            debit=False,
+            credit=self.amount_detraction_pen,
+        )
+
+        # if self.move_type in ('in_invoice', 'in_refund', 'in_receipt'):
+        #     src_account_id = self.partner_id.property_account_payable_id.id
+        #     line_ids = [
+        #         (0, 0, {
+        #             'name': _('Detracción'),
+        #             'account_id': src_account_id,
+        #             'currency_id': self.currency_id.id,
+        #             'debit': self.amount_detraction_pen,
+        #             'credit': 0.0,
+        #             # 'exclude_from_invoice_tab': True,
+        #             'is_detraction': True,
+        #         }),
+        #         (0, 0, {
+        #             'name': _('Detracción'),
+        #             'account_id': detraction_journal_id.default_detraction_account.id,
+        #             'currency_id': self.currency_id.id,
+        #             'debit': 0.0,
+        #             'credit': self.amount_detraction_pen,
+        #             # 'exclude_from_invoice_tab': True,
+        #             'is_detraction': True,
+        #         })
+        #     ]
+        # else:
+        #     src_account_id = self.partner_id.property_account_receivable_id.id
+        #     line_ids = [
+        #         (0, 0, {
+        #             'name': _('Detracción'),
+        #             'account_id': src_account_id,
+        #             'currency_id': self.currency_id.id,
+        #             'debit': 0.0,
+        #             'credit': self.amount_detraction_pen,
+        #             # 'exclude_from_invoice_tab': True,
+        #             'is_detraction': True,
+        #         }),
+        #         (0, 0, {
+        #             'name': _('Detracción'),
+        #             'account_id': detraction_journal_id.default_detraction_account.id,
+        #             'currency_id': self.currency_id.id,
+        #             'debit': self.amount_detraction_pen,
+        #             'credit': 0.0,
+        #             # 'exclude_from_invoice_tab': True,
+        #             'is_detraction': True,
+        #         })
+        #     ]
+
+        move_detraction = {'ref': 'Detracción ' + 'de ' + str(self.name),
+                           'line_ids': [(0, 0, debit_data), (0, 0, credit_data)],
+                           'journal_id': detraction_journal_id.id,
+                           'date': self.date,
+                           'state': 'draft',
+                           'move_type': 'entry'
+                           }
+        detraction_move_id = self.env['account.move'].sudo().create(move_detraction)
+        if detraction_move_id:
+            self.detraction_move_id = detraction_move_id
+            self.detraction_move_id.post()
+            to_reconcile = self.line_ids.filtered_domain([
+                ('account_id', '=', src_account_id), ('reconciled', '=', False)])
+            payment_lines = detraction_move_id.line_ids.filtered_domain([
+                ('account_id', '=', src_account_id), ('reconciled', '=', False)])
+
+            results = (payment_lines + to_reconcile).reconcile()
+
+    # def _clear_entries_detraction(self):
+    #     line_detraction_ids = self.line_ids.filtered_domain([('is_detraction', '=', True)])
+    #     line_detraction_ids.unlink()
 
     def _valid_account_detraction(self):
-        if not self.company_id.detraction_account_id:
+        # if not self.company_id.detraction_account_id:
+        #     raise ValidationError(
+        #         _(f'No existe la cuenta de detracción configurada para la compañía {self.company_id.name}'))
+
+        detraction_journal_id = self.env['account.journal'].search(
+            [('is_detraction_journal', '=', True), ('company_id', '=', self.company_id.id)], limit=1)
+        if not detraction_journal_id:
+            raise UserError(_(
+                'No hay un diario de detracción.'
+                'Por favor defina un diario tipo varios con la cuenta de detracción asociada para la compañía %s.') % (
+                                self.company_id.name))
+
+        if detraction_journal_id and not detraction_journal_id.default_detraction_account:
             raise ValidationError(
                 _(f'No existe la cuenta de detracción configurada para la compañía {self.company_id.name}'))
+        return detraction_journal_id
 
-    def action_post(self):
-        # se añade el apunte contable de la detracción (solo a facturas de proveedor)
-        resp = super(AccountMove, self).action_post()
-        if self.move_type in ('in_invoice', 'out_invoice'):
-            if self.is_affect_detraction:
-                self._create_entries_detraction()
-            else:
-                self._clear_entries_detraction()
-        return resp
+    # def action_post(self):
+    #     # se añade el apunte contable de la detracción (solo a facturas de proveedor)
+    #     resp = super(AccountMove, self).action_post()
+    #     if self.move_type in ('in_invoice', 'out_invoice'):
+    #         if self.is_affect_detraction:
+    #             self.create_entry_detraction()
+    #         else:
+    #             self._clear_entries_detraction()
+    #     return resp
+
+    def _post(self, soft=True):
+        res = super(AccountMove, self)._post(soft=soft)
+        for move in self:
+            if move.is_affect_detraction:
+                move.create_entry_detraction()
+        return res
 
     @api.model
     def create(self, values):
